@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace AiCup2019
+namespace MLG360
 {
     public class Debug
     {

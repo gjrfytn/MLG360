@@ -1,6 +1,6 @@
-using AiCup2019.Model;
+using MLG360.Model;
 
-namespace AiCup2019
+namespace MLG360
 {
     public class MyStrategy
     {

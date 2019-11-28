@@ -1,4 +1,4 @@
-namespace AiCup2019.Model
+namespace MLG360.Model
 {
     public enum WeaponType
     {
