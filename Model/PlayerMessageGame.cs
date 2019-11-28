@@ -61,16 +61,16 @@ namespace MLG360.Model
             public static new ActionMessage ReadFrom(System.IO.BinaryReader reader)
             {
                 var result = new ActionMessage();
-                var ActionSize = reader.ReadInt32();
-                result.Action = new System.Collections.Generic.Dictionary<int, UnitAction>(ActionSize);
+                var actionSize = reader.ReadInt32();
+                result.Action = new System.Collections.Generic.Dictionary<int, UnitAction>(actionSize);
 
-                for (var i = 0; i < ActionSize; i++)
+                for (var i = 0; i < actionSize; i++)
                 {
-                    int ActionKey;
-                    ActionKey = reader.ReadInt32();
-                    UnitAction ActionValue;
-                    ActionValue = UnitAction.ReadFrom(reader);
-                    result.Action.Add(ActionKey, ActionValue);
+                    int actionKey;
+                    actionKey = reader.ReadInt32();
+                    UnitAction actionValue;
+                    actionValue = UnitAction.ReadFrom(reader);
+                    result.Action.Add(actionKey, actionValue);
                 }
 
                 return result;
@@ -81,12 +81,12 @@ namespace MLG360.Model
                 writer.Write(TAG);
                 writer.Write(Action.Count);
 
-                foreach (var ActionEntry in Action)
+                foreach (var actionEntry in Action)
                 {
-                    var ActionKey = ActionEntry.Key;
-                    var ActionValue = ActionEntry.Value;
-                    writer.Write(ActionKey);
-                    ActionValue.WriteTo(writer);
+                    var actionKey = actionEntry.Key;
+                    var actionValue = actionEntry.Value;
+                    writer.Write(actionKey);
+                    actionValue.WriteTo(writer);
                 }
             }
         }

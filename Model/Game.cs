@@ -69,33 +69,33 @@ namespace MLG360.Model
             Properties.WriteTo(writer);
             Level.WriteTo(writer);
             writer.Write(Players.Length);
-            foreach (var PlayersElement in Players)
+            foreach (var playersElement in Players)
             {
-                PlayersElement.WriteTo(writer);
+                playersElement.WriteTo(writer);
             }
 
             writer.Write(Units.Length);
-            foreach (var UnitsElement in Units)
+            foreach (var unitsElement in Units)
             {
-                UnitsElement.WriteTo(writer);
+                unitsElement.WriteTo(writer);
             }
 
             writer.Write(Bullets.Length);
-            foreach (var BulletsElement in Bullets)
+            foreach (var bulletsElement in Bullets)
             {
-                BulletsElement.WriteTo(writer);
+                bulletsElement.WriteTo(writer);
             }
 
             writer.Write(Mines.Length);
-            foreach (var MinesElement in Mines)
+            foreach (var minesElement in Mines)
             {
-                MinesElement.WriteTo(writer);
+                minesElement.WriteTo(writer);
             }
 
             writer.Write(LootBoxes.Length);
-            foreach (var LootBoxesElement in LootBoxes)
+            foreach (var lootBoxesElement in LootBoxes)
             {
-                LootBoxesElement.WriteTo(writer);
+                lootBoxesElement.WriteTo(writer);
             }
         }
     }

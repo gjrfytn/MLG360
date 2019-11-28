@@ -65,7 +65,7 @@ namespace MLG360.Model
             writer.Write(PlayerId);
             Position.WriteTo(writer);
             Size.WriteTo(writer);
-            writer.Write((int)(State));
+            writer.Write((int)State);
 
             if (!Timer.HasValue)
             {

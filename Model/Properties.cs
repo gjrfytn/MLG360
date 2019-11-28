@@ -66,30 +66,30 @@ namespace MLG360.Model
             result.JumpPadJumpSpeed = reader.ReadDouble();
             result.UnitMaxHealth = reader.ReadInt32();
             result.HealthPackHealth = reader.ReadInt32();
-            var WeaponParametersSize = reader.ReadInt32();
-            result.WeaponParameters = new System.Collections.Generic.Dictionary<WeaponType, WeaponParameters>(WeaponParametersSize);
+            var weaponParametersSize = reader.ReadInt32();
+            result.WeaponParameters = new System.Collections.Generic.Dictionary<WeaponType, WeaponParameters>(weaponParametersSize);
 
-            for (var i = 0; i < WeaponParametersSize; i++)
+            for (var i = 0; i < weaponParametersSize; i++)
             {
-                WeaponType WeaponParametersKey;
+                WeaponType weaponParametersKey;
                 switch (reader.ReadInt32())
                 {
                     case 0:
-                        WeaponParametersKey = WeaponType.Pistol;
+                        weaponParametersKey = WeaponType.Pistol;
                         break;
                     case 1:
-                        WeaponParametersKey = WeaponType.AssaultRifle;
+                        weaponParametersKey = WeaponType.AssaultRifle;
                         break;
                     case 2:
-                        WeaponParametersKey = WeaponType.RocketLauncher;
+                        weaponParametersKey = WeaponType.RocketLauncher;
                         break;
                     default:
                         throw new System.Exception("Unexpected discriminant value");
                 }
 
-                WeaponParameters WeaponParametersValue;
-                WeaponParametersValue = Model.WeaponParameters.ReadFrom(reader);
-                result.WeaponParameters.Add(WeaponParametersKey, WeaponParametersValue);
+                WeaponParameters weaponParametersValue;
+                weaponParametersValue = Model.WeaponParameters.ReadFrom(reader);
+                result.WeaponParameters.Add(weaponParametersKey, weaponParametersValue);
             }
 
             result.MineSize = Vec2Double.ReadFrom(reader);
@@ -119,12 +119,12 @@ namespace MLG360.Model
             writer.Write(HealthPackHealth);
             writer.Write(WeaponParameters.Count);
 
-            foreach (var WeaponParametersEntry in WeaponParameters)
+            foreach (var weaponParametersEntry in WeaponParameters)
             {
-                var WeaponParametersKey = WeaponParametersEntry.Key;
-                var WeaponParametersValue = WeaponParametersEntry.Value;
-                writer.Write((int)(WeaponParametersKey));
-                WeaponParametersValue.WriteTo(writer);
+                var weaponParametersKey = weaponParametersEntry.Key;
+                var weaponParametersValue = weaponParametersEntry.Value;
+                writer.Write((int)weaponParametersKey);
+                weaponParametersValue.WriteTo(writer);
             }
 
             MineSize.WriteTo(writer);

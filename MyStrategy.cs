@@ -53,24 +53,26 @@ namespace MLG360
             }
 
             var jump = targetPos.Y > unit.Position.Y;
-            if (targetPos.X > unit.Position.X && game.Level.Tiles[(int)(unit.Position.X + 1)][(int)(unit.Position.Y)] == Tile.Wall)
+            if (targetPos.X > unit.Position.X && game.Level.Tiles[(int)(unit.Position.X + 1)][(int)unit.Position.Y] == Tile.Wall)
             {
                 jump = true;
             }
 
-            if (targetPos.X < unit.Position.X && game.Level.Tiles[(int)(unit.Position.X - 1)][(int)(unit.Position.Y)] == Tile.Wall)
+            if (targetPos.X < unit.Position.X && game.Level.Tiles[(int)(unit.Position.X - 1)][(int)unit.Position.Y] == Tile.Wall)
             {
                 jump = true;
             }
 
-            var action = new UnitAction();
-            action.Velocity = targetPos.X - unit.Position.X;
-            action.Jump = jump;
-            action.JumpDown = !jump;
-            action.Aim = aim;
-            action.Shoot = true;
-            action.SwapWeapon = false;
-            action.PlantMine = false;
+            var action = new UnitAction
+            {
+                Velocity = targetPos.X - unit.Position.X,
+                Jump = jump,
+                JumpDown = !jump,
+                Aim = aim,
+                Shoot = true,
+                SwapWeapon = false,
+                PlantMine = false
+            };
 
             return action;
         }

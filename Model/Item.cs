@@ -84,7 +84,7 @@ namespace MLG360.Model
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
                 writer.Write(TAG);
-                writer.Write((int)(WeaponType));
+                writer.Write((int)WeaponType);
             }
         }
 

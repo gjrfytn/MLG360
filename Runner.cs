@@ -7,31 +7,31 @@ namespace MLG360
 {
     public class Runner
     {
-        private BinaryReader reader;
-        private BinaryWriter writer;
+        private readonly BinaryReader _Reader;
+        private readonly BinaryWriter _Writer;
 
         public Runner(string host, int port, string token)
         {
             var client = new TcpClient(host, port) { NoDelay = true };
             var stream = new BufferedStream(client.GetStream());
 
-            reader = new BinaryReader(stream);
-            writer = new BinaryWriter(stream);
+            _Reader = new BinaryReader(stream);
+            _Writer = new BinaryWriter(stream);
 
             var tokenData = Encoding.UTF8.GetBytes(token);
 
-            writer.Write(tokenData.Length);
-            writer.Write(tokenData);
-            writer.Flush();
+            _Writer.Write(tokenData.Length);
+            _Writer.Write(tokenData);
+            _Writer.Flush();
         }
 
         public void Run()
         {
             var myStrategy = new MyStrategy();
-            var debug = new Debug(writer);
+            var debug = new Debug(_Writer);
             while (true)
             {
-                var message = Model.ServerMessageGame.ReadFrom(reader);
+                var message = Model.ServerMessageGame.ReadFrom(_Reader);
                 if (!message.PlayerView.HasValue)
                 {
                     break;
@@ -47,8 +47,8 @@ namespace MLG360
                     }
                 }
 
-                new Model.PlayerMessageGame.ActionMessage(actions).WriteTo(writer);
-                writer.Flush();
+                new Model.PlayerMessageGame.ActionMessage(actions).WriteTo(_Writer);
+                _Writer.Flush();
             }
         }
         public static void Main(string[] args)

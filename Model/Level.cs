@@ -47,12 +47,12 @@ namespace MLG360.Model
         public void WriteTo(System.IO.BinaryWriter writer)
         {
             writer.Write(Tiles.Length);
-            foreach (var TilesElement in Tiles)
+            foreach (var tilesElement in Tiles)
             {
-                writer.Write(TilesElement.Length);
-                foreach (var TilesElementElement in TilesElement)
+                writer.Write(tilesElement.Length);
+                foreach (var tilesElementElement in tilesElement)
                 {
-                    writer.Write((int)(TilesElementElement));
+                    writer.Write((int)tilesElementElement);
                 }
             }
         }

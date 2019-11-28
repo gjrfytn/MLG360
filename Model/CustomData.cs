@@ -45,9 +45,9 @@ namespace MLG360.Model
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
                 writer.Write(TAG);
-                var TextData = System.Text.Encoding.UTF8.GetBytes(Text);
-                writer.Write(TextData.Length);
-                writer.Write(TextData);
+                var textData = System.Text.Encoding.UTF8.GetBytes(Text);
+                writer.Write(textData.Length);
+                writer.Write(textData);
             }
         }
 
@@ -156,9 +156,9 @@ namespace MLG360.Model
             {
                 writer.Write(TAG);
                 writer.Write(Vertices.Length);
-                foreach (var VerticesElement in Vertices)
+                foreach (var verticesElement in Vertices)
                 {
-                    VerticesElement.WriteTo(writer);
+                    verticesElement.WriteTo(writer);
                 }
             }
         }

@@ -75,9 +75,10 @@ namespace MLG360.Model
 
             return result;
         }
+
         public void WriteTo(System.IO.BinaryWriter writer)
         {
-            writer.Write((int)(Typ));
+            writer.Write((int)Typ);
             Parameters.WriteTo(writer);
             writer.Write(Magazine);
             writer.Write(WasShooting);

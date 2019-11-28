@@ -62,7 +62,7 @@ namespace MLG360.Model
 
         public void WriteTo(System.IO.BinaryWriter writer)
         {
-            writer.Write((int)(WeaponType));
+            writer.Write((int)WeaponType);
             writer.Write(UnitId);
             writer.Write(PlayerId);
             Position.WriteTo(writer);
