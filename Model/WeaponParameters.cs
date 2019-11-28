@@ -27,6 +27,9 @@ namespace MLG360.Model
 
         public static WeaponParameters ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             var result = new WeaponParameters();
             result.MagazineSize = reader.ReadInt32();
             result.FireRate = reader.ReadDouble();
@@ -51,6 +54,9 @@ namespace MLG360.Model
 
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             writer.Write(MagazineSize);
             writer.Write(FireRate);
             writer.Write(ReloadTime);

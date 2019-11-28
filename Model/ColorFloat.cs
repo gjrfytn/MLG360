@@ -17,6 +17,9 @@ namespace MLG360.Model
 
         public static ColorFloat ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             var result = new ColorFloat();
             result.R = reader.ReadSingle();
             result.G = reader.ReadSingle();
@@ -28,6 +31,9 @@ namespace MLG360.Model
 
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             writer.Write(R);
             writer.Write(G);
             writer.Write(B);

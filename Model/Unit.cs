@@ -33,6 +33,9 @@ namespace MLG360.Model
 
         public static Unit ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             var result = new Unit();
             result.PlayerId = reader.ReadInt32();
             result.Id = reader.ReadInt32();
@@ -60,6 +63,9 @@ namespace MLG360.Model
 
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             writer.Write(PlayerId);
             writer.Write(Id);
             writer.Write(Health);

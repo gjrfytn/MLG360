@@ -6,6 +6,9 @@ namespace MLG360.Model
 
         public static CustomData ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             switch (reader.ReadInt32())
             {
                 case Log.TAG:
@@ -36,6 +39,9 @@ namespace MLG360.Model
 
             public static new Log ReadFrom(System.IO.BinaryReader reader)
             {
+                if (reader == null)
+                    throw new System.ArgumentNullException(nameof(reader));
+
                 var result = new Log();
                 result.Text = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(reader.ReadInt32()));
                 
@@ -44,6 +50,9 @@ namespace MLG360.Model
 
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
+                if (writer == null)
+                    throw new System.ArgumentNullException(nameof(writer));
+
                 writer.Write(TAG);
                 var textData = System.Text.Encoding.UTF8.GetBytes(Text);
                 writer.Write(textData.Length);
@@ -80,6 +89,9 @@ namespace MLG360.Model
 
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
+                if (writer == null)
+                    throw new System.ArgumentNullException(nameof(writer));
+
                 writer.Write(TAG);
                 Pos.WriteTo(writer);
                 Size.WriteTo(writer);
@@ -108,6 +120,9 @@ namespace MLG360.Model
 
             public static new Line ReadFrom(System.IO.BinaryReader reader)
             {
+                if (reader == null)
+                    throw new System.ArgumentNullException(nameof(reader));
+
                 var result = new Line();
                 result.P1 = Vec2Float.ReadFrom(reader);
                 result.P2 = Vec2Float.ReadFrom(reader);
@@ -119,6 +134,9 @@ namespace MLG360.Model
 
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
+                if (writer == null)
+                    throw new System.ArgumentNullException(nameof(writer));
+
                 writer.Write(TAG);
                 P1.WriteTo(writer);
                 P2.WriteTo(writer);
@@ -142,6 +160,9 @@ namespace MLG360.Model
 
             public static new Polygon ReadFrom(System.IO.BinaryReader reader)
             {
+                if (reader == null)
+                    throw new System.ArgumentNullException(nameof(reader));
+
                 var result = new Polygon();
                 result.Vertices = new ColoredVertex[reader.ReadInt32()];
                 for (var i = 0; i < result.Vertices.Length; i++)
@@ -154,6 +175,9 @@ namespace MLG360.Model
 
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
+                if (writer == null)
+                    throw new System.ArgumentNullException(nameof(writer));
+
                 writer.Write(TAG);
                 writer.Write(Vertices.Length);
                 foreach (var verticesElement in Vertices)

@@ -15,6 +15,9 @@ namespace MLG360.Model
 
         public static BulletParameters ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             var result = new BulletParameters();
             result.Speed = reader.ReadDouble();
             result.Size = reader.ReadDouble();
@@ -25,6 +28,9 @@ namespace MLG360.Model
 
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             writer.Write(Speed);
             writer.Write(Size);
             writer.Write(Damage);

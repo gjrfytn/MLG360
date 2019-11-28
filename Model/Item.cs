@@ -6,6 +6,9 @@ namespace MLG360.Model
 
         public static Item ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             switch (reader.ReadInt32())
             {
                 case HealthPack.TAG:
@@ -34,6 +37,9 @@ namespace MLG360.Model
 
             public static new HealthPack ReadFrom(System.IO.BinaryReader reader)
             {
+                if (reader == null)
+                    throw new System.ArgumentNullException(nameof(reader));
+
                 var result = new HealthPack();
                 result.Health = reader.ReadInt32();
 
@@ -42,6 +48,9 @@ namespace MLG360.Model
 
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
+                if (writer == null)
+                    throw new System.ArgumentNullException(nameof(writer));
+
                 writer.Write(TAG);
                 writer.Write(Health);
             }
@@ -62,6 +71,9 @@ namespace MLG360.Model
 
             public static new Weapon ReadFrom(System.IO.BinaryReader reader)
             {
+                if (reader == null)
+                    throw new System.ArgumentNullException(nameof(reader));
+
                 var result = new Weapon();
                 switch (reader.ReadInt32())
                 {
@@ -83,6 +95,9 @@ namespace MLG360.Model
 
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
+                if (writer == null)
+                    throw new System.ArgumentNullException(nameof(writer));
+
                 writer.Write(TAG);
                 writer.Write((int)WeaponType);
             }
@@ -103,6 +118,9 @@ namespace MLG360.Model
 
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
+                if (writer == null)
+                    throw new System.ArgumentNullException(nameof(writer));
+
                 writer.Write(TAG);
             }
         }

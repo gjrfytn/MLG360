@@ -25,6 +25,9 @@ namespace MLG360.Model
 
         public static Weapon ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             var result = new Weapon();
             switch (reader.ReadInt32())
             {
@@ -78,6 +81,9 @@ namespace MLG360.Model
 
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             writer.Write((int)Typ);
             Parameters.WriteTo(writer);
             writer.Write(Magazine);

@@ -13,6 +13,9 @@ namespace MLG360.Model
 
         public static PlayerView ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             var result = new PlayerView();
             result.MyId = reader.ReadInt32();
             result.Game = Game.ReadFrom(reader);
@@ -22,6 +25,9 @@ namespace MLG360.Model
 
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             writer.Write(MyId);
             Game.WriteTo(writer);
         }

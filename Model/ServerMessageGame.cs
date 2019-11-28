@@ -11,6 +11,9 @@ namespace MLG360.Model
 
         public static ServerMessageGame ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             var result = new ServerMessageGame();
             if (reader.ReadBoolean())
             {
@@ -26,6 +29,9 @@ namespace MLG360.Model
 
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             if (!PlayerView.HasValue)
             {
                 writer.Write(false);

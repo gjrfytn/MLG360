@@ -11,6 +11,9 @@ namespace MLG360
 
         public UnitAction GetAction(Unit unit, Game game, Debug debug)
         {
+            if (debug == null)
+                throw new System.ArgumentNullException(nameof(debug));
+
             Unit? nearestEnemy = null;
             foreach (var other in game.Units)
             {

@@ -25,6 +25,9 @@ namespace MLG360.Model
 
         public static Game ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             var result = new Game();
             result.CurrentTick = reader.ReadInt32();
             result.Properties = Properties.ReadFrom(reader);
@@ -65,6 +68,9 @@ namespace MLG360.Model
 
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             writer.Write(CurrentTick);
             Properties.WriteTo(writer);
             Level.WriteTo(writer);
