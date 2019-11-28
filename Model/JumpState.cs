@@ -6,13 +6,15 @@ namespace MLG360.Model
         public double Speed { get; set; }
         public double MaxTime { get; set; }
         public bool CanCancel { get; set; }
+
         public JumpState(bool canJump, double speed, double maxTime, bool canCancel)
         {
-            this.CanJump = canJump;
-            this.Speed = speed;
-            this.MaxTime = maxTime;
-            this.CanCancel = canCancel;
+            CanJump = canJump;
+            Speed = speed;
+            MaxTime = maxTime;
+            CanCancel = canCancel;
         }
+
         public static JumpState ReadFrom(System.IO.BinaryReader reader)
         {
             var result = new JumpState();
@@ -20,8 +22,10 @@ namespace MLG360.Model
             result.Speed = reader.ReadDouble();
             result.MaxTime = reader.ReadDouble();
             result.CanCancel = reader.ReadBoolean();
+
             return result;
         }
+
         public void WriteTo(System.IO.BinaryWriter writer)
         {
             writer.Write(CanJump);

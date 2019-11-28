@@ -4,10 +4,11 @@ namespace MLG360
 {
     public class MyStrategy
     {
-        static double DistanceSqr(Vec2Double a, Vec2Double b)
+        private static double DistanceSqr(Vec2Double a, Vec2Double b)
         {
             return (a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y);
         }
+
         public UnitAction GetAction(Unit unit, Game game, Debug debug)
         {
             Unit? nearestEnemy = null;
@@ -21,6 +22,7 @@ namespace MLG360
                     }
                 }
             }
+
             LootBox? nearestWeapon = null;
             foreach (var lootBox in game.LootBoxes)
             {
@@ -32,7 +34,8 @@ namespace MLG360
                     }
                 }
             }
-            Vec2Double targetPos = unit.Position;
+
+            var targetPos = unit.Position;
             if (!unit.Weapon.HasValue && nearestWeapon.HasValue)
             {
                 targetPos = nearestWeapon.Value.Position;
@@ -41,22 +44,26 @@ namespace MLG360
             {
                 targetPos = nearestEnemy.Value.Position;
             }
+
             debug.Draw(new CustomData.Log("Target pos: " + targetPos));
-            Vec2Double aim = new Vec2Double(0, 0);
+            var aim = new Vec2Double(0, 0);
             if (nearestEnemy.HasValue)
             {
                 aim = new Vec2Double(nearestEnemy.Value.Position.X - unit.Position.X, nearestEnemy.Value.Position.Y - unit.Position.Y);
             }
-            bool jump = targetPos.Y > unit.Position.Y;
+
+            var jump = targetPos.Y > unit.Position.Y;
             if (targetPos.X > unit.Position.X && game.Level.Tiles[(int)(unit.Position.X + 1)][(int)(unit.Position.Y)] == Tile.Wall)
             {
                 jump = true;
             }
+
             if (targetPos.X < unit.Position.X && game.Level.Tiles[(int)(unit.Position.X - 1)][(int)(unit.Position.Y)] == Tile.Wall)
             {
                 jump = true;
             }
-            UnitAction action = new UnitAction();
+
+            var action = new UnitAction();
             action.Velocity = targetPos.X - unit.Position.X;
             action.Jump = jump;
             action.JumpDown = !jump;
@@ -64,6 +71,7 @@ namespace MLG360
             action.Shoot = true;
             action.SwapWeapon = false;
             action.PlantMine = false;
+
             return action;
         }
     }

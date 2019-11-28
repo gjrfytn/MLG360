@@ -9,20 +9,22 @@ namespace MLG360.Model
         public double MaxSpread { get; set; }
         public double Recoil { get; set; }
         public double AimSpeed { get; set; }
-        public Model.BulletParameters Bullet { get; set; }
-        public Model.ExplosionParameters? Explosion { get; set; }
-        public WeaponParameters(int magazineSize, double fireRate, double reloadTime, double minSpread, double maxSpread, double recoil, double aimSpeed, Model.BulletParameters bullet, Model.ExplosionParameters? explosion)
+        public BulletParameters Bullet { get; set; }
+        public ExplosionParameters? Explosion { get; set; }
+
+        public WeaponParameters(int magazineSize, double fireRate, double reloadTime, double minSpread, double maxSpread, double recoil, double aimSpeed, BulletParameters bullet, ExplosionParameters? explosion)
         {
-            this.MagazineSize = magazineSize;
-            this.FireRate = fireRate;
-            this.ReloadTime = reloadTime;
-            this.MinSpread = minSpread;
-            this.MaxSpread = maxSpread;
-            this.Recoil = recoil;
-            this.AimSpeed = aimSpeed;
-            this.Bullet = bullet;
-            this.Explosion = explosion;
+            MagazineSize = magazineSize;
+            FireRate = fireRate;
+            ReloadTime = reloadTime;
+            MinSpread = minSpread;
+            MaxSpread = maxSpread;
+            Recoil = recoil;
+            AimSpeed = aimSpeed;
+            Bullet = bullet;
+            Explosion = explosion;
         }
+
         public static WeaponParameters ReadFrom(System.IO.BinaryReader reader)
         {
             var result = new WeaponParameters();
@@ -33,16 +35,20 @@ namespace MLG360.Model
             result.MaxSpread = reader.ReadDouble();
             result.Recoil = reader.ReadDouble();
             result.AimSpeed = reader.ReadDouble();
-            result.Bullet = Model.BulletParameters.ReadFrom(reader);
+            result.Bullet = BulletParameters.ReadFrom(reader);
+
             if (reader.ReadBoolean())
             {
-                result.Explosion = Model.ExplosionParameters.ReadFrom(reader);
-            } else
+                result.Explosion = ExplosionParameters.ReadFrom(reader);
+            }
+            else
             {
                 result.Explosion = null;
             }
+
             return result;
         }
+
         public void WriteTo(System.IO.BinaryWriter writer)
         {
             writer.Write(MagazineSize);
@@ -53,10 +59,12 @@ namespace MLG360.Model
             writer.Write(Recoil);
             writer.Write(AimSpeed);
             Bullet.WriteTo(writer);
+
             if (!Explosion.HasValue)
             {
                 writer.Write(false);
-            } else
+            }
+            else
             {
                 writer.Write(true);
                 Explosion.Value.WriteTo(writer);

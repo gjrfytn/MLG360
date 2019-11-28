@@ -3,6 +3,7 @@ namespace MLG360.Model
     public abstract class PlayerMessageGame
     {
         public abstract void WriteTo(System.IO.BinaryWriter writer);
+
         public static PlayerMessageGame ReadFrom(System.IO.BinaryReader reader)
         {
             switch (reader.ReadInt32())
@@ -19,18 +20,24 @@ namespace MLG360.Model
         public class CustomDataMessage : PlayerMessageGame
         {
             public const int TAG = 0;
-            public Model.CustomData Data { get; set; }
-            public CustomDataMessage() {}
-            public CustomDataMessage(Model.CustomData data)
+
+            public CustomData Data { get; set; }
+
+            public CustomDataMessage() { }
+
+            public CustomDataMessage(CustomData data)
             {
-                this.Data = data;
+                Data = data;
             }
+
             public static new CustomDataMessage ReadFrom(System.IO.BinaryReader reader)
             {
                 var result = new CustomDataMessage();
-                result.Data = Model.CustomData.ReadFrom(reader);
+                result.Data = CustomData.ReadFrom(reader);
+
                 return result;
             }
+
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
                 writer.Write(TAG);
@@ -41,31 +48,39 @@ namespace MLG360.Model
         public class ActionMessage : PlayerMessageGame
         {
             public const int TAG = 1;
-            public System.Collections.Generic.IDictionary<int, Model.UnitAction> Action { get; set; }
-            public ActionMessage() {}
-            public ActionMessage(System.Collections.Generic.IDictionary<int, Model.UnitAction> action)
+
+            public System.Collections.Generic.IDictionary<int, UnitAction> Action { get; set; }
+
+            public ActionMessage() { }
+
+            public ActionMessage(System.Collections.Generic.IDictionary<int, UnitAction> action)
             {
-                this.Action = action;
+                Action = action;
             }
+
             public static new ActionMessage ReadFrom(System.IO.BinaryReader reader)
             {
                 var result = new ActionMessage();
-                int ActionSize = reader.ReadInt32();
-                result.Action = new System.Collections.Generic.Dictionary<int, Model.UnitAction>(ActionSize);
-                for (int i = 0; i < ActionSize; i++)
+                var ActionSize = reader.ReadInt32();
+                result.Action = new System.Collections.Generic.Dictionary<int, UnitAction>(ActionSize);
+
+                for (var i = 0; i < ActionSize; i++)
                 {
                     int ActionKey;
                     ActionKey = reader.ReadInt32();
-                    Model.UnitAction ActionValue;
-                    ActionValue = Model.UnitAction.ReadFrom(reader);
+                    UnitAction ActionValue;
+                    ActionValue = UnitAction.ReadFrom(reader);
                     result.Action.Add(ActionKey, ActionValue);
                 }
+
                 return result;
             }
+
             public override void WriteTo(System.IO.BinaryWriter writer)
             {
                 writer.Write(TAG);
                 writer.Write(Action.Count);
+
                 foreach (var ActionEntry in Action)
                 {
                     var ActionKey = ActionEntry.Key;
