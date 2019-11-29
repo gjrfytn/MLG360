@@ -11,7 +11,7 @@ namespace MLG360
             this.writer = writer;
         }
 
-        public void Draw(Model.CustomData customData)
+        public void Draw(Model.CustomData.CustomData customData)
         {
             new Model.PlayerMessageGame.CustomDataMessage(customData).WriteTo(writer);
             writer.Flush();

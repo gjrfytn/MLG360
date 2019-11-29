@@ -29,7 +29,7 @@ namespace MLG360
             LootBox? nearestWeapon = null;
             foreach (var lootBox in game.LootBoxes)
             {
-                if (lootBox.Item is Item.Weapon)
+                if (lootBox.Item is Model.Items.Weapon)
                 {
                     if (!nearestWeapon.HasValue || DistanceSqr(unit.Position, lootBox.Position) < DistanceSqr(unit.Position, nearestWeapon.Value.Position))
                     {
@@ -48,7 +48,7 @@ namespace MLG360
                 targetPos = nearestEnemy.Value.Position;
             }
 
-            debug.Draw(new CustomData.Log("Target pos: " + targetPos));
+            debug.Draw(new Model.CustomData.Log("Target pos: " + targetPos));
             var aim = new Vec2Double(0, 0);
             if (nearestEnemy.HasValue)
             {

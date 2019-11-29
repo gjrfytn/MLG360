@@ -23,6 +23,9 @@ namespace MLG360.Model
 
         public static Mine ReadFrom(System.IO.BinaryReader reader)
         {
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
             var result = new Mine();
             result.PlayerId = reader.ReadInt32();
             result.Position = Vec2Double.ReadFrom(reader);
@@ -62,6 +65,9 @@ namespace MLG360.Model
         }
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             writer.Write(PlayerId);
             Position.WriteTo(writer);
             Size.WriteTo(writer);
