@@ -19,6 +19,8 @@ namespace MLG360.Model.CustomData
                     return Line.ReadFrom(reader);
                 case Polygon.TAG:
                     return Polygon.ReadFrom(reader);
+                case PlacedText.TAG:
+                    return PlacedText.ReadFrom(reader);
                 default:
                     throw new System.Exception("Unexpected discriminant value");
             }
