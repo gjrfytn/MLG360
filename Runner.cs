@@ -5,15 +5,16 @@ using System.Text;
 
 namespace MLG360
 {
-    public class Runner
+    public class Runner : System.IDisposable
     {
+        private readonly TcpClient _TcpClient;
         private readonly BinaryReader _Reader;
         private readonly BinaryWriter _Writer;
 
         public Runner(string host, int port, string token)
         {
-            var client = new TcpClient(host, port) { NoDelay = true };
-            var stream = new BufferedStream(client.GetStream());
+            _TcpClient = new TcpClient(host, port) { NoDelay = true };
+            var stream = new BufferedStream(_TcpClient.GetStream());
 
             _Reader = new BinaryReader(stream);
             _Writer = new BinaryWriter(stream);
@@ -56,7 +57,37 @@ namespace MLG360
             var host = args.Length < 1 ? "127.0.0.1" : args[0];
             var port = args.Length < 2 ? 31001 : int.Parse(args[1]);
             var token = args.Length < 3 ? "0000000000000000" : args[2];
-            new Runner(host, port, token).Run();
+            using (var runner = new Runner(host, port, token))
+            {
+                runner.Run();
+            }
         }
+
+        #region IDisposable Support
+
+        private bool _Disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_Disposed)
+            {
+                if (disposing)
+                {
+                    _Reader.Dispose();
+                    _Writer.Dispose();
+                    _TcpClient.Dispose();
+                }
+
+                _Disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            System.GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }
