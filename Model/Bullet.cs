@@ -1,6 +1,6 @@
 namespace MLG360.Model
 {
-    public struct Bullet
+    public class Bullet
     {
         public WeaponType WeaponType { get; set; }
         public int UnitId { get; set; }
@@ -9,15 +9,19 @@ namespace MLG360.Model
         public Vec2Double Velocity { get; set; }
         public int Damage { get; set; }
         public double Size { get; set; }
-        public ExplosionParameters? ExplosionParameters { get; set; }
+        public ExplosionParameters ExplosionParameters { get; set; }
 
-        public Bullet(WeaponType weaponType, int unitId, int playerId, Vec2Double position, Vec2Double velocity, int damage, double size, ExplosionParameters? explosionParameters)
+        private Bullet()
+        {
+        }
+
+        public Bullet(WeaponType weaponType, int unitId, int playerId, Vec2Double position, Vec2Double velocity, int damage, double size, ExplosionParameters explosionParameters)
         {
             WeaponType = weaponType;
             UnitId = unitId;
             PlayerId = playerId;
-            Position = position;
-            Velocity = velocity;
+            Position = position ?? throw new System.ArgumentNullException(nameof(position));
+            Velocity = velocity ?? throw new System.ArgumentNullException(nameof(velocity));
             Damage = damage;
             Size = size;
             ExplosionParameters = explosionParameters;
@@ -76,14 +80,14 @@ namespace MLG360.Model
             writer.Write(Damage);
             writer.Write(Size);
 
-            if (!ExplosionParameters.HasValue)
+            if (ExplosionParameters == null)
             {
                 writer.Write(false);
             }
             else
             {
                 writer.Write(true);
-                ExplosionParameters.Value.WriteTo(writer);
+                ExplosionParameters.WriteTo(writer);
             }
         }
     }

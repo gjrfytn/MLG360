@@ -1,11 +1,15 @@
 namespace MLG360.Model
 {
-    public struct JumpState
+    public class JumpState
     {
         public bool CanJump { get; set; }
         public double Speed { get; set; }
         public double MaxTime { get; set; }
         public bool CanCancel { get; set; }
+
+        private JumpState()
+        {
+        }
 
         public JumpState(bool canJump, double speed, double maxTime, bool canCancel)
         {

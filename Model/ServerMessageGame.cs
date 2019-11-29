@@ -1,10 +1,14 @@
 namespace MLG360.Model
 {
-    public struct ServerMessageGame
+    public class ServerMessageGame
     {
-        public PlayerView? PlayerView { get; set; }
+        public PlayerView PlayerView { get; set; }
 
-        public ServerMessageGame(PlayerView? playerView)
+        private ServerMessageGame()
+        {
+        }
+
+        public ServerMessageGame(PlayerView playerView)
         {
             PlayerView = playerView;
         }
@@ -32,14 +36,14 @@ namespace MLG360.Model
             if (writer == null)
                 throw new System.ArgumentNullException(nameof(writer));
 
-            if (!PlayerView.HasValue)
+            if (PlayerView == null)
             {
                 writer.Write(false);
             }
             else
             {
                 writer.Write(true);
-                PlayerView.Value.WriteTo(writer);
+                PlayerView.WriteTo(writer);
             }
         }
     }

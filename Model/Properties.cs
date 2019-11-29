@@ -1,6 +1,6 @@
 namespace MLG360.Model
 {
-    public struct Properties
+    public class Properties
     {
         public int MaxTickCount { get; set; }
         public int TeamSize { get; set; }
@@ -23,6 +23,10 @@ namespace MLG360.Model
         public double MineTriggerTime { get; set; }
         public double MineTriggerRadius { get; set; }
         public int KillScore { get; set; }
+
+        private Properties()
+        {
+        }
 
         public Properties(int maxTickCount, int teamSize, double ticksPerSecond, int updatesPerTick, Vec2Double lootBoxSize, Vec2Double unitSize, double unitMaxHorizontalSpeed, double unitFallSpeed, double unitJumpTime, double unitJumpSpeed, double jumpPadJumpTime, double jumpPadJumpSpeed, int unitMaxHealth, int healthPackHealth, System.Collections.Generic.IDictionary<WeaponType, WeaponParameters> weaponParameters, Vec2Double mineSize, ExplosionParameters mineExplosionParameters, double minePrepareTime, double mineTriggerTime, double mineTriggerRadius, int killScore)
         {

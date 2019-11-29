@@ -1,8 +1,12 @@
 namespace MLG360.Model
 {
-    public struct Level
+    public class Level
     {
         public Tile[][] Tiles { get; set; }
+
+        private Level()
+        {
+        }
 
         public Level(Tile[][] tiles)
         {

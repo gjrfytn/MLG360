@@ -11,27 +11,31 @@ namespace MLG360
 
         public UnitAction GetAction(Unit unit, Game game, Debug debug)
         {
+            if (unit is null)
+                throw new System.ArgumentNullException(nameof(unit));
+            if (game is null)
+                throw new System.ArgumentNullException(nameof(game));
             if (debug == null)
                 throw new System.ArgumentNullException(nameof(debug));
 
-            Unit? nearestEnemy = null;
+            Unit nearestEnemy = null;
             foreach (var other in game.Units)
             {
                 if (other.PlayerId != unit.PlayerId)
                 {
-                    if (!nearestEnemy.HasValue || DistanceSqr(unit.Position, other.Position) < DistanceSqr(unit.Position, nearestEnemy.Value.Position))
+                    if (nearestEnemy == null || DistanceSqr(unit.Position, other.Position) < DistanceSqr(unit.Position, nearestEnemy.Position))
                     {
                         nearestEnemy = other;
                     }
                 }
             }
 
-            LootBox? nearestWeapon = null;
+            LootBox nearestWeapon = null;
             foreach (var lootBox in game.LootBoxes)
             {
                 if (lootBox.Item is Model.Items.Weapon)
                 {
-                    if (!nearestWeapon.HasValue || DistanceSqr(unit.Position, lootBox.Position) < DistanceSqr(unit.Position, nearestWeapon.Value.Position))
+                    if (nearestWeapon == null || DistanceSqr(unit.Position, lootBox.Position) < DistanceSqr(unit.Position, nearestWeapon.Position))
                     {
                         nearestWeapon = lootBox;
                     }
@@ -39,20 +43,20 @@ namespace MLG360
             }
 
             var targetPos = unit.Position;
-            if (!unit.Weapon.HasValue && nearestWeapon.HasValue)
+            if (unit.Weapon == null && nearestWeapon != null)
             {
-                targetPos = nearestWeapon.Value.Position;
+                targetPos = nearestWeapon.Position;
             }
-            else if (nearestEnemy.HasValue)
+            else if (nearestEnemy != null)
             {
-                targetPos = nearestEnemy.Value.Position;
+                targetPos = nearestEnemy.Position;
             }
 
             debug.Draw(new Model.CustomData.Log("Target pos: " + targetPos));
             var aim = new Vec2Double(0, 0);
-            if (nearestEnemy.HasValue)
+            if (nearestEnemy != null)
             {
-                aim = new Vec2Double(nearestEnemy.Value.Position.X - unit.Position.X, nearestEnemy.Value.Position.Y - unit.Position.Y);
+                aim = new Vec2Double(nearestEnemy.Position.X - unit.Position.X, nearestEnemy.Position.Y - unit.Position.Y);
             }
 
             var jump = targetPos.Y > unit.Position.Y;
@@ -66,18 +70,7 @@ namespace MLG360
                 jump = true;
             }
 
-            var action = new UnitAction
-            {
-                Velocity = targetPos.X - unit.Position.X,
-                Jump = jump,
-                JumpDown = !jump,
-                Aim = aim,
-                Shoot = true,
-                SwapWeapon = false,
-                PlantMine = false
-            };
-
-            return action;
+            return new UnitAction(targetPos.X - unit.Position.X, jump, !jump, aim, true, false, false);
         }
     }
 }

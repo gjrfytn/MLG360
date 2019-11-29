@@ -1,6 +1,6 @@
 namespace MLG360.Model
 {
-    public struct Weapon
+    public class Weapon
     {
         public WeaponType Typ { get; set; }
         public WeaponParameters Parameters { get; set; }
@@ -10,6 +10,10 @@ namespace MLG360.Model
         public double? FireTimer { get; set; }
         public double? LastAngle { get; set; }
         public int? LastFireTick { get; set; }
+
+        private Weapon()
+        {
+        }
 
         public Weapon(WeaponType typ, WeaponParameters parameters, int magazine, bool wasShooting, double spread, double? fireTimer, double? lastAngle, int? lastFireTick)
         {

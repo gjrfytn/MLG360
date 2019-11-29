@@ -1,9 +1,13 @@
 namespace MLG360.Model
 {
-    public struct Vec2Float
+    public class Vec2Float
     {
         public float X { get; set; }
         public float Y { get; set; }
+
+        private Vec2Float()
+        {
+        }
 
         public Vec2Float(float x, float y)
         {

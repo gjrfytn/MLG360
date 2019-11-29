@@ -1,9 +1,13 @@
 namespace MLG360.Model
 {
-    public struct Player
+    public class Player
     {
         public int Id { get; set; }
         public int Score { get; set; }
+
+        private Player()
+        {
+        }
 
         public Player(int id, int score)
         {

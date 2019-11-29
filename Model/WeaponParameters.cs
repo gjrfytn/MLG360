@@ -1,6 +1,6 @@
 namespace MLG360.Model
 {
-    public struct WeaponParameters
+    public class WeaponParameters
     {
         public int MagazineSize { get; set; }
         public double FireRate { get; set; }
@@ -10,9 +10,13 @@ namespace MLG360.Model
         public double Recoil { get; set; }
         public double AimSpeed { get; set; }
         public BulletParameters Bullet { get; set; }
-        public ExplosionParameters? Explosion { get; set; }
+        public ExplosionParameters Explosion { get; set; }
 
-        public WeaponParameters(int magazineSize, double fireRate, double reloadTime, double minSpread, double maxSpread, double recoil, double aimSpeed, BulletParameters bullet, ExplosionParameters? explosion)
+        private WeaponParameters()
+        {
+        }
+
+        public WeaponParameters(int magazineSize, double fireRate, double reloadTime, double minSpread, double maxSpread, double recoil, double aimSpeed, BulletParameters bullet, ExplosionParameters explosion)
         {
             MagazineSize = magazineSize;
             FireRate = fireRate;
@@ -21,7 +25,7 @@ namespace MLG360.Model
             MaxSpread = maxSpread;
             Recoil = recoil;
             AimSpeed = aimSpeed;
-            Bullet = bullet;
+            Bullet = bullet ?? throw new System.ArgumentNullException(nameof(bullet));
             Explosion = explosion;
         }
 
@@ -66,14 +70,14 @@ namespace MLG360.Model
             writer.Write(AimSpeed);
             Bullet.WriteTo(writer);
 
-            if (!Explosion.HasValue)
+            if (Explosion == null)
             {
                 writer.Write(false);
             }
             else
             {
                 writer.Write(true);
-                Explosion.Value.WriteTo(writer);
+                Explosion.WriteTo(writer);
             }
         }
     }

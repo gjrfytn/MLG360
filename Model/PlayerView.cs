@@ -1,9 +1,13 @@
 namespace MLG360.Model
 {
-    public struct PlayerView
+    public class PlayerView
     {
         public int MyId { get; set; }
         public Game Game { get; set; }
+
+        private PlayerView()
+        {
+        }
 
         public PlayerView(int myId, Game game)
         {

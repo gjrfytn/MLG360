@@ -1,9 +1,13 @@
 namespace MLG360.Model
 {
-    public struct Vec2Double
+    public class Vec2Double
     {
         public double X { get; set; }
         public double Y { get; set; }
+
+        private Vec2Double()
+        {
+        }
 
         public Vec2Double(double x, double y)
         {

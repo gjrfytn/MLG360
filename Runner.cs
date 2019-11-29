@@ -32,12 +32,12 @@ namespace MLG360
             while (true)
             {
                 var message = Model.ServerMessageGame.ReadFrom(_Reader);
-                if (!message.PlayerView.HasValue)
+                if (message.PlayerView == null)
                 {
                     break;
                 }
 
-                var playerView = message.PlayerView.Value;
+                var playerView = message.PlayerView;
                 var actions = new Dictionary<int, Model.UnitAction>();
                 foreach (var unit in playerView.Game.Units)
                 {

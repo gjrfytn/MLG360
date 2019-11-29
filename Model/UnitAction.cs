@@ -1,6 +1,6 @@
 namespace MLG360.Model
 {
-    public struct UnitAction
+    public class UnitAction
     {
         public double Velocity { get; set; }
         public bool Jump { get; set; }
@@ -9,6 +9,10 @@ namespace MLG360.Model
         public bool Shoot { get; set; }
         public bool SwapWeapon { get; set; }
         public bool PlantMine { get; set; }
+
+        private UnitAction()
+        {
+        }
 
         public UnitAction(double velocity, bool jump, bool jumpDown, Vec2Double aim, bool shoot, bool swapWeapon, bool plantMine)
         {

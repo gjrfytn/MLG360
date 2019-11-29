@@ -1,6 +1,6 @@
 namespace MLG360.Model
 {
-    public struct Mine
+    public class Mine
     {
         public int PlayerId { get; set; }
         public Vec2Double Position { get; set; }
@@ -9,6 +9,10 @@ namespace MLG360.Model
         public double? Timer { get; set; }
         public double TriggerRadius { get; set; }
         public ExplosionParameters ExplosionParameters { get; set; }
+
+        private Mine()
+        {
+        }
 
         public Mine(int playerId, Vec2Double position, Vec2Double size, MineState state, double? timer, double triggerRadius, ExplosionParameters explosionParameters)
         {

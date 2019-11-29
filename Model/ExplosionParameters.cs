@@ -1,9 +1,13 @@
 namespace MLG360.Model
 {
-    public struct ExplosionParameters
+    public class ExplosionParameters
     {
         public double Radius { get; set; }
         public int Damage { get; set; }
+
+        private ExplosionParameters()
+        {
+        }
 
         public ExplosionParameters(double radius, int damage)
         {

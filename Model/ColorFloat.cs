@@ -1,11 +1,15 @@
 namespace MLG360.Model
 {
-    public struct ColorFloat
+    public class ColorFloat
     {
         public float R { get; set; }
         public float G { get; set; }
         public float B { get; set; }
         public float A { get; set; }
+
+        private ColorFloat()
+        {
+        }
 
         public ColorFloat(float r, float g, float b, float a)
         {

@@ -1,9 +1,13 @@
 namespace MLG360.Model
 {
-    public struct ColoredVertex
+    public class ColoredVertex
     {
         public Vec2Float Position { get; set; }
         public ColorFloat Color { get; set; }
+
+        private ColoredVertex()
+        {
+        }
 
         public ColoredVertex(Vec2Float position, ColorFloat color)
         {

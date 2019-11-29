@@ -1,10 +1,14 @@
 namespace MLG360.Model
 {
-    public struct LootBox
+    public class LootBox
     {
         public Vec2Double Position { get; set; }
         public Vec2Double Size { get; set; }
         public Items.Item Item { get; set; }
+
+        private LootBox()
+        {
+        }
 
         public LootBox(Vec2Double position, Vec2Double size, Items.Item item)
         {

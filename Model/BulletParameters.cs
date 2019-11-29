@@ -1,10 +1,14 @@
 namespace MLG360.Model
 {
-    public struct BulletParameters
+    public class BulletParameters
     {
         public double Speed { get; set; }
         public double Size { get; set; }
         public int Damage { get; set; }
+
+        private BulletParameters()
+        {
+        }
 
         public BulletParameters(double speed, double size, int damage)
         {

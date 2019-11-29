@@ -1,6 +1,6 @@
 namespace MLG360.Model
 {
-    public struct Game
+    public class Game
     {
         public int CurrentTick { get; set; }
         public Properties Properties { get; set; }
@@ -10,6 +10,10 @@ namespace MLG360.Model
         public Bullet[] Bullets { get; set; }
         public Mine[] Mines { get; set; }
         public LootBox[] LootBoxes { get; set; }
+
+        private Game()
+        {
+        }
 
         public Game(int currentTick, Properties properties, Level level, Player[] players, Unit[] units, Bullet[] bullets, Mine[] mines, LootBox[] lootBoxes)
         {

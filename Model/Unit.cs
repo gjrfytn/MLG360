@@ -1,6 +1,6 @@
 namespace MLG360.Model
 {
-    public struct Unit
+    public class Unit
     {
         public int PlayerId { get; set; }
         public int Id { get; set; }
@@ -13,16 +13,20 @@ namespace MLG360.Model
         public bool OnGround { get; set; }
         public bool OnLadder { get; set; }
         public int Mines { get; set; }
-        public Weapon? Weapon { get; set; }
+        public Weapon Weapon { get; set; }
 
-        public Unit(int playerId, int id, int health, Vec2Double position, Vec2Double size, JumpState jumpState, bool walkedRight, bool stand, bool onGround, bool onLadder, int mines, Weapon? weapon)
+        private Unit()
+        {
+        }
+
+        public Unit(int playerId, int id, int health, Vec2Double position, Vec2Double size, JumpState jumpState, bool walkedRight, bool stand, bool onGround, bool onLadder, int mines, Weapon weapon)
         {
             PlayerId = playerId;
             Id = id;
             Health = health;
-            Position = position;
-            Size = size;
-            JumpState = jumpState;
+            Position = position ?? throw new System.ArgumentNullException(nameof(position));
+            Size = size ?? throw new System.ArgumentNullException(nameof(size));
+            JumpState = jumpState ?? throw new System.ArgumentNullException(nameof(jumpState));
             WalkedRight = walkedRight;
             Stand = stand;
             OnGround = onGround;
@@ -78,14 +82,14 @@ namespace MLG360.Model
             writer.Write(OnLadder);
             writer.Write(Mines);
 
-            if (!Weapon.HasValue)
+            if (Weapon == null)
             {
                 writer.Write(false);
             }
             else
             {
                 writer.Write(true);
-                Weapon.Value.WriteTo(writer);
+                Weapon.WriteTo(writer);
             }
         }
     }
