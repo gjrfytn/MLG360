@@ -6,8 +6,6 @@
 
         public string Text { get; set; }
 
-        public Log() { }
-
         public Log(string text)
         {
             Text = text;
@@ -18,8 +16,7 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Log();
-            result.Text = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(reader.ReadInt32()));
+            var result = new Log(System.Text.Encoding.UTF8.GetString(reader.ReadBytes(reader.ReadInt32())));
 
             return result;
         }

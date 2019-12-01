@@ -6,8 +6,6 @@
 
         public int Health { get; set; }
 
-        public HealthPack() { }
-
         public HealthPack(int health)
         {
             Health = health;
@@ -18,8 +16,7 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new HealthPack();
-            result.Health = reader.ReadInt32();
+            var result = new HealthPack(reader.ReadInt32());
 
             return result;
         }

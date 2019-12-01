@@ -9,8 +9,6 @@
         public float Size { get; set; }
         public ColorFloat Color { get; set; }
 
-        public PlacedText() { }
-
         public PlacedText(string text, Vec2Float pos, TextAlignment alignment, float size, ColorFloat color)
         {
             Text = text;
@@ -25,26 +23,28 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new PlacedText();
-            result.Text = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(reader.ReadInt32()));
-            result.Pos = Vec2Float.ReadFrom(reader);
+            var text = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(reader.ReadInt32()));
+            var pos = Vec2Float.ReadFrom(reader);
+            TextAlignment alignment;
             switch (reader.ReadInt32())
             {
                 case 0:
-                    result.Alignment = TextAlignment.Left;
+                    alignment = TextAlignment.Left;
                     break;
                 case 1:
-                    result.Alignment = TextAlignment.Center;
+                    alignment = TextAlignment.Center;
                     break;
                 case 2:
-                    result.Alignment = TextAlignment.Right;
+                    alignment = TextAlignment.Right;
                     break;
                 default:
                     throw new System.Exception("Unexpected discriminant value");
             }
 
-            result.Size = reader.ReadSingle();
-            result.Color = ColorFloat.ReadFrom(reader);
+            var size = reader.ReadSingle();
+            var color = ColorFloat.ReadFrom(reader);
+
+            var result = new PlacedText(text, pos, alignment, size, color);
 
             return result;
         }

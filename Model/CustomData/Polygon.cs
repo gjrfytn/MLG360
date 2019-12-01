@@ -6,8 +6,6 @@
 
         public ColoredVertex[] Vertices { get; set; }
 
-        public Polygon() { }
-
         public Polygon(ColoredVertex[] vertices)
         {
             Vertices = vertices;
@@ -18,12 +16,13 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Polygon();
-            result.Vertices = new ColoredVertex[reader.ReadInt32()];
-            for (var i = 0; i < result.Vertices.Length; i++)
+            var vertices = new ColoredVertex[reader.ReadInt32()];
+            for (var i = 0; i < vertices.Length; i++)
             {
-                result.Vertices[i] = ColoredVertex.ReadFrom(reader);
+                vertices[i] = ColoredVertex.ReadFrom(reader);
             }
+
+            var result = new Polygon(vertices);
 
             return result;
         }

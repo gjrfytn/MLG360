@@ -9,8 +9,6 @@
         public float Width { get; set; }
         public ColorFloat Color { get; set; }
 
-        public Line() { }
-
         public Line(Vec2Float p1, Vec2Float p2, float width, ColorFloat color)
         {
             P1 = p1;
@@ -24,11 +22,7 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Line();
-            result.P1 = Vec2Float.ReadFrom(reader);
-            result.P2 = Vec2Float.ReadFrom(reader);
-            result.Width = reader.ReadSingle();
-            result.Color = ColorFloat.ReadFrom(reader);
+            var result = new Line(Vec2Float.ReadFrom(reader), Vec2Float.ReadFrom(reader), reader.ReadSingle(), ColorFloat.ReadFrom(reader));
 
             return result;
         }

@@ -8,8 +8,6 @@
         public Vec2Float Size { get; set; }
         public ColorFloat Color { get; set; }
 
-        public Rect() { }
-
         public Rect(Vec2Float pos, Vec2Float size, ColorFloat color)
         {
             Pos = pos;
@@ -19,10 +17,7 @@
 
         public static new Rect ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new Rect();
-            result.Pos = Vec2Float.ReadFrom(reader);
-            result.Size = Vec2Float.ReadFrom(reader);
-            result.Color = ColorFloat.ReadFrom(reader);
+            var result = new Rect(Vec2Float.ReadFrom(reader), Vec2Float.ReadFrom(reader), ColorFloat.ReadFrom(reader));
 
             return result;
         }

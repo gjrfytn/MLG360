@@ -6,8 +6,6 @@
 
         public CustomData.CustomData Data { get; set; }
 
-        public CustomDataMessage() { }
-
         public CustomDataMessage(CustomData.CustomData data)
         {
             Data = data;
@@ -15,8 +13,7 @@
 
         public static new CustomDataMessage ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new CustomDataMessage();
-            result.Data = CustomData.CustomData.ReadFrom(reader);
+            var result = new CustomDataMessage(CustomData.CustomData.ReadFrom(reader));
 
             return result;
         }
