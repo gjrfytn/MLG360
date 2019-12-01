@@ -5,10 +5,6 @@ namespace MLG360.Model
         public double X { get; set; }
         public double Y { get; set; }
 
-        private Vec2Double()
-        {
-        }
-
         public Vec2Double(double x, double y)
         {
             X = x;
@@ -20,9 +16,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Vec2Double();
-            result.X = reader.ReadDouble();
-            result.Y = reader.ReadDouble();
+            var result = new Vec2Double(reader.ReadDouble(), reader.ReadDouble());
 
             return result;
         }

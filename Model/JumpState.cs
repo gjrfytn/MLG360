@@ -7,10 +7,6 @@ namespace MLG360.Model
         public double MaxTime { get; set; }
         public bool CanCancel { get; set; }
 
-        private JumpState()
-        {
-        }
-
         public JumpState(bool canJump, double speed, double maxTime, bool canCancel)
         {
             CanJump = canJump;
@@ -24,11 +20,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new JumpState();
-            result.CanJump = reader.ReadBoolean();
-            result.Speed = reader.ReadDouble();
-            result.MaxTime = reader.ReadDouble();
-            result.CanCancel = reader.ReadBoolean();
+            var result = new JumpState(reader.ReadBoolean(), reader.ReadDouble(), reader.ReadDouble(), reader.ReadBoolean());
 
             return result;
         }

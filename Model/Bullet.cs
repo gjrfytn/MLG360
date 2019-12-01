@@ -11,10 +11,6 @@ namespace MLG360.Model
         public double Size { get; set; }
         public ExplosionParameters ExplosionParameters { get; set; }
 
-        private Bullet()
-        {
-        }
-
         public Bullet(WeaponType weaponType, int unitId, int playerId, Vec2Double position, Vec2Double velocity, int damage, double size, ExplosionParameters explosionParameters)
         {
             WeaponType = weaponType;
@@ -32,37 +28,40 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Bullet();
+            WeaponType weaponType;
             switch (reader.ReadInt32())
             {
                 case 0:
-                    result.WeaponType = WeaponType.Pistol;
+                    weaponType = WeaponType.Pistol;
                     break;
                 case 1:
-                    result.WeaponType = WeaponType.AssaultRifle;
+                    weaponType = WeaponType.AssaultRifle;
                     break;
                 case 2:
-                    result.WeaponType = WeaponType.RocketLauncher;
+                    weaponType = WeaponType.RocketLauncher;
                     break;
                 default:
                     throw new System.Exception("Unexpected discriminant value");
             }
 
-            result.UnitId = reader.ReadInt32();
-            result.PlayerId = reader.ReadInt32();
-            result.Position = Vec2Double.ReadFrom(reader);
-            result.Velocity = Vec2Double.ReadFrom(reader);
-            result.Damage = reader.ReadInt32();
-            result.Size = reader.ReadDouble();
+            var unitId = reader.ReadInt32();
+            var playerId = reader.ReadInt32();
+            var position = Vec2Double.ReadFrom(reader);
+            var velocity = Vec2Double.ReadFrom(reader);
+            var damage = reader.ReadInt32();
+            var size = reader.ReadDouble();
 
+            ExplosionParameters explosionParameters;
             if (reader.ReadBoolean())
             {
-                result.ExplosionParameters = Model.ExplosionParameters.ReadFrom(reader);
+                explosionParameters = ExplosionParameters.ReadFrom(reader);
             }
             else
             {
-                result.ExplosionParameters = null;
+                explosionParameters = null;
             }
+
+            var result = new Bullet(weaponType, unitId, playerId, position, velocity, damage, size, explosionParameters);
 
             return result;
         }

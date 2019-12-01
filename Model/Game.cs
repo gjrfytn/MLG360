@@ -11,10 +11,6 @@ namespace MLG360.Model
         public Mine[] Mines { get; set; }
         public LootBox[] LootBoxes { get; set; }
 
-        private Game()
-        {
-        }
-
         public Game(int currentTick, Properties properties, Level level, Player[] players, Unit[] units, Bullet[] bullets, Mine[] mines, LootBox[] lootBoxes)
         {
             CurrentTick = currentTick;
@@ -32,40 +28,41 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Game();
-            result.CurrentTick = reader.ReadInt32();
-            result.Properties = Properties.ReadFrom(reader);
-            result.Level = Level.ReadFrom(reader);
-            result.Players = new Player[reader.ReadInt32()];
+            var currentTick = reader.ReadInt32();
+            var properties = Properties.ReadFrom(reader);
+            var level = Level.ReadFrom(reader);
+            var players = new Player[reader.ReadInt32()];
 
-            for (var i = 0; i < result.Players.Length; i++)
+            for (var i = 0; i < players.Length; i++)
             {
-                result.Players[i] = Player.ReadFrom(reader);
+                players[i] = Player.ReadFrom(reader);
             }
 
-            result.Units = new Unit[reader.ReadInt32()];
-            for (var i = 0; i < result.Units.Length; i++)
+            var units = new Unit[reader.ReadInt32()];
+            for (var i = 0; i < units.Length; i++)
             {
-                result.Units[i] = Unit.ReadFrom(reader);
+                units[i] = Unit.ReadFrom(reader);
             }
 
-            result.Bullets = new Bullet[reader.ReadInt32()];
-            for (var i = 0; i < result.Bullets.Length; i++)
+            var bullets = new Bullet[reader.ReadInt32()];
+            for (var i = 0; i < bullets.Length; i++)
             {
-                result.Bullets[i] = Bullet.ReadFrom(reader);
+                bullets[i] = Bullet.ReadFrom(reader);
             }
 
-            result.Mines = new Mine[reader.ReadInt32()];
-            for (var i = 0; i < result.Mines.Length; i++)
+            var mines = new Mine[reader.ReadInt32()];
+            for (var i = 0; i < mines.Length; i++)
             {
-                result.Mines[i] = Mine.ReadFrom(reader);
+                mines[i] = Mine.ReadFrom(reader);
             }
 
-            result.LootBoxes = new LootBox[reader.ReadInt32()];
-            for (var i = 0; i < result.LootBoxes.Length; i++)
+            var lootBoxes = new LootBox[reader.ReadInt32()];
+            for (var i = 0; i < lootBoxes.Length; i++)
             {
-                result.LootBoxes[i] = LootBox.ReadFrom(reader);
+                lootBoxes[i] = LootBox.ReadFrom(reader);
             }
+
+            var result = new Game(currentTick, properties, level, players, units, bullets, mines, lootBoxes);
 
             return result;
         }

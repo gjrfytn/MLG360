@@ -5,10 +5,6 @@ namespace MLG360.Model
         public double Radius { get; set; }
         public int Damage { get; set; }
 
-        private ExplosionParameters()
-        {
-        }
-
         public ExplosionParameters(double radius, int damage)
         {
             Radius = radius;
@@ -20,9 +16,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new ExplosionParameters();
-            result.Radius = reader.ReadDouble();
-            result.Damage = reader.ReadInt32();
+            var result = new ExplosionParameters(reader.ReadDouble(), reader.ReadInt32());
 
             return result;
         }

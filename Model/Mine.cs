@@ -10,10 +10,6 @@ namespace MLG360.Model
         public double TriggerRadius { get; set; }
         public ExplosionParameters ExplosionParameters { get; set; }
 
-        private Mine()
-        {
-        }
-
         public Mine(int playerId, Vec2Double position, Vec2Double size, MineState state, double? timer, double triggerRadius, ExplosionParameters explosionParameters)
         {
             PlayerId = playerId;
@@ -30,40 +26,43 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Mine();
-            result.PlayerId = reader.ReadInt32();
-            result.Position = Vec2Double.ReadFrom(reader);
-            result.Size = Vec2Double.ReadFrom(reader);
+            var playerId = reader.ReadInt32();
+            var position = Vec2Double.ReadFrom(reader);
+            var size = Vec2Double.ReadFrom(reader);
 
+            MineState state;
             switch (reader.ReadInt32())
             {
                 case 0:
-                    result.State = MineState.Preparing;
+                    state = MineState.Preparing;
                     break;
                 case 1:
-                    result.State = MineState.Idle;
+                    state = MineState.Idle;
                     break;
                 case 2:
-                    result.State = MineState.Triggered;
+                    state = MineState.Triggered;
                     break;
                 case 3:
-                    result.State = MineState.Exploded;
+                    state = MineState.Exploded;
                     break;
                 default:
                     throw new System.Exception("Unexpected discriminant value");
             }
 
+            double? timer;
             if (reader.ReadBoolean())
             {
-                result.Timer = reader.ReadDouble();
+                timer = reader.ReadDouble();
             }
             else
             {
-                result.Timer = null;
+                timer = null;
             }
 
-            result.TriggerRadius = reader.ReadDouble();
-            result.ExplosionParameters = ExplosionParameters.ReadFrom(reader);
+            var triggerRadius = reader.ReadDouble();
+            var explosionParameters = ExplosionParameters.ReadFrom(reader);
+
+            var result = new Mine(playerId, position, size, state, timer, triggerRadius, explosionParameters);
 
             return result;
         }

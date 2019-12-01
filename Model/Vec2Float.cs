@@ -5,10 +5,6 @@ namespace MLG360.Model
         public float X { get; set; }
         public float Y { get; set; }
 
-        private Vec2Float()
-        {
-        }
-
         public Vec2Float(float x, float y)
         {
             X = x;
@@ -20,9 +16,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Vec2Float();
-            result.X = reader.ReadSingle();
-            result.Y = reader.ReadSingle();
+            var result = new Vec2Float(reader.ReadSingle(), reader.ReadSingle());
 
             return result;
         }

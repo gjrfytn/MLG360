@@ -6,10 +6,6 @@ namespace MLG360.Model
         public Vec2Double Size { get; set; }
         public Items.Item Item { get; set; }
 
-        private LootBox()
-        {
-        }
-
         public LootBox(Vec2Double position, Vec2Double size, Items.Item item)
         {
             Position = position;
@@ -19,10 +15,7 @@ namespace MLG360.Model
 
         public static LootBox ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new LootBox();
-            result.Position = Vec2Double.ReadFrom(reader);
-            result.Size = Vec2Double.ReadFrom(reader);
-            result.Item = Items.Item.ReadFrom(reader);
+            var result = new LootBox(Vec2Double.ReadFrom(reader), Vec2Double.ReadFrom(reader), Items.Item.ReadFrom(reader));
 
             return result;
         }

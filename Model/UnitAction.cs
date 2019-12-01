@@ -10,10 +10,6 @@ namespace MLG360.Model
         public bool SwapWeapon { get; set; }
         public bool PlantMine { get; set; }
 
-        private UnitAction()
-        {
-        }
-
         public UnitAction(double velocity, bool jump, bool jumpDown, Vec2Double aim, bool shoot, bool swapWeapon, bool plantMine)
         {
             Velocity = velocity;
@@ -30,14 +26,14 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new UnitAction();
-            result.Velocity = reader.ReadDouble();
-            result.Jump = reader.ReadBoolean();
-            result.JumpDown = reader.ReadBoolean();
-            result.Aim = Vec2Double.ReadFrom(reader);
-            result.Shoot = reader.ReadBoolean();
-            result.SwapWeapon = reader.ReadBoolean();
-            result.PlantMine = reader.ReadBoolean();
+            var result = new UnitAction(
+                reader.ReadDouble(),
+                reader.ReadBoolean(),
+                reader.ReadBoolean(),
+                Vec2Double.ReadFrom(reader),
+                reader.ReadBoolean(),
+                reader.ReadBoolean(),
+                reader.ReadBoolean());
 
             return result;
         }

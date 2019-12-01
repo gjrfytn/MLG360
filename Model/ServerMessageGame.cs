@@ -4,10 +4,6 @@ namespace MLG360.Model
     {
         public PlayerView PlayerView { get; set; }
 
-        private ServerMessageGame()
-        {
-        }
-
         public ServerMessageGame(PlayerView playerView)
         {
             PlayerView = playerView;
@@ -18,15 +14,17 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new ServerMessageGame();
+            PlayerView playerView;
             if (reader.ReadBoolean())
             {
-                result.PlayerView = Model.PlayerView.ReadFrom(reader);
+                playerView = PlayerView.ReadFrom(reader);
             }
             else
             {
-                result.PlayerView = null;
+                playerView = null;
             }
+
+            var result = new ServerMessageGame(playerView);
 
             return result;
         }

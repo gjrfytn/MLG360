@@ -4,10 +4,6 @@ namespace MLG360.Model
     {
         public Tile[][] Tiles { get; set; }
 
-        private Level()
-        {
-        }
-
         public Level(Tile[][] tiles)
         {
             Tiles = tiles;
@@ -18,35 +14,36 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Level();
-            result.Tiles = new Tile[reader.ReadInt32()][];
-            for (var i = 0; i < result.Tiles.Length; i++)
+            var tiles = new Tile[reader.ReadInt32()][];
+            for (var i = 0; i < tiles.Length; i++)
             {
-                result.Tiles[i] = new Tile[reader.ReadInt32()];
-                for (var j = 0; j < result.Tiles[i].Length; j++)
+                tiles[i] = new Tile[reader.ReadInt32()];
+                for (var j = 0; j < tiles[i].Length; j++)
                 {
                     switch (reader.ReadInt32())
                     {
                         case 0:
-                            result.Tiles[i][j] = Tile.Empty;
+                            tiles[i][j] = Tile.Empty;
                             break;
                         case 1:
-                            result.Tiles[i][j] = Tile.Wall;
+                            tiles[i][j] = Tile.Wall;
                             break;
                         case 2:
-                            result.Tiles[i][j] = Tile.Platform;
+                            tiles[i][j] = Tile.Platform;
                             break;
                         case 3:
-                            result.Tiles[i][j] = Tile.Ladder;
+                            tiles[i][j] = Tile.Ladder;
                             break;
                         case 4:
-                            result.Tiles[i][j] = Tile.JumpPad;
+                            tiles[i][j] = Tile.JumpPad;
                             break;
                         default:
                             throw new System.Exception("Unexpected discriminant value");
                     }
                 }
             }
+
+            var result = new Level(tiles);
 
             return result;
         }

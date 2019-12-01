@@ -12,10 +12,6 @@ namespace MLG360.Model
         public BulletParameters Bullet { get; set; }
         public ExplosionParameters Explosion { get; set; }
 
-        private WeaponParameters()
-        {
-        }
-
         public WeaponParameters(int magazineSize, double fireRate, double reloadTime, double minSpread, double maxSpread, double recoil, double aimSpeed, BulletParameters bullet, ExplosionParameters explosion)
         {
             MagazineSize = magazineSize;
@@ -34,24 +30,26 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new WeaponParameters();
-            result.MagazineSize = reader.ReadInt32();
-            result.FireRate = reader.ReadDouble();
-            result.ReloadTime = reader.ReadDouble();
-            result.MinSpread = reader.ReadDouble();
-            result.MaxSpread = reader.ReadDouble();
-            result.Recoil = reader.ReadDouble();
-            result.AimSpeed = reader.ReadDouble();
-            result.Bullet = BulletParameters.ReadFrom(reader);
+            var magazineSize = reader.ReadInt32();
+            var fireRate = reader.ReadDouble();
+            var reloadTime = reader.ReadDouble();
+            var minSpread = reader.ReadDouble();
+            var maxSpread = reader.ReadDouble();
+            var recoil = reader.ReadDouble();
+            var aimSpeed = reader.ReadDouble();
+            var bullet = BulletParameters.ReadFrom(reader);
 
+            ExplosionParameters explosionParameters;
             if (reader.ReadBoolean())
             {
-                result.Explosion = ExplosionParameters.ReadFrom(reader);
+                explosionParameters = ExplosionParameters.ReadFrom(reader);
             }
             else
             {
-                result.Explosion = null;
+                explosionParameters = null;
             }
+
+            var result = new WeaponParameters(magazineSize, fireRate, reloadTime, minSpread, maxSpread, recoil, aimSpeed, bullet, explosionParameters);
 
             return result;
         }

@@ -6,10 +6,6 @@ namespace MLG360.Model
         public double Size { get; set; }
         public int Damage { get; set; }
 
-        private BulletParameters()
-        {
-        }
-
         public BulletParameters(double speed, double size, int damage)
         {
             Speed = speed;
@@ -22,10 +18,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new BulletParameters();
-            result.Speed = reader.ReadDouble();
-            result.Size = reader.ReadDouble();
-            result.Damage = reader.ReadInt32();
+            var result = new BulletParameters(reader.ReadDouble(), reader.ReadDouble(), reader.ReadInt32());
 
             return result;
         }

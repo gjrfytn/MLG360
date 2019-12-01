@@ -5,10 +5,6 @@ namespace MLG360.Model
         public int Id { get; set; }
         public int Score { get; set; }
 
-        private Player()
-        {
-        }
-
         public Player(int id, int score)
         {
             Id = id;
@@ -20,9 +16,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Player();
-            result.Id = reader.ReadInt32();
-            result.Score = reader.ReadInt32();
+            var result = new Player(reader.ReadInt32(), reader.ReadInt32());
 
             return result;
         }

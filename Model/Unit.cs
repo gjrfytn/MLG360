@@ -15,10 +15,6 @@ namespace MLG360.Model
         public int Mines { get; set; }
         public Weapon Weapon { get; set; }
 
-        private Unit()
-        {
-        }
-
         public Unit(int playerId, int id, int health, Vec2Double position, Vec2Double size, JumpState jumpState, bool walkedRight, bool stand, bool onGround, bool onLadder, int mines, Weapon weapon)
         {
             PlayerId = playerId;
@@ -40,27 +36,29 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Unit();
-            result.PlayerId = reader.ReadInt32();
-            result.Id = reader.ReadInt32();
-            result.Health = reader.ReadInt32();
-            result.Position = Vec2Double.ReadFrom(reader);
-            result.Size = Vec2Double.ReadFrom(reader);
-            result.JumpState = JumpState.ReadFrom(reader);
-            result.WalkedRight = reader.ReadBoolean();
-            result.Stand = reader.ReadBoolean();
-            result.OnGround = reader.ReadBoolean();
-            result.OnLadder = reader.ReadBoolean();
-            result.Mines = reader.ReadInt32();
+            var playerId = reader.ReadInt32();
+            var id = reader.ReadInt32();
+            var health = reader.ReadInt32();
+            var position = Vec2Double.ReadFrom(reader);
+            var size = Vec2Double.ReadFrom(reader);
+            var jumpState = JumpState.ReadFrom(reader);
+            var walkedRight = reader.ReadBoolean();
+            var stand = reader.ReadBoolean();
+            var onGround = reader.ReadBoolean();
+            var onLadder = reader.ReadBoolean();
+            var mines = reader.ReadInt32();
 
+            Weapon weapon;
             if (reader.ReadBoolean())
             {
-                result.Weapon = Model.Weapon.ReadFrom(reader);
+                weapon = Weapon.ReadFrom(reader);
             }
             else
             {
-                result.Weapon = null;
+                weapon = null;
             }
+
+            var result = new Unit(playerId, id, health, position, size, jumpState, walkedRight, stand, onGround, onLadder, mines, weapon);
 
             return result;
         }

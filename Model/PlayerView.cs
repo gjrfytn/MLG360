@@ -5,10 +5,6 @@ namespace MLG360.Model
         public int MyId { get; set; }
         public Game Game { get; set; }
 
-        private PlayerView()
-        {
-        }
-
         public PlayerView(int myId, Game game)
         {
             MyId = myId;
@@ -20,9 +16,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new PlayerView();
-            result.MyId = reader.ReadInt32();
-            result.Game = Game.ReadFrom(reader);
+            var result = new PlayerView(reader.ReadInt32(), Game.ReadFrom(reader));
 
             return result;
         }

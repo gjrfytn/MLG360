@@ -5,10 +5,6 @@ namespace MLG360.Model
         public Vec2Float Position { get; set; }
         public ColorFloat Color { get; set; }
 
-        private ColoredVertex()
-        {
-        }
-
         public ColoredVertex(Vec2Float position, ColorFloat color)
         {
             Position = position;
@@ -17,9 +13,7 @@ namespace MLG360.Model
 
         public static ColoredVertex ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new ColoredVertex();
-            result.Position = Vec2Float.ReadFrom(reader);
-            result.Color = ColorFloat.ReadFrom(reader);
+            var result = new ColoredVertex(Vec2Float.ReadFrom(reader), ColorFloat.ReadFrom(reader));
 
             return result;
         }

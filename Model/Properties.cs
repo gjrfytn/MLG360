@@ -24,10 +24,6 @@ namespace MLG360.Model
         public double MineTriggerRadius { get; set; }
         public int KillScore { get; set; }
 
-        private Properties()
-        {
-        }
-
         public Properties(int maxTickCount, int teamSize, double ticksPerSecond, int updatesPerTick, Vec2Double lootBoxSize, Vec2Double unitSize, double unitMaxHorizontalSpeed, double unitFallSpeed, double unitJumpTime, double unitJumpSpeed, double jumpPadJumpTime, double jumpPadJumpSpeed, int unitMaxHealth, int healthPackHealth, System.Collections.Generic.IDictionary<WeaponType, WeaponParameters> weaponParameters, Vec2Double mineSize, ExplosionParameters mineExplosionParameters, double minePrepareTime, double mineTriggerTime, double mineTriggerRadius, int killScore)
         {
             MaxTickCount = maxTickCount;
@@ -58,23 +54,22 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Properties();
-            result.MaxTickCount = reader.ReadInt32();
-            result.TeamSize = reader.ReadInt32();
-            result.TicksPerSecond = reader.ReadDouble();
-            result.UpdatesPerTick = reader.ReadInt32();
-            result.LootBoxSize = Vec2Double.ReadFrom(reader);
-            result.UnitSize = Vec2Double.ReadFrom(reader);
-            result.UnitMaxHorizontalSpeed = reader.ReadDouble();
-            result.UnitFallSpeed = reader.ReadDouble();
-            result.UnitJumpTime = reader.ReadDouble();
-            result.UnitJumpSpeed = reader.ReadDouble();
-            result.JumpPadJumpTime = reader.ReadDouble();
-            result.JumpPadJumpSpeed = reader.ReadDouble();
-            result.UnitMaxHealth = reader.ReadInt32();
-            result.HealthPackHealth = reader.ReadInt32();
+            var maxTickCount = reader.ReadInt32();
+            var teamSize = reader.ReadInt32();
+            var ticksPerSecond = reader.ReadDouble();
+            var updatesPerTick = reader.ReadInt32();
+            var lootBoxSize = Vec2Double.ReadFrom(reader);
+            var unitSize = Vec2Double.ReadFrom(reader);
+            var unitMaxHorizontalSpeed = reader.ReadDouble();
+            var unitFallSpeed = reader.ReadDouble();
+            var unitJumpTime = reader.ReadDouble();
+            var unitJumpSpeed = reader.ReadDouble();
+            var jumpPadJumpTime = reader.ReadDouble();
+            var jumpPadJumpSpeed = reader.ReadDouble();
+            var unitMaxHealth = reader.ReadInt32();
+            var healthPackHealth = reader.ReadInt32();
             var weaponParametersSize = reader.ReadInt32();
-            result.WeaponParameters = new System.Collections.Generic.Dictionary<WeaponType, WeaponParameters>(weaponParametersSize);
+            var weaponParameters = new System.Collections.Generic.Dictionary<WeaponType, WeaponParameters>(weaponParametersSize);
 
             for (var i = 0; i < weaponParametersSize; i++)
             {
@@ -96,15 +91,38 @@ namespace MLG360.Model
 
                 WeaponParameters weaponParametersValue;
                 weaponParametersValue = Model.WeaponParameters.ReadFrom(reader);
-                result.WeaponParameters.Add(weaponParametersKey, weaponParametersValue);
+                weaponParameters.Add(weaponParametersKey, weaponParametersValue);
             }
 
-            result.MineSize = Vec2Double.ReadFrom(reader);
-            result.MineExplosionParameters = ExplosionParameters.ReadFrom(reader);
-            result.MinePrepareTime = reader.ReadDouble();
-            result.MineTriggerTime = reader.ReadDouble();
-            result.MineTriggerRadius = reader.ReadDouble();
-            result.KillScore = reader.ReadInt32();
+            var mineSize = Vec2Double.ReadFrom(reader);
+            var mineExplosionParameters = ExplosionParameters.ReadFrom(reader);
+            var minePrepareTime = reader.ReadDouble();
+            var mineTriggerTime = reader.ReadDouble();
+            var mineTriggerRadius = reader.ReadDouble();
+            var killScore = reader.ReadInt32();
+
+            var result = new Properties(
+                maxTickCount,
+                teamSize,
+                ticksPerSecond,
+                updatesPerTick,
+                lootBoxSize,
+                unitSize,
+                unitMaxHorizontalSpeed,
+                unitFallSpeed,
+                unitJumpTime,
+                unitJumpSpeed,
+                jumpPadJumpTime,
+                jumpPadJumpSpeed,
+                unitMaxHealth,
+                healthPackHealth,
+                weaponParameters,
+                mineSize,
+                mineExplosionParameters,
+                minePrepareTime,
+                mineTriggerTime,
+                mineTriggerRadius,
+                killScore);
 
             return result;
         }

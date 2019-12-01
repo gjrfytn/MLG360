@@ -11,10 +11,6 @@ namespace MLG360.Model
         public double? LastAngle { get; set; }
         public int? LastFireTick { get; set; }
 
-        private Weapon()
-        {
-        }
-
         public Weapon(WeaponType typ, WeaponParameters parameters, int magazine, bool wasShooting, double spread, double? fireTimer, double? lastAngle, int? lastFireTick)
         {
             Typ = typ;
@@ -32,53 +28,58 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Weapon();
+            WeaponType type;
             switch (reader.ReadInt32())
             {
                 case 0:
-                    result.Typ = WeaponType.Pistol;
+                    type = WeaponType.Pistol;
                     break;
                 case 1:
-                    result.Typ = WeaponType.AssaultRifle;
+                    type = WeaponType.AssaultRifle;
                     break;
                 case 2:
-                    result.Typ = WeaponType.RocketLauncher;
+                    type = WeaponType.RocketLauncher;
                     break;
                 default:
                     throw new System.Exception("Unexpected discriminant value");
             }
 
-            result.Parameters = WeaponParameters.ReadFrom(reader);
-            result.Magazine = reader.ReadInt32();
-            result.WasShooting = reader.ReadBoolean();
-            result.Spread = reader.ReadDouble();
+            var parameters = WeaponParameters.ReadFrom(reader);
+            var magazine = reader.ReadInt32();
+            var wasShooting = reader.ReadBoolean();
+            var spread = reader.ReadDouble();
 
+            double? fireTimer;
             if (reader.ReadBoolean())
             {
-                result.FireTimer = reader.ReadDouble();
+                fireTimer = reader.ReadDouble();
             }
             else
             {
-                result.FireTimer = null;
+                fireTimer = null;
             }
 
+            double? lastAngle;
             if (reader.ReadBoolean())
             {
-                result.LastAngle = reader.ReadDouble();
+                lastAngle = reader.ReadDouble();
             }
             else
             {
-                result.LastAngle = null;
+                lastAngle = null;
             }
 
+            int? lastFireTick;
             if (reader.ReadBoolean())
             {
-                result.LastFireTick = reader.ReadInt32();
+                lastFireTick = reader.ReadInt32();
             }
             else
             {
-                result.LastFireTick = null;
+                lastFireTick = null;
             }
+
+            var result = new Weapon(type, parameters, magazine, wasShooting, spread, fireTimer, lastAngle, lastFireTick);
 
             return result;
         }

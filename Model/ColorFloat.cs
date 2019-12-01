@@ -7,10 +7,6 @@ namespace MLG360.Model
         public float B { get; set; }
         public float A { get; set; }
 
-        private ColorFloat()
-        {
-        }
-
         public ColorFloat(float r, float g, float b, float a)
         {
             R = r;
@@ -24,11 +20,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new ColorFloat();
-            result.R = reader.ReadSingle();
-            result.G = reader.ReadSingle();
-            result.B = reader.ReadSingle();
-            result.A = reader.ReadSingle();
+            var result = new ColorFloat(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
 
             return result;
         }
