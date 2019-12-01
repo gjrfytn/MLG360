@@ -2,9 +2,9 @@ namespace MLG360.Model
 {
     public class LootBox
     {
-        public Vec2Double Position { get; set; }
-        public Vec2Double Size { get; set; }
-        public Items.Item Item { get; set; }
+        public Vec2Double Position { get; }
+        public Vec2Double Size { get; }
+        public Items.Item Item { get; }
 
         public LootBox(Vec2Double position, Vec2Double size, Items.Item item)
         {

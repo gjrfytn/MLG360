@@ -4,7 +4,7 @@
     {
         public const int TAG = 0;
 
-        public int Health { get; set; }
+        public int Health { get; }
 
         public HealthPack(int health)
         {

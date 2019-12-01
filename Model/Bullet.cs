@@ -2,14 +2,14 @@ namespace MLG360.Model
 {
     public class Bullet
     {
-        public WeaponType WeaponType { get; set; }
-        public int UnitId { get; set; }
-        public int PlayerId { get; set; }
-        public Vec2Double Position { get; set; }
-        public Vec2Double Velocity { get; set; }
-        public int Damage { get; set; }
-        public double Size { get; set; }
-        public ExplosionParameters ExplosionParameters { get; set; }
+        public WeaponType WeaponType { get; }
+        public int UnitId { get; }
+        public int PlayerId { get; }
+        public Vec2Double Position { get; }
+        public Vec2Double Velocity { get; }
+        public int Damage { get; }
+        public double Size { get; }
+        public ExplosionParameters ExplosionParameters { get; }
 
         public Bullet(WeaponType weaponType, int unitId, int playerId, Vec2Double position, Vec2Double velocity, int damage, double size, ExplosionParameters explosionParameters)
         {

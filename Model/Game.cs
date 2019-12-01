@@ -2,14 +2,14 @@ namespace MLG360.Model
 {
     public class Game
     {
-        public int CurrentTick { get; set; }
-        public Properties Properties { get; set; }
-        public Level Level { get; set; }
-        public Player[] Players { get; set; }
-        public Unit[] Units { get; set; }
-        public Bullet[] Bullets { get; set; }
-        public Mine[] Mines { get; set; }
-        public LootBox[] LootBoxes { get; set; }
+        public int CurrentTick { get; }
+        public Properties Properties { get; }
+        public Level Level { get; }
+        public Player[] Players { get; }
+        public Unit[] Units { get; }
+        public Bullet[] Bullets { get; }
+        public Mine[] Mines { get; }
+        public LootBox[] LootBoxes { get; }
 
         public Game(int currentTick, Properties properties, Level level, Player[] players, Unit[] units, Bullet[] bullets, Mine[] mines, LootBox[] lootBoxes)
         {

@@ -2,10 +2,10 @@ namespace MLG360.Model
 {
     public class ColorFloat
     {
-        public float R { get; set; }
-        public float G { get; set; }
-        public float B { get; set; }
-        public float A { get; set; }
+        public float R { get; }
+        public float G { get; }
+        public float B { get; }
+        public float A { get; }
 
         public ColorFloat(float r, float g, float b, float a)
         {

@@ -4,9 +4,7 @@
     {
         public const int TAG = 1;
 
-        public System.Collections.Generic.IDictionary<int, UnitAction> Action { get; set; }
-
-        public ActionMessage() { }
+        public System.Collections.Generic.IDictionary<int, UnitAction> Action { get; }
 
         public ActionMessage(System.Collections.Generic.IDictionary<int, UnitAction> action)
         {
@@ -18,9 +16,8 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new ActionMessage();
             var actionSize = reader.ReadInt32();
-            result.Action = new System.Collections.Generic.Dictionary<int, UnitAction>(actionSize);
+            var actions = new System.Collections.Generic.Dictionary<int, UnitAction>(actionSize);
 
             for (var i = 0; i < actionSize; i++)
             {
@@ -28,8 +25,10 @@
                 actionKey = reader.ReadInt32();
                 UnitAction actionValue;
                 actionValue = UnitAction.ReadFrom(reader);
-                result.Action.Add(actionKey, actionValue);
+                actions.Add(actionKey, actionValue);
             }
+
+            var result = new ActionMessage(actions);
 
             return result;
         }

@@ -2,13 +2,13 @@ namespace MLG360.Model
 {
     public class Mine
     {
-        public int PlayerId { get; set; }
-        public Vec2Double Position { get; set; }
-        public Vec2Double Size { get; set; }
-        public MineState State { get; set; }
-        public double? Timer { get; set; }
-        public double TriggerRadius { get; set; }
-        public ExplosionParameters ExplosionParameters { get; set; }
+        public int PlayerId { get; }
+        public Vec2Double Position { get; }
+        public Vec2Double Size { get; }
+        public MineState State { get; }
+        public double? Timer { get; }
+        public double TriggerRadius { get; }
+        public ExplosionParameters ExplosionParameters { get; }
 
         public Mine(int playerId, Vec2Double position, Vec2Double size, MineState state, double? timer, double triggerRadius, ExplosionParameters explosionParameters)
         {

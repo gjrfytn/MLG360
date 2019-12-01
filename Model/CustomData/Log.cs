@@ -4,7 +4,7 @@
     {
         public const int TAG = 0;
 
-        public string Text { get; set; }
+        public string Text { get; }
 
         public Log(string text)
         {

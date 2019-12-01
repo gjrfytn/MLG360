@@ -2,10 +2,10 @@ namespace MLG360.Model
 {
     public class JumpState
     {
-        public bool CanJump { get; set; }
-        public double Speed { get; set; }
-        public double MaxTime { get; set; }
-        public bool CanCancel { get; set; }
+        public bool CanJump { get; }
+        public double Speed { get; }
+        public double MaxTime { get; }
+        public bool CanCancel { get; }
 
         public JumpState(bool canJump, double speed, double maxTime, bool canCancel)
         {

@@ -2,8 +2,8 @@ namespace MLG360.Model
 {
     public class Vec2Float
     {
-        public float X { get; set; }
-        public float Y { get; set; }
+        public float X { get; }
+        public float Y { get; }
 
         public Vec2Float(float x, float y)
         {

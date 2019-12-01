@@ -2,8 +2,8 @@ namespace MLG360.Model
 {
     public class Vec2Double
     {
-        public double X { get; set; }
-        public double Y { get; set; }
+        public double X { get; }
+        public double Y { get; }
 
         public Vec2Double(double x, double y)
         {

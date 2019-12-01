@@ -4,7 +4,7 @@
     {
         public const int TAG = 0;
 
-        public CustomData.CustomData Data { get; set; }
+        public CustomData.CustomData Data { get; }
 
         public CustomDataMessage(CustomData.CustomData data)
         {

@@ -4,10 +4,10 @@
     {
         public const int TAG = 2;
 
-        public Vec2Float P1 { get; set; }
-        public Vec2Float P2 { get; set; }
-        public float Width { get; set; }
-        public ColorFloat Color { get; set; }
+        public Vec2Float P1 { get; }
+        public Vec2Float P2 { get; }
+        public float Width { get; }
+        public ColorFloat Color { get; }
 
         public Line(Vec2Float p1, Vec2Float p2, float width, ColorFloat color)
         {

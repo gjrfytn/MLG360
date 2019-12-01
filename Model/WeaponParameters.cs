@@ -2,15 +2,15 @@ namespace MLG360.Model
 {
     public class WeaponParameters
     {
-        public int MagazineSize { get; set; }
-        public double FireRate { get; set; }
-        public double ReloadTime { get; set; }
-        public double MinSpread { get; set; }
-        public double MaxSpread { get; set; }
-        public double Recoil { get; set; }
-        public double AimSpeed { get; set; }
-        public BulletParameters Bullet { get; set; }
-        public ExplosionParameters Explosion { get; set; }
+        public int MagazineSize { get; }
+        public double FireRate { get; }
+        public double ReloadTime { get; }
+        public double MinSpread { get; }
+        public double MaxSpread { get; }
+        public double Recoil { get; }
+        public double AimSpeed { get; }
+        public BulletParameters Bullet { get; }
+        public ExplosionParameters Explosion { get; }
 
         public WeaponParameters(int magazineSize, double fireRate, double reloadTime, double minSpread, double maxSpread, double recoil, double aimSpeed, BulletParameters bullet, ExplosionParameters explosion)
         {

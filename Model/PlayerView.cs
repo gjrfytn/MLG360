@@ -2,8 +2,8 @@ namespace MLG360.Model
 {
     public class PlayerView
     {
-        public int MyId { get; set; }
-        public Game Game { get; set; }
+        public int MyId { get; }
+        public Game Game { get; }
 
         public PlayerView(int myId, Game game)
         {

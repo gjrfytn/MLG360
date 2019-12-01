@@ -2,8 +2,8 @@ namespace MLG360.Model
 {
     public class ExplosionParameters
     {
-        public double Radius { get; set; }
-        public int Damage { get; set; }
+        public double Radius { get; }
+        public int Damage { get; }
 
         public ExplosionParameters(double radius, int damage)
         {

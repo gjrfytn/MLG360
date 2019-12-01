@@ -2,7 +2,7 @@ namespace MLG360.Model
 {
     public class ServerMessageGame
     {
-        public PlayerView PlayerView { get; set; }
+        public PlayerView PlayerView { get; }
 
         public ServerMessageGame(PlayerView playerView)
         {

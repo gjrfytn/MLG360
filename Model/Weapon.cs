@@ -2,14 +2,14 @@ namespace MLG360.Model
 {
     public class Weapon
     {
-        public WeaponType Typ { get; set; }
-        public WeaponParameters Parameters { get; set; }
-        public int Magazine { get; set; }
-        public bool WasShooting { get; set; }
-        public double Spread { get; set; }
-        public double? FireTimer { get; set; }
-        public double? LastAngle { get; set; }
-        public int? LastFireTick { get; set; }
+        public WeaponType Typ { get; }
+        public WeaponParameters Parameters { get; }
+        public int Magazine { get; }
+        public bool WasShooting { get; }
+        public double Spread { get; }
+        public double? FireTimer { get; }
+        public double? LastAngle { get; }
+        public int? LastFireTick { get; }
 
         public Weapon(WeaponType typ, WeaponParameters parameters, int magazine, bool wasShooting, double spread, double? fireTimer, double? lastAngle, int? lastFireTick)
         {

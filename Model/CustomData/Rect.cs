@@ -4,9 +4,9 @@
     {
         public const int TAG = 1;
 
-        public Vec2Float Pos { get; set; }
-        public Vec2Float Size { get; set; }
-        public ColorFloat Color { get; set; }
+        public Vec2Float Pos { get; }
+        public Vec2Float Size { get; }
+        public ColorFloat Color { get; }
 
         public Rect(Vec2Float pos, Vec2Float size, ColorFloat color)
         {

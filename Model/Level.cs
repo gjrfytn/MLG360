@@ -2,7 +2,7 @@ namespace MLG360.Model
 {
     public class Level
     {
-        public Tile[][] Tiles { get; set; }
+        public Tile[][] Tiles { get; }
 
         public Level(Tile[][] tiles)
         {

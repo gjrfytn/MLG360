@@ -2,9 +2,9 @@ namespace MLG360.Model
 {
     public class BulletParameters
     {
-        public double Speed { get; set; }
-        public double Size { get; set; }
-        public int Damage { get; set; }
+        public double Speed { get; }
+        public double Size { get; }
+        public int Damage { get; }
 
         public BulletParameters(double speed, double size, int damage)
         {

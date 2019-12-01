@@ -2,13 +2,13 @@ namespace MLG360.Model
 {
     public class UnitAction
     {
-        public double Velocity { get; set; }
-        public bool Jump { get; set; }
-        public bool JumpDown { get; set; }
-        public Vec2Double Aim { get; set; }
-        public bool Shoot { get; set; }
-        public bool SwapWeapon { get; set; }
-        public bool PlantMine { get; set; }
+        public double Velocity { get; }
+        public bool Jump { get; }
+        public bool JumpDown { get; }
+        public Vec2Double Aim { get; }
+        public bool Shoot { get; }
+        public bool SwapWeapon { get; }
+        public bool PlantMine { get; }
 
         public UnitAction(double velocity, bool jump, bool jumpDown, Vec2Double aim, bool shoot, bool swapWeapon, bool plantMine)
         {

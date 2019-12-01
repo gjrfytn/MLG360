@@ -2,8 +2,8 @@ namespace MLG360.Model
 {
     public class ColoredVertex
     {
-        public Vec2Float Position { get; set; }
-        public ColorFloat Color { get; set; }
+        public Vec2Float Position { get; }
+        public ColorFloat Color { get; }
 
         public ColoredVertex(Vec2Float position, ColorFloat color)
         {

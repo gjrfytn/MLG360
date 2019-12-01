@@ -3,11 +3,11 @@
     public class PlacedText : CustomData
     {
         public const int TAG = 4;
-        public string Text { get; set; }
-        public Vec2Float Pos { get; set; }
-        public TextAlignment Alignment { get; set; }
-        public float Size { get; set; }
-        public ColorFloat Color { get; set; }
+        public string Text { get; }
+        public Vec2Float Pos { get; }
+        public TextAlignment Alignment { get; }
+        public float Size { get; }
+        public ColorFloat Color { get; }
 
         public PlacedText(string text, Vec2Float pos, TextAlignment alignment, float size, ColorFloat color)
         {

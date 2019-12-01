@@ -2,27 +2,27 @@ namespace MLG360.Model
 {
     public class Properties
     {
-        public int MaxTickCount { get; set; }
-        public int TeamSize { get; set; }
-        public double TicksPerSecond { get; set; }
-        public int UpdatesPerTick { get; set; }
-        public Vec2Double LootBoxSize { get; set; }
-        public Vec2Double UnitSize { get; set; }
-        public double UnitMaxHorizontalSpeed { get; set; }
-        public double UnitFallSpeed { get; set; }
-        public double UnitJumpTime { get; set; }
-        public double UnitJumpSpeed { get; set; }
-        public double JumpPadJumpTime { get; set; }
-        public double JumpPadJumpSpeed { get; set; }
-        public int UnitMaxHealth { get; set; }
-        public int HealthPackHealth { get; set; }
-        public System.Collections.Generic.IDictionary<WeaponType, WeaponParameters> WeaponParameters { get; set; }
-        public Vec2Double MineSize { get; set; }
-        public ExplosionParameters MineExplosionParameters { get; set; }
-        public double MinePrepareTime { get; set; }
-        public double MineTriggerTime { get; set; }
-        public double MineTriggerRadius { get; set; }
-        public int KillScore { get; set; }
+        public int MaxTickCount { get; }
+        public int TeamSize { get; }
+        public double TicksPerSecond { get; }
+        public int UpdatesPerTick { get; }
+        public Vec2Double LootBoxSize { get; }
+        public Vec2Double UnitSize { get; }
+        public double UnitMaxHorizontalSpeed { get; }
+        public double UnitFallSpeed { get; }
+        public double UnitJumpTime { get; }
+        public double UnitJumpSpeed { get; }
+        public double JumpPadJumpTime { get; }
+        public double JumpPadJumpSpeed { get; }
+        public int UnitMaxHealth { get; }
+        public int HealthPackHealth { get; }
+        public System.Collections.Generic.IDictionary<WeaponType, WeaponParameters> WeaponParameters { get; }
+        public Vec2Double MineSize { get; }
+        public ExplosionParameters MineExplosionParameters { get; }
+        public double MinePrepareTime { get; }
+        public double MineTriggerTime { get; }
+        public double MineTriggerRadius { get; }
+        public int KillScore { get; }
 
         public Properties(int maxTickCount, int teamSize, double ticksPerSecond, int updatesPerTick, Vec2Double lootBoxSize, Vec2Double unitSize, double unitMaxHorizontalSpeed, double unitFallSpeed, double unitJumpTime, double unitJumpSpeed, double jumpPadJumpTime, double jumpPadJumpSpeed, int unitMaxHealth, int healthPackHealth, System.Collections.Generic.IDictionary<WeaponType, WeaponParameters> weaponParameters, Vec2Double mineSize, ExplosionParameters mineExplosionParameters, double minePrepareTime, double mineTriggerTime, double mineTriggerRadius, int killScore)
         {

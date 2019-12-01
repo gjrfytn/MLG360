@@ -2,18 +2,18 @@ namespace MLG360.Model
 {
     public class Unit
     {
-        public int PlayerId { get; set; }
-        public int Id { get; set; }
-        public int Health { get; set; }
-        public Vec2Double Position { get; set; }
-        public Vec2Double Size { get; set; }
-        public JumpState JumpState { get; set; }
-        public bool WalkedRight { get; set; }
-        public bool Stand { get; set; }
-        public bool OnGround { get; set; }
-        public bool OnLadder { get; set; }
-        public int Mines { get; set; }
-        public Weapon Weapon { get; set; }
+        public int PlayerId { get; }
+        public int Id { get; }
+        public int Health { get; }
+        public Vec2Double Position { get; }
+        public Vec2Double Size { get; }
+        public JumpState JumpState { get; }
+        public bool WalkedRight { get; }
+        public bool Stand { get; }
+        public bool OnGround { get; }
+        public bool OnLadder { get; }
+        public int Mines { get; }
+        public Weapon Weapon { get; }
 
         public Unit(int playerId, int id, int health, Vec2Double position, Vec2Double size, JumpState jumpState, bool walkedRight, bool stand, bool onGround, bool onLadder, int mines, Weapon weapon)
         {

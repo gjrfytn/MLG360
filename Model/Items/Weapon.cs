@@ -4,9 +4,7 @@
     {
         public const int TAG = 1;
 
-        public WeaponType WeaponType { get; set; }
-
-        public Weapon() { }
+        public WeaponType WeaponType { get; }
 
         public Weapon(WeaponType weaponType)
         {
@@ -18,21 +16,23 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Weapon();
+            WeaponType weaponType;
             switch (reader.ReadInt32())
             {
                 case 0:
-                    result.WeaponType = WeaponType.Pistol;
+                    weaponType = WeaponType.Pistol;
                     break;
                 case 1:
-                    result.WeaponType = WeaponType.AssaultRifle;
+                    weaponType = WeaponType.AssaultRifle;
                     break;
                 case 2:
-                    result.WeaponType = WeaponType.RocketLauncher;
+                    weaponType = WeaponType.RocketLauncher;
                     break;
                 default:
                     throw new System.Exception("Unexpected discriminant value");
             }
+
+            var result = new Weapon(weaponType);
 
             return result;
         }

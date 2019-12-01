@@ -4,7 +4,7 @@
     {
         public const int TAG = 3;
 
-        public ColoredVertex[] Vertices { get; set; }
+        public ColoredVertex[] Vertices { get; }
 
         public Polygon(ColoredVertex[] vertices)
         {
