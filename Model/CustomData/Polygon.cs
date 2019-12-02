@@ -1,14 +1,19 @@
-﻿namespace MLG360.Model.CustomData
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace MLG360.Model.CustomData
 {
     public class Polygon : CustomData
     {
         public const int TAG = 3;
 
-        public ColoredVertex[] Vertices { get; }
+        private readonly ColoredVertex[] _Vertices;
 
-        public Polygon(ColoredVertex[] vertices)
+        public IEnumerable<ColoredVertex> Vertices => _Vertices;
+
+        public Polygon(IEnumerable<ColoredVertex> vertices)
         {
-            Vertices = vertices;
+            _Vertices = vertices.ToArray();
         }
 
         public static new Polygon ReadFrom(System.IO.BinaryReader reader)
@@ -33,8 +38,9 @@
                 throw new System.ArgumentNullException(nameof(writer));
 
             writer.Write(TAG);
-            writer.Write(Vertices.Length);
-            foreach (var verticesElement in Vertices)
+
+            writer.Write(_Vertices.Length);
+            foreach (var verticesElement in _Vertices)
             {
                 verticesElement.WriteTo(writer);
             }

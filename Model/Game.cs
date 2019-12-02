@@ -1,26 +1,43 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace MLG360.Model
 {
     public class Game
     {
+        private readonly Player[] _Players;
+        private readonly Unit[] _Units;
+        private readonly Bullet[] _Bullets;
+        private readonly Mine[] _Mines;
+        private readonly LootBox[] _LootBoxes;
+
         public int CurrentTick { get; }
         public Properties Properties { get; }
         public Level Level { get; }
-        public Player[] Players { get; }
-        public Unit[] Units { get; }
-        public Bullet[] Bullets { get; }
-        public Mine[] Mines { get; }
-        public LootBox[] LootBoxes { get; }
+        public IEnumerable<Player> Players => _Players;
+        public IEnumerable<Unit> Units => _Units;
+        public IEnumerable<Bullet> Bullets => _Bullets;
+        public IEnumerable<Mine> Mines => _Mines;
+        public IEnumerable<LootBox> LootBoxes => _LootBoxes;
 
-        public Game(int currentTick, Properties properties, Level level, Player[] players, Unit[] units, Bullet[] bullets, Mine[] mines, LootBox[] lootBoxes)
+        public Game(
+            int currentTick,
+            Properties properties,
+            Level level,
+            IEnumerable<Player> players,
+            IEnumerable<Unit> units,
+            IEnumerable<Bullet> bullets,
+            IEnumerable<Mine> mines,
+            IEnumerable<LootBox> lootBoxes)
         {
             CurrentTick = currentTick;
             Properties = properties;
             Level = level;
-            Players = players;
-            Units = units;
-            Bullets = bullets;
-            Mines = mines;
-            LootBoxes = lootBoxes;
+            _Players = players.ToArray();
+            _Units = units.ToArray();
+            _Bullets = bullets.ToArray();
+            _Mines = mines.ToArray();
+            _LootBoxes = lootBoxes.ToArray();
         }
 
         public static Game ReadFrom(System.IO.BinaryReader reader)
@@ -75,32 +92,33 @@ namespace MLG360.Model
             writer.Write(CurrentTick);
             Properties.WriteTo(writer);
             Level.WriteTo(writer);
-            writer.Write(Players.Length);
-            foreach (var playersElement in Players)
+
+            writer.Write(_Players.Length);
+            foreach (var playersElement in _Players)
             {
                 playersElement.WriteTo(writer);
             }
 
-            writer.Write(Units.Length);
-            foreach (var unitsElement in Units)
+            writer.Write(_Units.Length);
+            foreach (var unitsElement in _Units)
             {
                 unitsElement.WriteTo(writer);
             }
 
-            writer.Write(Bullets.Length);
-            foreach (var bulletsElement in Bullets)
+            writer.Write(_Bullets.Length);
+            foreach (var bulletsElement in _Bullets)
             {
                 bulletsElement.WriteTo(writer);
             }
 
-            writer.Write(Mines.Length);
-            foreach (var minesElement in Mines)
+            writer.Write(_Mines.Length);
+            foreach (var minesElement in _Mines)
             {
                 minesElement.WriteTo(writer);
             }
 
-            writer.Write(LootBoxes.Length);
-            foreach (var lootBoxesElement in LootBoxes)
+            writer.Write(_LootBoxes.Length);
+            foreach (var lootBoxesElement in _LootBoxes)
             {
                 lootBoxesElement.WriteTo(writer);
             }
