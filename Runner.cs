@@ -48,7 +48,7 @@ namespace MLG360
                     }
                 }
 
-                new Model.PlayerMessageGame.ActionMessage(actions).WriteTo(_Writer);
+                new Model.PlayerMessageGame.ActionMessage(new Model.Versioned(actions)).WriteTo(_Writer);
                 _Writer.Flush();
             }
         }

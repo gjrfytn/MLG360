@@ -70,7 +70,7 @@ namespace MLG360
                 jump = true;
             }
 
-            return new UnitAction(targetPos.X - unit.Position.X, jump, !jump, aim, true, false, false);
+            return new UnitAction(targetPos.X - unit.Position.X, jump, !jump, aim, true, false, false, false);
         }
     }
 }

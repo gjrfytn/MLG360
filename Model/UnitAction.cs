@@ -7,16 +7,18 @@ namespace MLG360.Model
         public bool JumpDown { get; }
         public Vec2Double Aim { get; }
         public bool Shoot { get; }
+        public bool Reload { get; }
         public bool SwapWeapon { get; }
         public bool PlantMine { get; }
 
-        public UnitAction(double velocity, bool jump, bool jumpDown, Vec2Double aim, bool shoot, bool swapWeapon, bool plantMine)
+        public UnitAction(double velocity, bool jump, bool jumpDown, Vec2Double aim, bool shoot, bool reload, bool swapWeapon, bool plantMine)
         {
             Velocity = velocity;
             Jump = jump;
             JumpDown = jumpDown;
             Aim = aim;
             Shoot = shoot;
+            Reload = reload;
             SwapWeapon = swapWeapon;
             PlantMine = plantMine;
         }
@@ -31,6 +33,7 @@ namespace MLG360.Model
                 reader.ReadBoolean(),
                 reader.ReadBoolean(),
                 Vec2Double.ReadFrom(reader),
+                reader.ReadBoolean(),
                 reader.ReadBoolean(),
                 reader.ReadBoolean(),
                 reader.ReadBoolean());
@@ -48,6 +51,7 @@ namespace MLG360.Model
             writer.Write(JumpDown);
             Aim.WriteTo(writer);
             writer.Write(Shoot);
+            writer.Write(Reload);
             writer.Write(SwapWeapon);
             writer.Write(PlantMine);
         }
