@@ -15,9 +15,7 @@ namespace MLG360.Model
 
         public static LootBox ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new LootBox(Vec2Double.ReadFrom(reader), Vec2Double.ReadFrom(reader), Items.Item.ReadFrom(reader));
-
-            return result;
+            return new LootBox(Vec2Double.ReadFrom(reader), Vec2Double.ReadFrom(reader), Items.Item.ReadFrom(reader));
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

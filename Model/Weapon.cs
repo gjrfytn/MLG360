@@ -79,9 +79,7 @@ namespace MLG360.Model
                 lastFireTick = null;
             }
 
-            var result = new Weapon(type, parameters, magazine, wasShooting, spread, fireTimer, lastAngle, lastFireTick);
-
-            return result;
+            return new Weapon(type, parameters, magazine, wasShooting, spread, fireTimer, lastAngle, lastFireTick);
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

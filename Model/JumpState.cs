@@ -20,9 +20,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new JumpState(reader.ReadBoolean(), reader.ReadDouble(), reader.ReadDouble(), reader.ReadBoolean());
-
-            return result;
+            return new JumpState(reader.ReadBoolean(), reader.ReadDouble(), reader.ReadDouble(), reader.ReadBoolean());
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

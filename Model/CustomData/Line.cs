@@ -22,9 +22,7 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Line(Vec2Float.ReadFrom(reader), Vec2Float.ReadFrom(reader), reader.ReadSingle(), ColorFloat.ReadFrom(reader));
-
-            return result;
+            return new Line(Vec2Float.ReadFrom(reader), Vec2Float.ReadFrom(reader), reader.ReadSingle(), ColorFloat.ReadFrom(reader));
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

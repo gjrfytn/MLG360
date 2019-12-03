@@ -16,9 +16,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Vec2Double(reader.ReadDouble(), reader.ReadDouble());
-
-            return result;
+            return new Vec2Double(reader.ReadDouble(), reader.ReadDouble());
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

@@ -61,9 +61,7 @@ namespace MLG360.Model
                 explosionParameters = null;
             }
 
-            var result = new Bullet(weaponType, unitId, playerId, position, velocity, damage, size, explosionParameters);
-
-            return result;
+            return new Bullet(weaponType, unitId, playerId, position, velocity, damage, size, explosionParameters);
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

@@ -17,9 +17,7 @@
 
         public static new Rect ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new Rect(Vec2Float.ReadFrom(reader), Vec2Float.ReadFrom(reader), ColorFloat.ReadFrom(reader));
-
-            return result;
+            return new Rect(Vec2Float.ReadFrom(reader), Vec2Float.ReadFrom(reader), ColorFloat.ReadFrom(reader));
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

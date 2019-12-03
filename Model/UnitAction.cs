@@ -28,7 +28,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new UnitAction(
+            return new UnitAction(
                 reader.ReadDouble(),
                 reader.ReadBoolean(),
                 reader.ReadBoolean(),
@@ -37,8 +37,6 @@ namespace MLG360.Model
                 reader.ReadBoolean(),
                 reader.ReadBoolean(),
                 reader.ReadBoolean());
-
-            return result;
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

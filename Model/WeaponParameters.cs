@@ -49,9 +49,7 @@ namespace MLG360.Model
                 explosionParameters = null;
             }
 
-            var result = new WeaponParameters(magazineSize, fireRate, reloadTime, minSpread, maxSpread, recoil, aimSpeed, bullet, explosionParameters);
-
-            return result;
+            return new WeaponParameters(magazineSize, fireRate, reloadTime, minSpread, maxSpread, recoil, aimSpeed, bullet, explosionParameters);
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

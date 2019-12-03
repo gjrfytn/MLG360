@@ -58,9 +58,7 @@ namespace MLG360.Model
                 weapon = null;
             }
 
-            var result = new Unit(playerId, id, health, position, size, jumpState, walkedRight, stand, onGround, onLadder, mines, weapon);
-
-            return result;
+            return new Unit(playerId, id, health, position, size, jumpState, walkedRight, stand, onGround, onLadder, mines, weapon);
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

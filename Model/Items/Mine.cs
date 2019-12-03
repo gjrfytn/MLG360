@@ -8,9 +8,7 @@
 
         public static new Mine ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new Mine();
-
-            return result;
+            return new Mine();
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

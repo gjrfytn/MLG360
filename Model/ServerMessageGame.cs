@@ -24,9 +24,7 @@ namespace MLG360.Model
                 playerView = null;
             }
 
-            var result = new ServerMessageGame(playerView);
-
-            return result;
+            return new ServerMessageGame(playerView);
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

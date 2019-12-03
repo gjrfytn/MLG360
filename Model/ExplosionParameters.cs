@@ -16,9 +16,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new ExplosionParameters(reader.ReadDouble(), reader.ReadInt32());
-
-            return result;
+            return new ExplosionParameters(reader.ReadDouble(), reader.ReadInt32());
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

@@ -16,9 +16,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Player(reader.ReadInt32(), reader.ReadInt32());
-
-            return result;
+            return new Player(reader.ReadInt32(), reader.ReadInt32());
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

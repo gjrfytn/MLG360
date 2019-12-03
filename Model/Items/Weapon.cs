@@ -32,9 +32,7 @@
                     throw new System.Exception("Unexpected discriminant value");
             }
 
-            var result = new Weapon(weaponType);
-
-            return result;
+            return new Weapon(weaponType);
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

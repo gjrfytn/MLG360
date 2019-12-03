@@ -16,9 +16,7 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new HealthPack(reader.ReadInt32());
-
-            return result;
+            return new HealthPack(reader.ReadInt32());
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

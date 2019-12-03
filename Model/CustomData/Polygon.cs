@@ -27,9 +27,7 @@ namespace MLG360.Model.CustomData
                 vertices[i] = ColoredVertex.ReadFrom(reader);
             }
 
-            var result = new Polygon(vertices);
-
-            return result;
+            return new Polygon(vertices);
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

@@ -44,9 +44,7 @@
             var size = reader.ReadSingle();
             var color = ColorFloat.ReadFrom(reader);
 
-            var result = new PlacedText(text, pos, alignment, size, color);
-
-            return result;
+            return new PlacedText(text, pos, alignment, size, color);
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

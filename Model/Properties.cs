@@ -101,7 +101,7 @@ namespace MLG360.Model
             var mineTriggerRadius = reader.ReadDouble();
             var killScore = reader.ReadInt32();
 
-            var result = new Properties(
+            return new Properties(
                 maxTickCount,
                 teamSize,
                 ticksPerSecond,
@@ -123,8 +123,6 @@ namespace MLG360.Model
                 mineTriggerTime,
                 mineTriggerRadius,
                 killScore);
-
-            return result;
         }
         public void WriteTo(System.IO.BinaryWriter writer)
         {

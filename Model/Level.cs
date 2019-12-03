@@ -43,9 +43,7 @@ namespace MLG360.Model
                 }
             }
 
-            var result = new Level(tiles);
-
-            return result;
+            return new Level(tiles);
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

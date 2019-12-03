@@ -13,9 +13,7 @@ namespace MLG360.Model
 
         public static ColoredVertex ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new ColoredVertex(Vec2Float.ReadFrom(reader), ColorFloat.ReadFrom(reader));
-
-            return result;
+            return new ColoredVertex(Vec2Float.ReadFrom(reader), ColorFloat.ReadFrom(reader));
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

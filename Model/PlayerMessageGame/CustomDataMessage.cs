@@ -13,9 +13,7 @@
 
         public static new CustomDataMessage ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new CustomDataMessage(CustomData.CustomData.ReadFrom(reader));
-
-            return result;
+            return new CustomDataMessage(CustomData.CustomData.ReadFrom(reader));
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

@@ -16,9 +16,7 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new ActionMessage(Versioned.ReadFrom(reader));
-
-            return result;
+            return new ActionMessage(Versioned.ReadFrom(reader));
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

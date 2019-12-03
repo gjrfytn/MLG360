@@ -62,9 +62,7 @@ namespace MLG360.Model
             var triggerRadius = reader.ReadDouble();
             var explosionParameters = ExplosionParameters.ReadFrom(reader);
 
-            var result = new Mine(playerId, position, size, state, timer, triggerRadius, explosionParameters);
-
-            return result;
+            return new Mine(playerId, position, size, state, timer, triggerRadius, explosionParameters);
         }
         public void WriteTo(System.IO.BinaryWriter writer)
         {

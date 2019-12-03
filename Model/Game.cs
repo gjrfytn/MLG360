@@ -79,9 +79,7 @@ namespace MLG360.Model
                 lootBoxes[i] = LootBox.ReadFrom(reader);
             }
 
-            var result = new Game(currentTick, properties, level, players, units, bullets, mines, lootBoxes);
-
-            return result;
+            return new Game(currentTick, properties, level, players, units, bullets, mines, lootBoxes);
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

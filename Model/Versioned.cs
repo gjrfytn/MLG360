@@ -27,9 +27,7 @@ namespace MLG360.Model
                 inner.Add(innerKey, innerValue);
             }
 
-            var result = new Versioned(inner);
-
-            return result;
+            return new Versioned(inner);
         }
 
         public void WriteTo(System.IO.BinaryWriter writer)

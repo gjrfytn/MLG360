@@ -16,9 +16,7 @@
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            var result = new Log(System.Text.Encoding.UTF8.GetString(reader.ReadBytes(reader.ReadInt32())));
-
-            return result;
+            return new Log(System.Text.Encoding.UTF8.GetString(reader.ReadBytes(reader.ReadInt32())));
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)
