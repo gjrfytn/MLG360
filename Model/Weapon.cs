@@ -48,36 +48,9 @@ namespace MLG360.Model
             var magazine = reader.ReadInt32();
             var wasShooting = reader.ReadBoolean();
             var spread = reader.ReadDouble();
-
-            double? fireTimer;
-            if (reader.ReadBoolean())
-            {
-                fireTimer = reader.ReadDouble();
-            }
-            else
-            {
-                fireTimer = null;
-            }
-
-            double? lastAngle;
-            if (reader.ReadBoolean())
-            {
-                lastAngle = reader.ReadDouble();
-            }
-            else
-            {
-                lastAngle = null;
-            }
-
-            int? lastFireTick;
-            if (reader.ReadBoolean())
-            {
-                lastFireTick = reader.ReadInt32();
-            }
-            else
-            {
-                lastFireTick = null;
-            }
+            var fireTimer = reader.ReadBoolean() ? reader.ReadDouble() : (double?)null;
+            var lastAngle = reader.ReadBoolean() ? reader.ReadDouble() : (double?)null;
+            var lastFireTick = reader.ReadBoolean() ? reader.ReadInt32() : (int?)null;
 
             return new Weapon(type, parameters, magazine, wasShooting, spread, fireTimer, lastAngle, lastFireTick);
         }
@@ -94,9 +67,7 @@ namespace MLG360.Model
             writer.Write(Spread);
 
             if (!FireTimer.HasValue)
-            {
                 writer.Write(false);
-            }
             else
             {
                 writer.Write(true);
@@ -104,9 +75,7 @@ namespace MLG360.Model
             }
 
             if (!LastAngle.HasValue)
-            {
                 writer.Write(false);
-            }
             else
             {
                 writer.Write(true);
@@ -114,9 +83,7 @@ namespace MLG360.Model
             }
 
             if (!LastFireTick.HasValue)
-            {
                 writer.Write(false);
-            }
             else
             {
                 writer.Write(true);

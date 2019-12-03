@@ -14,15 +14,7 @@ namespace MLG360.Model
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
-            PlayerView playerView;
-            if (reader.ReadBoolean())
-            {
-                playerView = PlayerView.ReadFrom(reader);
-            }
-            else
-            {
-                playerView = null;
-            }
+            var playerView = reader.ReadBoolean() ? PlayerView.ReadFrom(reader) : null;
 
             return new ServerMessageGame(playerView);
         }
@@ -33,9 +25,7 @@ namespace MLG360.Model
                 throw new System.ArgumentNullException(nameof(writer));
 
             if (PlayerView == null)
-            {
                 writer.Write(false);
-            }
             else
             {
                 writer.Write(true);

@@ -19,7 +19,6 @@ namespace MLG360.Model
             {
                 tiles[i] = new Tile[reader.ReadInt32()];
                 for (var j = 0; j < tiles[i].Length; j++)
-                {
                     switch (reader.ReadInt32())
                     {
                         case 0:
@@ -40,7 +39,6 @@ namespace MLG360.Model
                         default:
                             throw new System.Exception("Unexpected discriminant value");
                     }
-                }
             }
 
             return new Level(tiles);
@@ -56,9 +54,7 @@ namespace MLG360.Model
             {
                 writer.Write(tilesElement.Length);
                 foreach (var tilesElementElement in tilesElement)
-                {
                     writer.Write((int)tilesElementElement);
-                }
             }
         }
     }

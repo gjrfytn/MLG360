@@ -50,16 +50,7 @@ namespace MLG360.Model
             var velocity = Vec2Double.ReadFrom(reader);
             var damage = reader.ReadInt32();
             var size = reader.ReadDouble();
-
-            ExplosionParameters explosionParameters;
-            if (reader.ReadBoolean())
-            {
-                explosionParameters = ExplosionParameters.ReadFrom(reader);
-            }
-            else
-            {
-                explosionParameters = null;
-            }
+            var explosionParameters = reader.ReadBoolean() ? ExplosionParameters.ReadFrom(reader) : null;
 
             return new Bullet(weaponType, unitId, playerId, position, velocity, damage, size, explosionParameters);
         }
@@ -78,9 +69,7 @@ namespace MLG360.Model
             writer.Write(Size);
 
             if (ExplosionParameters == null)
-            {
                 writer.Write(false);
-            }
             else
             {
                 writer.Write(true);

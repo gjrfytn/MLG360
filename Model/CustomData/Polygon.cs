@@ -23,9 +23,7 @@ namespace MLG360.Model.CustomData
 
             var vertices = new ColoredVertex[reader.ReadInt32()];
             for (var i = 0; i < vertices.Length; i++)
-            {
                 vertices[i] = ColoredVertex.ReadFrom(reader);
-            }
 
             return new Polygon(vertices);
         }
@@ -39,9 +37,7 @@ namespace MLG360.Model.CustomData
 
             writer.Write(_Vertices.Length);
             foreach (var verticesElement in _Vertices)
-            {
                 verticesElement.WriteTo(writer);
-            }
         }
     }
 }

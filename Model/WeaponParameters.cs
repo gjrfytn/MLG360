@@ -38,16 +38,7 @@ namespace MLG360.Model
             var recoil = reader.ReadDouble();
             var aimSpeed = reader.ReadDouble();
             var bullet = BulletParameters.ReadFrom(reader);
-
-            ExplosionParameters explosionParameters;
-            if (reader.ReadBoolean())
-            {
-                explosionParameters = ExplosionParameters.ReadFrom(reader);
-            }
-            else
-            {
-                explosionParameters = null;
-            }
+            var explosionParameters = reader.ReadBoolean() ? ExplosionParameters.ReadFrom(reader) : null;
 
             return new WeaponParameters(magazineSize, fireRate, reloadTime, minSpread, maxSpread, recoil, aimSpeed, bullet, explosionParameters);
         }
@@ -67,9 +58,7 @@ namespace MLG360.Model
             Bullet.WriteTo(writer);
 
             if (Explosion == null)
-            {
                 writer.Write(false);
-            }
             else
             {
                 writer.Write(true);

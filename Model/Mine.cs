@@ -49,16 +49,7 @@ namespace MLG360.Model
                     throw new System.Exception("Unexpected discriminant value");
             }
 
-            double? timer;
-            if (reader.ReadBoolean())
-            {
-                timer = reader.ReadDouble();
-            }
-            else
-            {
-                timer = null;
-            }
-
+            var timer = reader.ReadBoolean() ? reader.ReadDouble() : (double?)null;
             var triggerRadius = reader.ReadDouble();
             var explosionParameters = ExplosionParameters.ReadFrom(reader);
 
@@ -75,9 +66,7 @@ namespace MLG360.Model
             writer.Write((int)State);
 
             if (!Timer.HasValue)
-            {
                 writer.Write(false);
-            }
             else
             {
                 writer.Write(true);

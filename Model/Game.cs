@@ -51,33 +51,23 @@ namespace MLG360.Model
             var players = new Player[reader.ReadInt32()];
 
             for (var i = 0; i < players.Length; i++)
-            {
                 players[i] = Player.ReadFrom(reader);
-            }
 
             var units = new Unit[reader.ReadInt32()];
             for (var i = 0; i < units.Length; i++)
-            {
                 units[i] = Unit.ReadFrom(reader);
-            }
 
             var bullets = new Bullet[reader.ReadInt32()];
             for (var i = 0; i < bullets.Length; i++)
-            {
                 bullets[i] = Bullet.ReadFrom(reader);
-            }
 
             var mines = new Mine[reader.ReadInt32()];
             for (var i = 0; i < mines.Length; i++)
-            {
                 mines[i] = Mine.ReadFrom(reader);
-            }
 
             var lootBoxes = new LootBox[reader.ReadInt32()];
             for (var i = 0; i < lootBoxes.Length; i++)
-            {
                 lootBoxes[i] = LootBox.ReadFrom(reader);
-            }
 
             return new Game(currentTick, properties, level, players, units, bullets, mines, lootBoxes);
         }
@@ -93,33 +83,23 @@ namespace MLG360.Model
 
             writer.Write(_Players.Length);
             foreach (var playersElement in _Players)
-            {
                 playersElement.WriteTo(writer);
-            }
 
             writer.Write(_Units.Length);
             foreach (var unitsElement in _Units)
-            {
                 unitsElement.WriteTo(writer);
-            }
 
             writer.Write(_Bullets.Length);
             foreach (var bulletsElement in _Bullets)
-            {
                 bulletsElement.WriteTo(writer);
-            }
 
             writer.Write(_Mines.Length);
             foreach (var minesElement in _Mines)
-            {
                 minesElement.WriteTo(writer);
-            }
 
             writer.Write(_LootBoxes.Length);
             foreach (var lootBoxesElement in _LootBoxes)
-            {
                 lootBoxesElement.WriteTo(writer);
-            }
         }
     }
 }

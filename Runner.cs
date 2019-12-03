@@ -34,19 +34,13 @@ namespace MLG360
             {
                 var message = Model.ServerMessageGame.ReadFrom(_Reader);
                 if (message.PlayerView == null)
-                {
                     break;
-                }
 
                 var playerView = message.PlayerView;
                 var actions = new Dictionary<int, Model.UnitAction>();
                 foreach (var unit in playerView.Game.Units)
-                {
                     if (unit.PlayerId == playerView.MyId)
-                    {
                         actions.Add(unit.Id, myStrategy.GetAction(unit, playerView.Game, debug));
-                    }
-                }
 
                 new Model.PlayerMessageGame.ActionMessage(new Model.Versioned(actions)).WriteTo(_Writer);
                 _Writer.Flush();

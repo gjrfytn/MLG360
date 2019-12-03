@@ -47,16 +47,7 @@ namespace MLG360.Model
             var onGround = reader.ReadBoolean();
             var onLadder = reader.ReadBoolean();
             var mines = reader.ReadInt32();
-
-            Weapon weapon;
-            if (reader.ReadBoolean())
-            {
-                weapon = Weapon.ReadFrom(reader);
-            }
-            else
-            {
-                weapon = null;
-            }
+            var weapon = reader.ReadBoolean() ? Weapon.ReadFrom(reader) : null;
 
             return new Unit(playerId, id, health, position, size, jumpState, walkedRight, stand, onGround, onLadder, mines, weapon);
         }
@@ -79,9 +70,7 @@ namespace MLG360.Model
             writer.Write(Mines);
 
             if (Weapon == null)
-            {
                 writer.Write(false);
-            }
             else
             {
                 writer.Write(true);
