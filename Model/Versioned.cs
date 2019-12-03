@@ -1,41 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace MLG360.Model
 {
-    public struct Versioned
+    public class Versioned
     {
-        public System.Collections.Generic.IDictionary<int, Model.UnitAction> Inner { get; set; }
-        public Versioned(System.Collections.Generic.IDictionary<int, Model.UnitAction> inner)
+        public IReadOnlyDictionary<int, UnitAction> Inner { get; }
+
+        public Versioned(IReadOnlyDictionary<int, UnitAction> inner)
         {
-            this.Inner = inner;
+            Inner = inner;
         }
+
         public static Versioned ReadFrom(System.IO.BinaryReader reader)
         {
-            var result = new Versioned();
-            int InnerSize = reader.ReadInt32();
-            result.Inner = new System.Collections.Generic.Dictionary<int, Model.UnitAction>(InnerSize);
-            for (int i = 0; i < InnerSize; i++)
+            if (reader == null)
+                throw new System.ArgumentNullException(nameof(reader));
+
+            var innerSize = reader.ReadInt32();
+            var inner = new Dictionary<int, UnitAction>(innerSize);
+            for (var i = 0; i < innerSize; i++)
             {
-                int InnerKey;
-                InnerKey = reader.ReadInt32();
-                Model.UnitAction InnerValue;
-                InnerValue = Model.UnitAction.ReadFrom(reader);
-                result.Inner.Add(InnerKey, InnerValue);
+                int innerKey;
+                innerKey = reader.ReadInt32();
+                UnitAction innerValue;
+                innerValue = UnitAction.ReadFrom(reader);
+                inner.Add(innerKey, innerValue);
             }
+
+            var result = new Versioned(inner);
+
             return result;
         }
+
         public void WriteTo(System.IO.BinaryWriter writer)
         {
+            if (writer == null)
+                throw new System.ArgumentNullException(nameof(writer));
+
             writer.Write(43981);
             writer.Write(Inner.Count);
-            foreach (var InnerEntry in Inner)
+            foreach (var innerEntry in Inner)
             {
-                var InnerKey = InnerEntry.Key;
-                var InnerValue = InnerEntry.Value;
-                writer.Write(InnerKey);
-                InnerValue.WriteTo(writer);
+                var innerKey = innerEntry.Key;
+                var innerValue = innerEntry.Value;
+                writer.Write(innerKey);
+                innerValue.WriteTo(writer);
             }
         }
     }
