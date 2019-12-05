@@ -16,7 +16,7 @@ namespace MLG360.Model.Items
                 case Weapon.TAG:
                     return Weapon.ReadFrom(reader);
                 case Mine.TAG:
-                    return Mine.ReadFrom(reader);
+                    return new Mine();
                 default:
                     throw new System.Exception("Unexpected discriminant value");
             }

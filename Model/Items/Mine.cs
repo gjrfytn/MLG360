@@ -4,13 +4,6 @@
     {
         public const int TAG = 2;
 
-        public Mine() { }
-
-        public static new Mine ReadFrom(System.IO.BinaryReader reader)
-        {
-            return new Mine();
-        }
-
         public override void WriteTo(System.IO.BinaryWriter writer)
         {
             if (writer == null)

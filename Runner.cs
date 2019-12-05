@@ -46,6 +46,7 @@ namespace MLG360
                 _Writer.Flush();
             }
         }
+
         public static void Main(string[] args)
         {
             var host = args.Length < 1 ? "127.0.0.1" : args[0];
