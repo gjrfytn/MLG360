@@ -1,19 +1,21 @@
-﻿namespace MLG360.Model.PlayerMessageGame
+﻿using MLG360.Model.Debugging;
+
+namespace MLG360.Model.Messages
 {
-    public class CustomDataMessage : PlayerMessageGame
+    public class DebugMessage : PlayerMessage
     {
         public const int TAG = 0;
 
-        public CustomData.CustomData Data { get; }
+        public DebugData Data { get; }
 
-        public CustomDataMessage(CustomData.CustomData data)
+        public DebugMessage(DebugData data)
         {
             Data = data;
         }
 
-        public static new CustomDataMessage ReadFrom(System.IO.BinaryReader reader)
+        public static new DebugMessage ReadFrom(System.IO.BinaryReader reader)
         {
-            return new CustomDataMessage(CustomData.CustomData.ReadFrom(reader));
+            return new DebugMessage(DebugData.ReadFrom(reader));
         }
 
         public override void WriteTo(System.IO.BinaryWriter writer)

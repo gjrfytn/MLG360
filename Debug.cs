@@ -1,3 +1,4 @@
+using MLG360.Model.Debugging;
 using System.IO;
 
 namespace MLG360
@@ -11,9 +12,9 @@ namespace MLG360
             this.writer = writer;
         }
 
-        public void Draw(Model.CustomData.CustomData customData)
+        public void Draw(DebugData customData)
         {
-            new Model.PlayerMessageGame.CustomDataMessage(customData).WriteTo(writer);
+            new Model.Messages.DebugMessage(customData).WriteTo(writer);
             writer.Flush();
         }
     }

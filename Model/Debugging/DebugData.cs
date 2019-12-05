@@ -1,10 +1,10 @@
-namespace MLG360.Model.CustomData
+namespace MLG360.Model.Debugging
 {
-    public abstract class CustomData
+    public abstract class DebugData
     {
         public abstract void WriteTo(System.IO.BinaryWriter writer);
 
-        public static CustomData ReadFrom(System.IO.BinaryReader reader)
+        public static DebugData ReadFrom(System.IO.BinaryReader reader)
         {
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));

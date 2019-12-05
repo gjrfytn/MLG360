@@ -1,18 +1,18 @@
-namespace MLG360.Model.PlayerMessageGame
+namespace MLG360.Model.Messages
 {
-    public abstract class PlayerMessageGame
+    public abstract class PlayerMessage
     {
         public abstract void WriteTo(System.IO.BinaryWriter writer);
 
-        public static PlayerMessageGame ReadFrom(System.IO.BinaryReader reader)
+        public static PlayerMessage ReadFrom(System.IO.BinaryReader reader)
         {
             if (reader == null)
                 throw new System.ArgumentNullException(nameof(reader));
 
             switch (reader.ReadInt32())
             {
-                case CustomDataMessage.TAG:
-                    return CustomDataMessage.ReadFrom(reader);
+                case DebugMessage.TAG:
+                    return DebugMessage.ReadFrom(reader);
                 case ActionMessage.TAG:
                     return ActionMessage.ReadFrom(reader);
                 default:

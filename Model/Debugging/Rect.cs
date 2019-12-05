@@ -1,6 +1,6 @@
-﻿namespace MLG360.Model.CustomData
+﻿namespace MLG360.Model.Debugging
 {
-    public class Rect : CustomData
+    public class Rect : DebugData
     {
         public const int TAG = 1;
 

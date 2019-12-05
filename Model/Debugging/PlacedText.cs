@@ -1,6 +1,6 @@
-﻿namespace MLG360.Model.CustomData
+﻿namespace MLG360.Model.Debugging
 {
-    public class PlacedText : CustomData
+    public class PlacedText : DebugData
     {
         public const int TAG = 4;
         public string Text { get; }

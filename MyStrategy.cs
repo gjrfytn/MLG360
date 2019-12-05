@@ -36,7 +36,7 @@ namespace MLG360
             else if (nearestEnemy != null)
                 targetPos = nearestEnemy.Position;
 
-            debug.Draw(new Model.CustomData.Log("Target pos: " + targetPos));
+            debug.Draw(new Model.Debugging.Log("Target pos: " + targetPos));
             var aim = new Vec2Double(0, 0);
             if (nearestEnemy != null)
                 aim = new Vec2Double(nearestEnemy.Position.X - unit.Position.X, nearestEnemy.Position.Y - unit.Position.Y);

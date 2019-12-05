@@ -42,7 +42,7 @@ namespace MLG360
                     if (unit.PlayerId == playerView.MyId)
                         actions.Add(unit.Id, myStrategy.GetAction(unit, playerView.Game, debug));
 
-                new Model.PlayerMessageGame.ActionMessage(new Model.Versioned(actions)).WriteTo(_Writer);
+                new Model.Messages.ActionMessage(new Model.Versioned(actions)).WriteTo(_Writer);
                 _Writer.Flush();
             }
         }

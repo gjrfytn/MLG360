@@ -1,6 +1,6 @@
-﻿namespace MLG360.Model.CustomData
+﻿namespace MLG360.Model.Debugging
 {
-    public class Log : CustomData
+    public class Log : DebugData
     {
         public const int TAG = 0;
 

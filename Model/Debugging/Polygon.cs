@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace MLG360.Model.CustomData
+namespace MLG360.Model.Debugging
 {
-    public class Polygon : CustomData
+    public class Polygon : DebugData
     {
         public const int TAG = 3;
 

@@ -1,6 +1,6 @@
-﻿namespace MLG360.Model.PlayerMessageGame
+﻿namespace MLG360.Model.Messages
 {
-    public class ActionMessage : PlayerMessageGame
+    public class ActionMessage : PlayerMessage
     {
         public const int TAG = 1;
 
