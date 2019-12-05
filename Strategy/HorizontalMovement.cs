@@ -1,4 +1,4 @@
-﻿namespace MLG360
+﻿namespace MLG360.Strategy
 {
     internal enum HorizontalMovement
     {
