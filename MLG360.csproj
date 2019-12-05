@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(ProjectDir)MyStrategy.cs&quot; &quot;D:\Dmitry\Downloads\codeside_strat&quot; /y&#xD;&#xA;xcopy &quot;$(ProjectDir)Debug.cs&quot; &quot;D:\Dmitry\Downloads\codeside_strat&quot; /y&#xD;&#xA;xcopy &quot;$(ProjectDir)Model\*&quot; &quot;D:\Dmitry\Downloads\codeside_strat&quot; /y" />
+    <Exec Command="xcopy &quot;$(ProjectDir)*.cs&quot; &quot;D:\Dmitry\Downloads\codeside_strat&quot; /y /s" />
   </Target>
 
 </Project>
