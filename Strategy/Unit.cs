@@ -10,12 +10,15 @@ namespace MLG360.Strategy
 
         public int PlayerId { get; }
         public Vector2 Pos { get; }
+        public float Height { get; }
+        public float WeaponHeight => Height / 2;
 
-        public Unit(int playerId, Vector2 pos, Weapon weapon)
+        public Unit(int playerId, Vector2 pos, Weapon weapon, float height)
         {
             PlayerId = playerId;
             Pos = pos;
             _Weapon = weapon;
+            Height = height;
         }
 
         public Action Act(IEnvironment environment)
@@ -40,7 +43,7 @@ namespace MLG360.Strategy
 
             Vector2 aim;
             if (closestEnemy != null)
-                aim = Vector2.Normalize(closestEnemy.Pos - Pos);
+                aim = Vector2.Normalize(TakeCenter(closestEnemy) - (Pos + WeaponHeight * Vector2.UnitY));
             else
                 aim = Vector2.UnitX;
 
@@ -61,5 +64,6 @@ namespace MLG360.Strategy
         }
 
         private IEnumerable<Unit> FindEnemies(IEnvironment environment) => environment.Units.Where(u => u.PlayerId != PlayerId);
+        private Vector2 TakeCenter(Unit unit) => unit.Pos + unit.Height / 2 * Vector2.UnitY;
     }
 }

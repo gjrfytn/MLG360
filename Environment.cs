@@ -14,7 +14,7 @@ namespace MLG360
             _Game = game;
         }
 
-        public IEnumerable<Unit> Units => _Game.Units.Select(u => new Unit(u.PlayerId, u.Position.CastToVector2(), new Weapon()));
+        public IEnumerable<Unit> Units => _Game.Units.Select(u => new Unit(u.PlayerId, u.Position.CastToVector2(), new Weapon(), (float)_Game.Properties.UnitSize.Y));
         public IEnumerable<Gun> Guns => _Game.LootBoxes.Where(b => b.Item is Model.Items.Weapon).Select(w => new Gun(w.Position.CastToVector2()));
 
         private List<Tile> _Tiles;

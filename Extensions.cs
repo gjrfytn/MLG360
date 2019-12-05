@@ -7,5 +7,6 @@ namespace MLG360
     {
         public static Vec2Float CastToVec2Float(this Vec2Double value) => new Vec2Float((float)value.X, (float)value.Y);
         public static Vector2 CastToVector2(this Vec2Double value) => new Vector2((float)value.X, (float)value.Y);
+        public static Vec2Float Convert(this Vector2 value) => new Vec2Float(value.X, value.Y);
     }
 }

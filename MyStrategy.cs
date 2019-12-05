@@ -1,5 +1,6 @@
 using MLG360.Model;
 using MLG360.Strategy;
+using System.Numerics;
 
 namespace MLG360
 {
@@ -15,7 +16,8 @@ namespace MLG360
                 throw new System.ArgumentNullException(nameof(debug));
 
             var environment = new Environment(game);
-            var action = new Strategy.Unit(unit.PlayerId, unit.Position.CastToVector2(), new Strategy.Weapon()).Act(environment);
+            var aiUnit = new Strategy.Unit(unit.PlayerId, unit.Position.CastToVector2(), new Strategy.Weapon(), (float)game.Properties.UnitSize.Y);
+            var action = aiUnit.Act(environment);
 
             double velocity;
             switch (action.HorizontalMovement)
@@ -33,7 +35,14 @@ namespace MLG360
                     throw new System.ArgumentOutOfRangeException(nameof(action.HorizontalMovement));
             }
 
-            var unitAction = new UnitAction(
+            var unitWeaponPos = aiUnit.Pos + aiUnit.WeaponHeight * Vector2.UnitY;
+            debug.Draw(
+                new Model.Debugging.Line(unitWeaponPos.Convert(),
+                (unitWeaponPos + 30 * action.Aim).Convert(),
+                0.1f,
+                new ColorFloat(1, 0, 0, 0.5f)));
+
+            return new UnitAction(
                 velocity,
                 action.VerticalMovement == VerticalMovement.Jump,
                 action.VerticalMovement == VerticalMovement.JumpOff,
@@ -42,15 +51,6 @@ namespace MLG360
                 action.WeaponOperation == WeaponOperation.Reload,
                 false,
                 false);
-
-            debug.Draw(
-                new Model.Debugging.Line(unit.Position.CastToVec2Float(),
-                new Vec2Float((float)(unit.Position.X + unitAction.Aim.X),
-                (float)(unit.Position.Y + unitAction.Aim.Y)),
-                0.1f,
-                new ColorFloat(1, 0, 0, 0.5f)));
-
-            return unitAction;
         }
     }
 }
