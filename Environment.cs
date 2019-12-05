@@ -1,0 +1,51 @@
+﻿using MLG360.Strategy;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+
+namespace MLG360
+{
+    internal class Environment : IEnvironment
+    {
+        private readonly Model.Game _Game;
+
+        public Environment(Model.Game game)
+        {
+            _Game = game;
+        }
+
+        public IEnumerable<Unit> Units => _Game.Units.Select(u => new Unit(u.PlayerId, u.Position.CastToVector2(), new Weapon()));
+        public IEnumerable<Gun> Guns => _Game.LootBoxes.Where(b => b.Item is Model.Items.Weapon).Select(w => new Gun(w.Position.CastToVector2()));
+
+        private List<Tile> _Tiles;
+        public IEnumerable<Tile> Tiles
+        {
+            get
+            {
+                if (_Tiles == null)
+                {
+                    _Tiles = new List<Tile>();
+
+                    for (var x = 0; x < _Game.Level.Tiles.Length; ++x)
+                        for (var y = 0; y < _Game.Level.Tiles[x].Length; ++y)
+                            _Tiles.Add(new Tile(new Vector2(x, y), Convert(_Game.Level.Tiles[x][y])));
+                }
+
+                return _Tiles;
+            }
+        }
+
+        private TileType Convert(Model.Tile value)
+        {
+            switch (value)
+            {
+                case Model.Tile.Empty: return TileType.Empty;
+                case Model.Tile.Wall: return TileType.Wall;
+                case Model.Tile.Platform: return TileType.Platform;
+                case Model.Tile.Ladder: return TileType.Ladder;
+                case Model.Tile.JumpPad: return TileType.JumpPad;
+                default: throw new System.ArgumentOutOfRangeException(nameof(value));
+            }
+        }
+    }
+}

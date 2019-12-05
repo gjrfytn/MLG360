@@ -4,12 +4,7 @@ namespace MLG360
 {
     public class MyStrategy
     {
-        private static double DistanceSqr(Vec2Double a, Vec2Double b)
-        {
-            return (a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y);
-        }
-
-        public UnitAction GetAction(Unit unit, Game game, Debug debug)
+        public UnitAction GetAction(Model.Unit unit, Game game, Debug debug)
         {
             if (unit == null)
                 throw new System.ArgumentNullException(nameof(unit));
@@ -18,37 +13,43 @@ namespace MLG360
             if (debug == null)
                 throw new System.ArgumentNullException(nameof(debug));
 
-            Unit nearestEnemy = null;
-            foreach (var other in game.Units)
-                if (other.PlayerId != unit.PlayerId &&
-                    (nearestEnemy == null || DistanceSqr(unit.Position, other.Position) < DistanceSqr(unit.Position, nearestEnemy.Position)))
-                    nearestEnemy = other;
+            var environment = new Environment(game);
+            var action = new Strategy.Unit(unit.PlayerId, unit.Position.CastToVector2(), new Strategy.Weapon()).Act(environment);
 
-            LootBox nearestWeapon = null;
-            foreach (var lootBox in game.LootBoxes)
-                if (lootBox.Item is Model.Items.Weapon &&
-                    (nearestWeapon == null || DistanceSqr(unit.Position, lootBox.Position) < DistanceSqr(unit.Position, nearestWeapon.Position)))
-                    nearestWeapon = lootBox;
+            double velocity;
+            switch (action.HorizontalMovement)
+            {
+                case HorizontalMovement.None:
+                    velocity = 0;
+                    break;
+                case HorizontalMovement.Left:
+                    velocity = -game.Properties.UnitMaxHorizontalSpeed;
+                    break;
+                case HorizontalMovement.Right:
+                    velocity = game.Properties.UnitMaxHorizontalSpeed;
+                    break;
+                default:
+                    throw new System.ArgumentOutOfRangeException(nameof(action.HorizontalMovement));
+            }
 
-            var targetPos = unit.Position;
-            if (unit.Weapon == null && nearestWeapon != null)
-                targetPos = nearestWeapon.Position;
-            else if (nearestEnemy != null)
-                targetPos = nearestEnemy.Position;
+            var unitAction = new UnitAction(
+                velocity,
+                action.VerticalMovement == VerticalMovement.Jump,
+                action.VerticalMovement == VerticalMovement.JumpOff,
+                new Vec2Double(action.Aim.X, action.Aim.Y),
+                action.WeaponOperation == WeaponOperation.Shoot,
+                action.WeaponOperation == WeaponOperation.Reload,
+                false,
+                false);
 
-            debug.Draw(new Model.Debugging.Log("Target pos: " + targetPos));
-            var aim = new Vec2Double(0, 0);
-            if (nearestEnemy != null)
-                aim = new Vec2Double(nearestEnemy.Position.X - unit.Position.X, nearestEnemy.Position.Y - unit.Position.Y);
+            debug.Draw(
+                new Model.Debugging.Line(unit.Position.CastToVec2Float(),
+                new Vec2Float((float)(unit.Position.X + unitAction.Aim.X),
+                (float)(unit.Position.Y + unitAction.Aim.Y)),
+                0.1f,
+                new ColorFloat(1, 0, 0, 0.5f)));
 
-            var jump = targetPos.Y > unit.Position.Y;
-            if (targetPos.X > unit.Position.X && game.Level.Tiles[(int)(unit.Position.X + 1)][(int)unit.Position.Y] == Tile.Wall)
-                jump = true;
-
-            if (targetPos.X < unit.Position.X && game.Level.Tiles[(int)(unit.Position.X - 1)][(int)unit.Position.Y] == Tile.Wall)
-                jump = true;
-
-            return new UnitAction(targetPos.X - unit.Position.X, jump, !jump, aim, true, false, false, false);
+            return unitAction;
         }
     }
 }
