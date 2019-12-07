@@ -7,9 +7,13 @@ namespace MLG360
     {
         private BinaryWriter writer;
 
+        public static Debug Instance { get; private set; }
+
         public Debug(BinaryWriter writer)
         {
             this.writer = writer;
+
+            Instance = this;
         }
 
         public void Draw(DebugData customData)

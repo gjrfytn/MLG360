@@ -36,20 +36,13 @@ namespace MLG360
                     throw new System.ArgumentOutOfRangeException(nameof(action.HorizontalMovement));
             }
 
-            var unitWeaponPos = aiUnit.Pos + aiUnit.WeaponHeight * Vector2.UnitY;
-            debug.Draw(
-                new Line(unitWeaponPos.Convert(),
-                (unitWeaponPos + 30 * action.Aim).Convert(),
-                0.1f,
-                new ColorFloat(1, 0, 0, 0.5f)));
-
             return new UnitAction(
                 velocity,
                 action.VerticalMovement == VerticalMovement.Jump,
                 action.VerticalMovement == VerticalMovement.JumpOff,
-                new Vec2Double(action.Aim.X, action.Aim.Y),
-                action.WeaponOperation == WeaponOperation.Shoot,
-                action.WeaponOperation == WeaponOperation.Reload,
+                new Vec2Double(action.WeaponOperation.Aim.X, action.WeaponOperation.Aim.Y),
+                action.WeaponOperation.Action == WeaponOperation.ActionType.Shoot,
+                action.WeaponOperation.Action == WeaponOperation.ActionType.Reload,
                 false,
                 false);
         }

@@ -13,7 +13,7 @@ namespace MLG360.Strategy
         public float Height { get; }
         public VerticalDynamic VerticalDynamic { get; }
 
-        public float WeaponHeight => Height / 2;
+        private Vector2 WeaponPoint => Pos + Height / 2 * Vector2.UnitY;
 
         public Unit(int playerId, Vector2 pos, Weapon weapon, float height, VerticalDynamic verticalDynamic/*HorizontalMovement horizontalMovement, VerticalMovement verticalMovement*/)
         {
@@ -44,7 +44,7 @@ namespace MLG360.Strategy
             else
                 targetPos = Pos;
 
-            var aim = closestEnemy != null && _Weapon != null ? CalculateAim(closestEnemy, environment) : Vector2.UnitX;
+            var weaponOperation = OperateWeapon(closestEnemy, environment);
 
             var currentTile = environment.Tiles.Single(t => t.Contains(Pos));
             bool jump;
@@ -58,8 +58,7 @@ namespace MLG360.Strategy
             return new Action(
                 targetPos.X > Pos.X ? HorizontalMovement.Right : HorizontalMovement.Left,
                 jump ? VerticalMovement.Jump : VerticalMovement.JumpOff,
-                aim,
-                WeaponOperation.Shoot);
+                weaponOperation);
         }
 
         private IEnumerable<Unit> FindEnemies(IEnvironment environment) => environment.Units.Where(u => u.PlayerId != PlayerId);
@@ -70,7 +69,69 @@ namespace MLG360.Strategy
             var timeToHit = distance / _Weapon.BulletSpeed; //TODO wrong?
             var aimPoint = TakeCenter(unit, PredictPos(unit, timeToHit, environment));
 
-            return Vector2.Normalize(aimPoint - (Pos + WeaponHeight * Vector2.UnitY));
+            return Vector2.Normalize(aimPoint - WeaponPoint);
+        }
+
+        private WeaponOperation OperateWeapon(Unit enemy, IEnvironment environment)
+        {
+            if (enemy == null || _Weapon == null)
+                return new WeaponOperation(Vector2.UnitX, WeaponOperation.ActionType.None);
+
+            var aim = CalculateAim(enemy, environment);
+            var action = HasLineOfSight(aim, enemy, environment) ? WeaponOperation.ActionType.Shoot : WeaponOperation.ActionType.None;
+
+            #region DEBUG
+#if DEBUG
+            Model.ColorFloat lineColor;
+            switch (action)
+            {
+                case WeaponOperation.ActionType.None:
+                    lineColor = new Model.ColorFloat(1, 0, 0, 0.3f);
+                    break;
+                case WeaponOperation.ActionType.Shoot:
+                    lineColor = new Model.ColorFloat(0, 1, 0, 0.3f);
+                    break;
+                case WeaponOperation.ActionType.Reload:
+                    lineColor = new Model.ColorFloat(1, 1, 0, 0.3f);
+                    break;
+                default: throw new System.ArgumentOutOfRangeException(nameof(action));
+            }
+
+            Debug.Instance?.Draw(
+                new Model.Debugging.Line(WeaponPoint.Convert(),
+                (WeaponPoint + 30 * aim).Convert(),
+                0.1f,
+                lineColor));
+#endif
+            #endregion
+
+            return new WeaponOperation(aim, action);
+        }
+
+        private bool HasLineOfSight(Vector2 aim, Unit enemy, IEnvironment environment)
+        {
+            var enemyDistance = Vector2.Distance(WeaponPoint, TakeCenter(enemy));
+            var wallTiles = environment.Tiles.Where(t => t.Type == TileType.Wall).ToArray();
+
+            const float checkStep = 0.25f;
+            for (var checkDist = checkStep; checkDist < enemyDistance; checkDist += checkStep)
+            {
+                var checkPoint = WeaponPoint + checkDist * aim;
+
+                if (wallTiles.Any(t => t.Contains(checkPoint)))
+                {
+                    #region DEBUG
+#if DEBUG
+                    var tile = wallTiles.First(t => t.Contains(checkPoint));
+                    Debug.Instance?.Draw(new Model.Debugging.Rect((tile.Pos - new Vector2(0.5f, 0.5f)).Convert(), new Model.Vec2Float(1, 1), new Model.ColorFloat(1, 0, 1, 0.25f)));
+#endif
+                    #endregion
+
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static Vector2 TakeCenter(Unit unit) => TakeCenter(unit, unit.Pos);
