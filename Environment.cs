@@ -14,7 +14,7 @@ namespace MLG360
             _Game = game;
         }
 
-        public IEnumerable<Unit> Units => _Game.Units.Select(u => new Unit(u.PlayerId, u.Position.CastToVector2(), new Weapon(), (float)_Game.Properties.UnitSize.Y));
+        public IEnumerable<Unit> Units => _Game.Units.Select(u => u.Convert(_Game));
         public IEnumerable<Gun> Guns => _Game.LootBoxes.Where(b => b.Item is Model.Items.Weapon).Select(w => new Gun(w.Position.CastToVector2()));
 
         private List<Tile> _Tiles;
@@ -26,9 +26,11 @@ namespace MLG360
                 {
                     _Tiles = new List<Tile>();
 
+                    const float tileSize = 1;
+                    const float tileHalfSize = tileSize / 2;
                     for (var x = 0; x < _Game.Level.Tiles.Length; ++x)
                         for (var y = 0; y < _Game.Level.Tiles[x].Length; ++y)
-                            _Tiles.Add(new Tile(new Vector2(x, y), Convert(_Game.Level.Tiles[x][y])));
+                            _Tiles.Add(new Tile(new Vector2(x + tileHalfSize, y + tileHalfSize), Convert(_Game.Level.Tiles[x][y]), new Vector2(tileSize, tileSize)));
                 }
 
                 return _Tiles;

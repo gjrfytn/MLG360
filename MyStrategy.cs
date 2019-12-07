@@ -1,4 +1,5 @@
 using MLG360.Model;
+using MLG360.Model.Debugging;
 using MLG360.Strategy;
 using System.Numerics;
 
@@ -16,7 +17,7 @@ namespace MLG360
                 throw new System.ArgumentNullException(nameof(debug));
 
             var environment = new Environment(game);
-            var aiUnit = new Strategy.Unit(unit.PlayerId, unit.Position.CastToVector2(), new Strategy.Weapon(), (float)game.Properties.UnitSize.Y);
+            var aiUnit = unit.Convert(game);
             var action = aiUnit.Act(environment);
 
             double velocity;
@@ -37,7 +38,7 @@ namespace MLG360
 
             var unitWeaponPos = aiUnit.Pos + aiUnit.WeaponHeight * Vector2.UnitY;
             debug.Draw(
-                new Model.Debugging.Line(unitWeaponPos.Convert(),
+                new Line(unitWeaponPos.Convert(),
                 (unitWeaponPos + 30 * action.Aim).Convert(),
                 0.1f,
                 new ColorFloat(1, 0, 0, 0.5f)));
