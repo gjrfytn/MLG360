@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace MLG360.Strategy
 {
-    internal class Unit
+    internal class Unit : IGameObject
     {
         private readonly Weapon _Weapon;
 
@@ -12,39 +12,49 @@ namespace MLG360.Strategy
         public Vector2 Pos { get; }
         public float Height { get; }
         public VerticalDynamic VerticalDynamic { get; }
+        public float Health { get; }
+        public float MaxHealth { get; }
 
         private Vector2 WeaponPoint => Pos + Height / 2 * Vector2.UnitY;
 
-        public Unit(int playerId, Vector2 pos, Weapon weapon, float height, VerticalDynamic verticalDynamic/*HorizontalMovement horizontalMovement, VerticalMovement verticalMovement*/)
+        public Unit(int playerId, Vector2 pos, Weapon weapon, float height, VerticalDynamic verticalDynamic, float health, float maxHealth)
         {
             PlayerId = playerId;
             Pos = pos;
             _Weapon = weapon;
             Height = height;
             VerticalDynamic = verticalDynamic;
+            Health = health;
+            MaxHealth = maxHealth;
         }
 
         public Action Act(IEnvironment environment)
         {
-            Unit closestEnemy = null;
-            foreach (var enemy in FindEnemies(environment))
-                if (closestEnemy == null || Vector2.DistanceSquared(Pos, enemy.Pos) < Vector2.DistanceSquared(Pos, closestEnemy.Pos))
-                    closestEnemy = enemy;
-
-            Gun closestGun = null;
-            foreach (var gun in environment.Guns)
-                if (closestGun == null || Vector2.DistanceSquared(Pos, gun.Pos) < Vector2.DistanceSquared(Pos, closestGun.Pos))
-                    closestGun = gun;
-
-            Vector2 targetPos;
-            if (_Weapon == null && closestGun != null)
-                targetPos = closestGun.Pos;
-            else if (closestEnemy != null)
-                targetPos = closestEnemy.Pos;
+            var targetPos = Pos;
+            var weaponOperation = new WeaponOperation(Vector2.UnitX, WeaponOperation.ActionType.None);
+            if (_Weapon == null)
+            {
+                var closestGun = FindClosestGun(environment);
+                if (closestGun != null)
+                    targetPos = closestGun.Pos;
+            }
             else
-                targetPos = Pos;
+            {
+                var closestEnemy = FindClosestEnemy(environment);
+                if (closestEnemy != null)
+                {
+                    weaponOperation = OperateWeapon(closestEnemy, environment);
+                    targetPos = closestEnemy.Pos;
 
-            var weaponOperation = OperateWeapon(closestEnemy, environment);
+                    const float healthPanicThreshold = 0.5f;
+                    if (closestEnemy.Health >= Health && Health / MaxHealth <= healthPanicThreshold)
+                    {
+                        var closestHP = FindClosestHealthPack(environment);
+                        if (closestHP != null)
+                            targetPos = closestHP.Pos;
+                    }
+                }
+            }
 
             var currentTile = environment.Tiles.Single(t => t.Contains(Pos));
             bool jump;
@@ -62,6 +72,9 @@ namespace MLG360.Strategy
         }
 
         private IEnumerable<Unit> FindEnemies(IEnvironment environment) => environment.Units.Where(u => u.PlayerId != PlayerId);
+        private Unit FindClosestEnemy(IEnvironment environment) => PickClosest(FindEnemies(environment));
+        private Gun FindClosestGun(IEnvironment environment) => PickClosest(environment.Guns);
+        private HealthPack FindClosestHealthPack(IEnvironment environment) => PickClosest(environment.HealthPacks);
 
         private Vector2 CalculateAim(Unit unit, IEnvironment environment)
         {
@@ -156,7 +169,11 @@ namespace MLG360.Strategy
             if (solidTilesAbovePos.Any())
                 return new Vector2(unit.Pos.X, solidTilesAbovePos.OrderByDescending(t => t.Top.Y).First().Top.Y);
 
+            // TODO Horizontal prediction.
+
             return pos;
         }
+
+        private T PickClosest<T>(IEnumerable<T> objects) where T : IGameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
     }
 }

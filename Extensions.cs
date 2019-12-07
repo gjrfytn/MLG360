@@ -31,7 +31,9 @@ namespace MLG360
                 value.Weapon != null ? new Strategy.Weapon((float)value.Weapon.Parameters.Bullet.Speed) : null,
                 (float)value.Size.Y,
                 //(float)_Game.Properties.UnitSize.Y, u.Stand ? HorizontalMovement.None : (u.WalkedRight ? HorizontalMovement.Right : HorizontalMovement.Left),
-                verticalDynamic);
+                verticalDynamic,
+                value.Health,
+                game.Properties.UnitMaxHealth);
         }
     }
 }

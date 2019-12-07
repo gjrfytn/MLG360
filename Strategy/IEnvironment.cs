@@ -6,6 +6,7 @@ namespace MLG360.Strategy
     {
         IEnumerable<Unit> Units { get; }
         IEnumerable<Gun> Guns { get; }
+        IEnumerable<HealthPack> HealthPacks { get; }
         IEnumerable<Tile> Tiles { get; }
     }
 }
