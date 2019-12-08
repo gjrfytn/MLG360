@@ -58,9 +58,9 @@ namespace MLG360.Strategy
 
             var currentTile = environment.Tiles.Single(t => t.Contains(Pos));
             bool jump;
-            if (targetPos.X > Pos.X && environment.Tiles.Single(t => t.Pos.X == currentTile.Pos.X + 1 && t.Pos.Y == currentTile.Pos.Y).Type == TileType.Wall)
+            if (targetPos.X > Pos.X && environment.Tiles.Single(t => t.Pos.X == currentTile.Pos.X + 1 && t.Pos.Y == currentTile.Pos.Y).IsWall)
                 jump = true;
-            else if (targetPos.X < Pos.X && environment.Tiles.Single(t => t.Pos.X == currentTile.Pos.X - 1 && t.Pos.Y == currentTile.Pos.Y).Type == TileType.Wall)
+            else if (targetPos.X < Pos.X && environment.Tiles.Single(t => t.Pos.X == currentTile.Pos.X - 1 && t.Pos.Y == currentTile.Pos.Y).IsWall)
                 jump = true;
             else
                 jump = targetPos.Y > Pos.Y;
@@ -95,26 +95,26 @@ namespace MLG360.Strategy
 
             #region DEBUG
 #if DEBUG
-            Model.ColorFloat lineColor;
-            switch (action)
-            {
-                case WeaponOperation.ActionType.None:
-                    lineColor = new Model.ColorFloat(1, 0, 0, 0.3f);
-                    break;
-                case WeaponOperation.ActionType.Shoot:
-                    lineColor = new Model.ColorFloat(0, 1, 0, 0.3f);
-                    break;
-                case WeaponOperation.ActionType.Reload:
-                    lineColor = new Model.ColorFloat(1, 1, 0, 0.3f);
-                    break;
-                default: throw new System.ArgumentOutOfRangeException(nameof(action));
-            }
+                Model.ColorFloat lineColor;
+                switch (action)
+                {
+                    case WeaponOperation.ActionType.None:
+                        lineColor = new Model.ColorFloat(1, 0, 0, 0.3f);
+                        break;
+                    case WeaponOperation.ActionType.Shoot:
+                        lineColor = new Model.ColorFloat(0, 1, 0, 0.3f);
+                        break;
+                    case WeaponOperation.ActionType.Reload:
+                        lineColor = new Model.ColorFloat(1, 1, 0, 0.3f);
+                        break;
+                    default: throw new System.ArgumentOutOfRangeException(nameof(action));
+                }
 
-            Debug.Instance?.Draw(
-                new Model.Debugging.Line(WeaponPoint.Convert(),
-                (WeaponPoint + 30 * aim).Convert(),
-                0.1f,
-                lineColor));
+                Debug.Instance?.Draw(
+                    new Model.Debugging.Line(WeaponPoint.Convert(),
+                    (WeaponPoint + 30 * aim).Convert(),
+                    0.1f,
+                    lineColor));
 #endif
             #endregion
 
@@ -124,7 +124,7 @@ namespace MLG360.Strategy
         private bool HasLineOfSight(Vector2 aim, Unit enemy, IEnvironment environment)
         {
             var enemyDistance = Vector2.Distance(WeaponPoint, TakeCenter(enemy));
-            var wallTiles = environment.Tiles.Where(t => t.Type == TileType.Wall).ToArray();
+            var wallTiles = FindWallTiles(environment).ToArray();
 
             const float checkStep = 0.25f;
             for (var checkDist = checkStep; checkDist < enemyDistance; checkDist += checkStep)
@@ -133,12 +133,12 @@ namespace MLG360.Strategy
 
                 if (wallTiles.Any(t => t.Contains(checkPoint)))
                 {
-                    #region DEBUG
 #if DEBUG
-                    var tile = wallTiles.First(t => t.Contains(checkPoint));
-                    Debug.Instance?.Draw(new Model.Debugging.Rect((tile.Pos - new Vector2(0.5f, 0.5f)).Convert(), new Model.Vec2Float(1, 1), new Model.ColorFloat(1, 0, 1, 0.25f)));
+                    {
+                        var tile = wallTiles.First(t => t.Contains(checkPoint));
+                        Debug.Instance?.Draw(new Model.Debugging.Rect((tile.Pos - new Vector2(0.5f, 0.5f)).Convert(), new Model.Vec2Float(1, 1), new Model.ColorFloat(1, 0, 1, 0.25f)));
+                    }
 #endif
-                    #endregion
 
                     return false;
                 }
@@ -146,6 +146,8 @@ namespace MLG360.Strategy
 
             return true;
         }
+
+        private T PickClosest<T>(IEnumerable<T> objects) where T : IGameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
 
         private static Vector2 TakeCenter(Unit unit) => TakeCenter(unit, unit.Pos);
         private static Vector2 TakeCenter(Unit unit, Vector2 pos) => pos + unit.Height / 2 * Vector2.UnitY;
@@ -174,6 +176,6 @@ namespace MLG360.Strategy
             return pos;
         }
 
-        private T PickClosest<T>(IEnumerable<T> objects) where T : IGameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
+        public static IEnumerable<Tile> FindWallTiles(IEnvironment environment) => environment.Tiles.Where(t => t.IsWall);
     }
 }

@@ -28,12 +28,20 @@ namespace MLG360
             return new Strategy.Unit(
                 value.PlayerId,
                 value.Position.CastToVector2(),
-                value.Weapon != null ? new Strategy.Weapon((float)value.Weapon.Parameters.Bullet.Speed) : null,
+                value.Weapon?.Convert(),
                 (float)value.Size.Y,
                 //(float)_Game.Properties.UnitSize.Y, u.Stand ? HorizontalMovement.None : (u.WalkedRight ? HorizontalMovement.Right : HorizontalMovement.Left),
                 verticalDynamic,
                 value.Health,
                 game.Properties.UnitMaxHealth);
+        }
+
+        public static Strategy.Weapon Convert(this Weapon value)
+        {
+            return new Strategy.Weapon(
+                (float)value.Parameters.Bullet.Speed,
+                (float)(value.Parameters.Explosion != null ? value.Parameters.Explosion.Radius : 0),
+                (float)value.Parameters.Bullet.Size);
         }
     }
 }

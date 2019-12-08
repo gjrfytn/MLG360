@@ -10,6 +10,11 @@ namespace MLG360.Strategy
         public Vector2 Pos { get; }
         public TileType Type { get; }
         public Vector2 Top => Pos + _HalfSize.Y * Vector2.UnitY;
+        public Vector2 TopLeft => Pos + new Vector2(-_HalfSize.X, _HalfSize.Y);
+        public Vector2 TopRight => Pos + new Vector2(_HalfSize.X, _HalfSize.Y);
+        public Vector2 BottomRight => Pos + new Vector2(_HalfSize.X, -_HalfSize.Y);
+        public Vector2 BottomLeft => Pos - new Vector2(_HalfSize.X, _HalfSize.Y);
+        public bool IsWall => Type == TileType.Wall;
 
         public Tile(Vector2 pos, TileType type, Vector2 size)
         {
