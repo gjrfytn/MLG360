@@ -51,16 +51,16 @@ namespace MLG360.Strategy
             }
 
             var currentTile = environment.Tiles.Single(t => t.Contains(Pos));
-            bool jump;
+            VerticalMovement verticalMovement;
             if (targetPos.X > Pos.X && environment.GetRightTile(currentTile).IsWall ||
                 targetPos.X < Pos.X && environment.GetLeftTile(currentTile).IsWall)
-                jump = true;
+                verticalMovement = VerticalMovement.Jump;
             else
-                jump = targetPos.Y > Pos.Y;
+                verticalMovement = targetPos.Y > Pos.Y ? VerticalMovement.Jump : VerticalMovement.JumpOff;
 
             return new Action(
                 targetPos.X > Pos.X ? HorizontalMovement.Right : HorizontalMovement.Left,
-                jump ? VerticalMovement.Jump : VerticalMovement.JumpOff,
+                verticalMovement,
                 weaponOperation);
         }
 
@@ -106,7 +106,7 @@ namespace MLG360.Strategy
                         var tileWeaponPoint = tile.Bottom + WeaponHeight * Vector2.UnitY;
                         var enemyCenter = TakeCenter(closestEnemy);
                         var aimToEnemy = enemyCenter - tileWeaponPoint;
-                        var hasSight = HasLineOfSight(tileWeaponPoint, aimToEnemy, Vector2.Distance(tileWeaponPoint, enemyCenter), environment);
+                        var hasSight = HasLineOfSight(tileWeaponPoint, aimToEnemy, Vector2.Distance(tileWeaponPoint, enemyCenter), 0.01f, environment);
 
                         if (!hasSight)
                             return tile.Pos;
@@ -132,7 +132,7 @@ namespace MLG360.Strategy
                 return new WeaponOperation(Vector2.UnitX, WeaponOperation.ActionType.None);
 
             var aim = CalculateAim(enemy, environment);
-            var action = HasLineOfSight(WeaponPoint, aim, Vector2.Distance(WeaponPoint, TakeCenter(enemy)), environment) ?
+            var action = HasLineOfSight(WeaponPoint, aim, Vector2.Distance(WeaponPoint, TakeCenter(enemy)), 2 * _Weapon.BulletSize, environment) ?
                 WeaponOperation.ActionType.Shoot : WeaponOperation.ActionType.None;
 
             #region DEBUG
@@ -165,8 +165,9 @@ namespace MLG360.Strategy
 
         private T PickClosest<T>(IEnumerable<T> objects) where T : IGameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
 
-        private static bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, IEnvironment environment)
+        private static bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, float size, IEnvironment environment)
         {
+            var halfSize = size / 2;
             var wallTiles = FindWallTiles(environment).ToArray();
 
             const float checkStep = 0.25f;
@@ -174,8 +175,17 @@ namespace MLG360.Strategy
             {
                 var checkPoint = from + checkDist * aim;
 
-                if (wallTiles.Any(t => t.Contains(checkPoint)))
-                    return false;
+                var corners = new[]
+                {
+                    checkPoint + new Vector2(-halfSize, halfSize),
+                    checkPoint + new Vector2(halfSize, halfSize),
+                    checkPoint + new Vector2(halfSize, -halfSize),
+                    checkPoint - new Vector2(halfSize, halfSize),
+                };
+
+                foreach (var corner in corners)
+                    if (wallTiles.Any(t => t.Contains(corner)))
+                        return false;
             }
 
             return true;
