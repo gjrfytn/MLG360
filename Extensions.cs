@@ -41,7 +41,9 @@ namespace MLG360
             return new Strategy.Weapon(
                 (float)value.Parameters.Bullet.Speed,
                 (float)(value.Parameters.Explosion != null ? value.Parameters.Explosion.Radius : 0),
-                (float)value.Parameters.Bullet.Size);
+                (float)value.Parameters.Bullet.Size,
+                (float)(value.FireTimer ?? 0),
+                (float)value.Parameters.FireRate);
         }
     }
 }

@@ -15,7 +15,8 @@ namespace MLG360.Strategy
         public float Health { get; }
         public float MaxHealth { get; }
 
-        private Vector2 WeaponPoint => Pos + Height / 2 * Vector2.UnitY;
+        private float WeaponHeight => Height / 2;
+        private Vector2 WeaponPoint => Pos + WeaponHeight * Vector2.UnitY;
 
         public Unit(int playerId, Vector2 pos, Weapon weapon, float height, VerticalDynamic verticalDynamic, float health, float maxHealth)
         {
@@ -79,7 +80,7 @@ namespace MLG360.Strategy
                     return closestHP.Pos;
             }
 
-            if (enemyInSight)
+            if (enemyInSight || _Weapon.NeedsReload)
             {
                 //TODO plant mine if hp is not too close.
 
@@ -92,6 +93,24 @@ namespace MLG360.Strategy
 
                     return Vector2.DistanceSquared(Pos, leftTile.Bottom) < Vector2.DistanceSquared(Pos, rightTile.Bottom) && !leftTile.IsWall ?
                         leftTile.Bottom : rightTile.Bottom;
+                }
+                else if (_Weapon.NeedsReload) //TODO remove check?
+                {
+                    var solidTiles = environment.Tiles.Where(t => t.IsWall || t.Type == TileType.Platform || t.Type == TileType.Ladder).ToArray();
+                    var freeTiles = environment.Tiles.Where(t => (t.Type == TileType.Empty || t.Type == TileType.Ladder) &&
+                                                                 solidTiles.Any(st => st.Pos.X == t.Pos.X && st.Pos.Y == t.Pos.Y - 1))
+                                                     .OrderBy(t => Vector2.DistanceSquared(Pos, t.Bottom));
+
+                    foreach (var tile in freeTiles)
+                    {
+                        var tileWeaponPoint = tile.Bottom + WeaponHeight * Vector2.UnitY;
+                        var enemyCenter = TakeCenter(closestEnemy);
+                        var aimToEnemy = enemyCenter - tileWeaponPoint;
+                        var hasSight = HasLineOfSight(tileWeaponPoint, aimToEnemy, Vector2.Distance(tileWeaponPoint, enemyCenter), environment);
+
+                        if (!hasSight)
+                            return tile.Pos;
+                    }
                 }
             }
 
