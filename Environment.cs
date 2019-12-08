@@ -7,6 +7,8 @@ namespace MLG360
 {
     internal class Environment : IEnvironment
     {
+        private const float _TileSize = 1;
+
         private readonly Model.Game _Game;
 
         public Environment(Model.Game game)
@@ -27,11 +29,10 @@ namespace MLG360
                 {
                     _Tiles = new List<Tile>();
 
-                    const float tileSize = 1;
-                    const float tileHalfSize = tileSize / 2;
+                    const float tileHalfSize = _TileSize / 2;
                     for (var x = 0; x < _Game.Level.Tiles.Length; ++x)
                         for (var y = 0; y < _Game.Level.Tiles[x].Length; ++y)
-                            _Tiles.Add(new Tile(new Vector2(x + tileHalfSize, y + tileHalfSize), Convert(_Game.Level.Tiles[x][y]), new Vector2(tileSize, tileSize)));
+                            _Tiles.Add(new Tile(new Vector2(x + tileHalfSize, y + tileHalfSize), Convert(_Game.Level.Tiles[x][y]), new Vector2(_TileSize, _TileSize)));
                 }
 
                 return _Tiles;
@@ -50,5 +51,8 @@ namespace MLG360
                 default: throw new System.ArgumentOutOfRangeException(nameof(value));
             }
         }
+
+        public Tile GetLeftTile(Tile tile) => Tiles.SingleOrDefault(t => t.Pos.X == tile.Pos.X - _TileSize && t.Pos.Y == tile.Pos.Y);
+        public Tile GetRightTile(Tile tile) => Tiles.SingleOrDefault(t => t.Pos.X == tile.Pos.X + _TileSize && t.Pos.Y == tile.Pos.Y);
     }
 }

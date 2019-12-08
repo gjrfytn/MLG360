@@ -44,7 +44,8 @@ namespace MLG360.Strategy
                 if (closestEnemy != null)
                 {
                     weaponOperation = OperateWeapon(closestEnemy, environment);
-                    targetPos = closestEnemy.Pos;
+
+                    targetPos = PositionSelf(closestEnemy, weaponOperation.Action == WeaponOperation.ActionType.Shoot, environment);
 
                     const float healthPanicThreshold = 0.5f;
                     if (closestEnemy.Health >= Health && Health / MaxHealth <= healthPanicThreshold)
@@ -58,9 +59,8 @@ namespace MLG360.Strategy
 
             var currentTile = environment.Tiles.Single(t => t.Contains(Pos));
             bool jump;
-            if (targetPos.X > Pos.X && environment.Tiles.Single(t => t.Pos.X == currentTile.Pos.X + 1 && t.Pos.Y == currentTile.Pos.Y).IsWall)
-                jump = true;
-            else if (targetPos.X < Pos.X && environment.Tiles.Single(t => t.Pos.X == currentTile.Pos.X - 1 && t.Pos.Y == currentTile.Pos.Y).IsWall)
+            if (targetPos.X > Pos.X && environment.GetRightTile(currentTile).IsWall ||
+                targetPos.X < Pos.X && environment.GetLeftTile(currentTile).IsWall)
                 jump = true;
             else
                 jump = targetPos.Y > Pos.Y;
@@ -75,6 +75,26 @@ namespace MLG360.Strategy
         private Unit FindClosestEnemy(IEnvironment environment) => PickClosest(FindEnemies(environment));
         private Gun FindClosestGun(IEnvironment environment) => PickClosest(environment.Guns);
         private HealthPack FindClosestHealthPack(IEnvironment environment) => PickClosest(environment.HealthPacks);
+
+        private Vector2 PositionSelf(Unit closestEnemy, bool enemyInSight, IEnvironment environment)
+        {
+            if (enemyInSight)
+            {
+                //TODO plant mine if hp is not too close.
+
+                var closestHP = FindClosestHealthPack(environment);
+                if (closestHP != null)
+                {
+                    var tileWithHP = environment.Tiles.Single(t => t.Contains(closestHP.Pos));
+                    var leftTile = environment.GetLeftTile(tileWithHP);
+                    var rightTile = environment.GetRightTile(tileWithHP);
+
+                    return Vector2.DistanceSquared(Pos, leftTile.Pos) < Vector2.DistanceSquared(Pos, rightTile.Pos) ? leftTile.Pos : rightTile.Pos;
+                }
+            }
+
+            return closestEnemy.Pos;
+        }
 
         private Vector2 CalculateAim(Unit unit, IEnvironment environment)
         {
@@ -95,26 +115,26 @@ namespace MLG360.Strategy
 
             #region DEBUG
 #if DEBUG
-                Model.ColorFloat lineColor;
-                switch (action)
-                {
-                    case WeaponOperation.ActionType.None:
-                        lineColor = new Model.ColorFloat(1, 0, 0, 0.3f);
-                        break;
-                    case WeaponOperation.ActionType.Shoot:
-                        lineColor = new Model.ColorFloat(0, 1, 0, 0.3f);
-                        break;
-                    case WeaponOperation.ActionType.Reload:
-                        lineColor = new Model.ColorFloat(1, 1, 0, 0.3f);
-                        break;
-                    default: throw new System.ArgumentOutOfRangeException(nameof(action));
-                }
+            Model.ColorFloat lineColor;
+            switch (action)
+            {
+                case WeaponOperation.ActionType.None:
+                    lineColor = new Model.ColorFloat(1, 0, 0, 0.3f);
+                    break;
+                case WeaponOperation.ActionType.Shoot:
+                    lineColor = new Model.ColorFloat(0, 1, 0, 0.3f);
+                    break;
+                case WeaponOperation.ActionType.Reload:
+                    lineColor = new Model.ColorFloat(1, 1, 0, 0.3f);
+                    break;
+                default: throw new System.ArgumentOutOfRangeException(nameof(action));
+            }
 
-                Debug.Instance?.Draw(
-                    new Model.Debugging.Line(WeaponPoint.Convert(),
-                    (WeaponPoint + 30 * aim).Convert(),
-                    0.1f,
-                    lineColor));
+            Debug.Instance?.Draw(
+                new Model.Debugging.Line(WeaponPoint.Convert(),
+                (WeaponPoint + 30 * aim).Convert(),
+                0.1f,
+                lineColor));
 #endif
             #endregion
 
