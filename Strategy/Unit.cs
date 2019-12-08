@@ -90,8 +90,8 @@ namespace MLG360.Strategy
                     var leftTile = environment.GetLeftTile(tileWithHP);
                     var rightTile = environment.GetRightTile(tileWithHP);
 
-                    return Vector2.DistanceSquared(Pos, leftTile.Pos) < Vector2.DistanceSquared(Pos, rightTile.Pos) && !leftTile.IsWall ?
-                        leftTile.Pos : rightTile.Pos;
+                    return Vector2.DistanceSquared(Pos, leftTile.Bottom) < Vector2.DistanceSquared(Pos, rightTile.Bottom) && !leftTile.IsWall ?
+                        leftTile.Bottom : rightTile.Bottom;
                 }
             }
 
@@ -113,7 +113,8 @@ namespace MLG360.Strategy
                 return new WeaponOperation(Vector2.UnitX, WeaponOperation.ActionType.None);
 
             var aim = CalculateAim(enemy, environment);
-            var action = HasLineOfSight(aim, enemy, environment) ? WeaponOperation.ActionType.Shoot : WeaponOperation.ActionType.None;
+            var action = HasLineOfSight(WeaponPoint, aim, Vector2.Distance(WeaponPoint, TakeCenter(enemy)), environment) ?
+                WeaponOperation.ActionType.Shoot : WeaponOperation.ActionType.None;
 
             #region DEBUG
 #if DEBUG
@@ -143,33 +144,23 @@ namespace MLG360.Strategy
             return new WeaponOperation(aim, action);
         }
 
-        private bool HasLineOfSight(Vector2 aim, Unit enemy, IEnvironment environment)
+        private T PickClosest<T>(IEnumerable<T> objects) where T : IGameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
+
+        private static bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, IEnvironment environment)
         {
-            var enemyDistance = Vector2.Distance(WeaponPoint, TakeCenter(enemy));
             var wallTiles = FindWallTiles(environment).ToArray();
 
             const float checkStep = 0.25f;
-            for (var checkDist = checkStep; checkDist < enemyDistance; checkDist += checkStep)
+            for (var checkDist = checkStep; checkDist <= distance; checkDist += checkStep)
             {
-                var checkPoint = WeaponPoint + checkDist * aim;
+                var checkPoint = from + checkDist * aim;
 
                 if (wallTiles.Any(t => t.Contains(checkPoint)))
-                {
-#if DEBUG
-                    {
-                        var tile = wallTiles.First(t => t.Contains(checkPoint));
-                        Debug.Instance?.Draw(new Model.Debugging.Rect((tile.Pos - new Vector2(0.5f, 0.5f)).Convert(), new Model.Vec2Float(1, 1), new Model.ColorFloat(1, 0, 1, 0.25f)));
-                    }
-#endif
-
                     return false;
-                }
             }
 
             return true;
         }
-
-        private T PickClosest<T>(IEnumerable<T> objects) where T : IGameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
 
         private static Vector2 TakeCenter(Unit unit) => TakeCenter(unit, unit.Pos);
         private static Vector2 TakeCenter(Unit unit, Vector2 pos) => pos + unit.Height / 2 * Vector2.UnitY;
