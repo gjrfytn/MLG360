@@ -46,14 +46,6 @@ namespace MLG360.Strategy
                     weaponOperation = OperateWeapon(closestEnemy, environment);
 
                     targetPos = PositionSelf(closestEnemy, weaponOperation.Action == WeaponOperation.ActionType.Shoot, environment);
-
-                    const float healthPanicThreshold = 0.5f;
-                    if (closestEnemy.Health >= Health && Health / MaxHealth <= healthPanicThreshold)
-                    {
-                        var closestHP = FindClosestHealthPack(environment);
-                        if (closestHP != null)
-                            targetPos = closestHP.Pos;
-                    }
                 }
             }
 
@@ -78,18 +70,28 @@ namespace MLG360.Strategy
 
         private Vector2 PositionSelf(Unit closestEnemy, bool enemyInSight, IEnvironment environment)
         {
+            var closestHP = FindClosestHealthPack(environment);
+
+            if (closestHP != null)
+            {
+                const float healthPanicThreshold = 0.5f;
+                if (closestEnemy.Health >= Health && Health / MaxHealth <= healthPanicThreshold)
+                    return closestHP.Pos;
+            }
+
             if (enemyInSight)
             {
                 //TODO plant mine if hp is not too close.
 
-                var closestHP = FindClosestHealthPack(environment);
+                closestHP = FindClosestHealthPack(environment);
                 if (closestHP != null)
                 {
                     var tileWithHP = environment.Tiles.Single(t => t.Contains(closestHP.Pos));
                     var leftTile = environment.GetLeftTile(tileWithHP);
                     var rightTile = environment.GetRightTile(tileWithHP);
 
-                    return Vector2.DistanceSquared(Pos, leftTile.Pos) < Vector2.DistanceSquared(Pos, rightTile.Pos) ? leftTile.Pos : rightTile.Pos;
+                    return Vector2.DistanceSquared(Pos, leftTile.Pos) < Vector2.DistanceSquared(Pos, rightTile.Pos) && !leftTile.IsWall ?
+                        leftTile.Pos : rightTile.Pos;
                 }
             }
 
