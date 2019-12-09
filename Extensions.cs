@@ -9,7 +9,7 @@ namespace MLG360
         public static Vector2 CastToVector2(this Vec2Double value) => new Vector2((float)value.X, (float)value.Y);
         public static Vec2Float Convert(this Vector2 value) => new Vec2Float(value.X, value.Y);
 
-        public static Strategy.Unit Convert(this Unit value, Game game)
+        public static Strategy.Unit Convert(this Unit value, Game game, Environment environment)
         {
             Strategy.VerticalDynamic.Type verticalDynamicType;
             if (value.JumpState.MaxTime == 0)
@@ -33,7 +33,8 @@ namespace MLG360
                 //(float)_Game.Properties.UnitSize.Y, u.Stand ? HorizontalMovement.None : (u.WalkedRight ? HorizontalMovement.Right : HorizontalMovement.Left),
                 verticalDynamic,
                 value.Health,
-                game.Properties.UnitMaxHealth);
+                game.Properties.UnitMaxHealth,
+                environment);
         }
 
         public static Strategy.Weapon Convert(this Weapon value)

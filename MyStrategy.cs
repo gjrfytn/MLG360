@@ -17,8 +17,8 @@ namespace MLG360
                 throw new System.ArgumentNullException(nameof(debug));
 
             var environment = new Environment(game);
-            var aiUnit = unit.Convert(game);
-            var action = aiUnit.Act(environment);
+            var aiUnit = unit.Convert(game, environment);
+            var action = aiUnit.Act();
 
             double velocity;
             switch (action.HorizontalMovement)
