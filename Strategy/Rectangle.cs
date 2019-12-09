@@ -18,6 +18,7 @@ namespace MLG360.Strategy
         public bool Contains(Vector2 pos) => InXArea(pos) && InYArea(pos);
         public bool InXArea(Vector2 pos) => Center.X - HalfWidth <= pos.X && Center.X + HalfWidth > pos.X;
         public bool InYArea(Vector2 pos) => Center.Y - HalfHeight <= pos.Y && Center.Y + HalfHeight > pos.Y;
-        public bool Intersects(Rectangle rect) => Contains(rect.TopLeft) || Contains(rect.TopRight) || Contains(rect.BottomRight) || Contains(rect.BottomLeft);
+        public bool Intersects(Rectangle rect) => Contains(rect.TopLeft) || Contains(rect.TopRight) || Contains(rect.BottomRight) || Contains(rect.BottomLeft) ||
+                                                  rect.Contains(TopLeft) || rect.Contains(TopRight) || rect.Contains(BottomRight) || rect.Contains(BottomLeft);
     }
 }
