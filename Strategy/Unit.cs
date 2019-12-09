@@ -4,13 +4,12 @@ using System.Numerics;
 
 namespace MLG360.Strategy
 {
-    internal class Unit : Rectangle, IGameObject
+    internal class Unit : GameObject
     {
         private readonly Vector2 _Size;
         private readonly Weapon _Weapon;
 
         public int PlayerId { get; }
-        public Vector2 Pos { get; }
         public VerticalDynamic VerticalDynamic { get; }
         public float Health { get; }
         public float MaxHealth { get; }
@@ -18,14 +17,9 @@ namespace MLG360.Strategy
         private float WeaponHeight => Height / 2;
         private Vector2 WeaponPoint => Pos + WeaponHeight * Vector2.UnitY;
 
-        protected override Vector2 Center => Pos + _Size.Y * Vector2.UnitY; //TODO duplicate
-        protected override float Width => _Size.X;
-        protected override float Height => _Size.Y;
-
-        public Unit(int playerId, Vector2 pos, Weapon weapon, Vector2 size, VerticalDynamic verticalDynamic, float health, float maxHealth)
+        public Unit(int playerId, Vector2 pos, Weapon weapon, Vector2 size, VerticalDynamic verticalDynamic, float health, float maxHealth) : base(pos, size)
         {
             PlayerId = playerId;
-            Pos = pos;
             _Weapon = weapon;
             _Size = size;
             VerticalDynamic = verticalDynamic;
@@ -167,7 +161,7 @@ namespace MLG360.Strategy
             return new WeaponOperation(aim, action);
         }
 
-        private T PickClosest<T>(IEnumerable<T> objects) where T : IGameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
+        private T PickClosest<T>(IEnumerable<T> objects) where T : GameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
 
         private static bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, float size, IEnvironment environment)
         {
