@@ -104,7 +104,7 @@ namespace MLG360.Strategy
                         var tileWeaponPoint = tile.Bottom + WeaponHeight * Vector2.UnitY;
                         var enemyCenter = TakeCenter(closestEnemy);
                         var aimToEnemy = enemyCenter - tileWeaponPoint;
-                        var hasSight = HasLineOfSight(tileWeaponPoint, aimToEnemy, Vector2.Distance(tileWeaponPoint, enemyCenter), 0.01f, environment);
+                        var hasSight = HasLineOfSight(tileWeaponPoint, aimToEnemy, Vector2.Distance(tileWeaponPoint, enemyCenter), environment);
 
                         if (!hasSight)
                             return tile.Pos;
@@ -163,30 +163,14 @@ namespace MLG360.Strategy
 
         private T PickClosest<T>(IEnumerable<T> objects) where T : GameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
 
+        private static bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, IEnvironment environment)
+        {
+            return !new Ray(from, aim, distance).Intersects(FindWallTiles(environment));
+        }
+
         private static bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, float size, IEnvironment environment)
         {
-            var halfSize = size / 2;
-            var wallTiles = FindWallTiles(environment).ToArray();
-
-            const float checkStep = 0.25f;
-            for (var checkDist = checkStep; checkDist <= distance; checkDist += checkStep)
-            {
-                var checkPoint = from + checkDist * aim;
-
-                var corners = new[]
-                {
-                    checkPoint + new Vector2(-halfSize, halfSize),
-                    checkPoint + new Vector2(halfSize, halfSize),
-                    checkPoint + new Vector2(halfSize, -halfSize),
-                    checkPoint - new Vector2(halfSize, halfSize),
-                };
-
-                foreach (var corner in corners)
-                    if (wallTiles.Any(t => t.Contains(corner)))
-                        return false;
-            }
-
-            return true;
+            return !new Ray(from, aim, distance).Intersects(FindWallTiles(environment), new Vector2(size, size));
         }
 
         private static Vector2 TakeCenter(Unit unit) => TakeCenter(unit, unit.Pos);
