@@ -8,7 +8,7 @@ namespace MLG360.Strategy
 
         public Vector2 Pos { get; } // Bottom center
 
-        protected override Vector2 Center => Pos + _Size.Y * Vector2.UnitY;
+        protected override Vector2 Center => Pos + _Size.Y / 2 * Vector2.UnitY;
         protected override float Width => _Size.X;
         protected override float Height => _Size.Y;
 
