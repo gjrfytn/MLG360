@@ -29,7 +29,7 @@ namespace MLG360
                 value.PlayerId,
                 value.Position.CastToVector2(),
                 value.Weapon?.Convert(),
-                (float)value.Size.Y,
+                value.Size.CastToVector2(),
                 //(float)_Game.Properties.UnitSize.Y, u.Stand ? HorizontalMovement.None : (u.WalkedRight ? HorizontalMovement.Right : HorizontalMovement.Left),
                 verticalDynamic,
                 value.Health,

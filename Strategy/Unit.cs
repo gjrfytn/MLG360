@@ -4,13 +4,13 @@ using System.Numerics;
 
 namespace MLG360.Strategy
 {
-    internal class Unit : IGameObject
+    internal class Unit : Rectangle, IGameObject
     {
+        private readonly Vector2 _Size;
         private readonly Weapon _Weapon;
 
         public int PlayerId { get; }
         public Vector2 Pos { get; }
-        public float Height { get; }
         public VerticalDynamic VerticalDynamic { get; }
         public float Health { get; }
         public float MaxHealth { get; }
@@ -18,12 +18,16 @@ namespace MLG360.Strategy
         private float WeaponHeight => Height / 2;
         private Vector2 WeaponPoint => Pos + WeaponHeight * Vector2.UnitY;
 
-        public Unit(int playerId, Vector2 pos, Weapon weapon, float height, VerticalDynamic verticalDynamic, float health, float maxHealth)
+        protected override Vector2 Center => Pos + _Size.Y * Vector2.UnitY; //TODO duplicate
+        protected override float Width => _Size.X;
+        protected override float Height => _Size.Y;
+
+        public Unit(int playerId, Vector2 pos, Weapon weapon, Vector2 size, VerticalDynamic verticalDynamic, float health, float maxHealth)
         {
             PlayerId = playerId;
             Pos = pos;
             _Weapon = weapon;
-            Height = height;
+            _Size = size;
             VerticalDynamic = verticalDynamic;
             Health = health;
             MaxHealth = maxHealth;
