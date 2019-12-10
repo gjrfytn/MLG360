@@ -9,7 +9,7 @@ namespace MLG360
         public static Vector2 CastToVector2(this Vec2Double value) => new Vector2((float)value.X, (float)value.Y);
         public static Vec2Float Convert(this Vector2 value) => new Vec2Float(value.X, value.Y);
 
-        public static Strategy.Unit Convert(this Unit value, Game game, Environment environment)
+        public static Strategy.Unit Convert(this Unit value, Game game)
         {
             Strategy.VerticalDynamic.Type verticalDynamicType;
             if (value.JumpState.MaxTime == 0)
@@ -34,17 +34,20 @@ namespace MLG360
                 verticalDynamic,
                 value.Health,
                 game.Properties.UnitMaxHealth,
-                environment);
+                new Environment(game),
+                new Scoretable(game));
         }
 
         public static Strategy.Weapon Convert(this Weapon value)
         {
             return new Strategy.Weapon(
                 (float)value.Parameters.Bullet.Speed,
-                (float)(value.Parameters.Explosion != null ? value.Parameters.Explosion.Radius : 0),
+                (float)(2 * value.Parameters.Explosion?.Radius ?? 0),
+                value.Parameters.Explosion?.Damage ?? 0,
                 (float)value.Parameters.Bullet.Size,
                 (float)(value.FireTimer ?? 0),
-                (float)value.Parameters.FireRate);
+                (float)value.Parameters.FireRate,
+                (float)value.Spread);
         }
     }
 }

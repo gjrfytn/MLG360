@@ -6,18 +6,22 @@
         private readonly float _FireRate;
 
         public float BulletSpeed { get; }
-        public float BulletExplosionRadius { get; }
+        public float BulletExplosionSize { get; }
+        public int BulletExplosionDamage { get; }
         public float BulletSize { get; }
+        public float Spread { get; }
 
         public bool NeedsReload => _FireTimer > _FireRate;
 
-        public Weapon(float bulletSpeed, float bulletExplosionRadius, float bulletSize, float fireTimer, float fireRate)
+        public Weapon(float bulletSpeed, float bulletExplosionSize, int bulletExplosionDamage, float bulletSize, float fireTimer, float fireRate, float spread)
         {
             BulletSpeed = bulletSpeed;
-            BulletExplosionRadius = bulletExplosionRadius;
+            BulletExplosionSize = bulletExplosionSize;
+            BulletExplosionDamage = bulletExplosionDamage;
             BulletSize = bulletSize;
             _FireTimer = fireTimer;
             _FireRate = fireRate;
+            Spread = spread;
         }
     }
 }

@@ -19,7 +19,9 @@ namespace MLG360.Strategy
 
         public bool Intersects(IEnumerable<Rectangle> rectangles) => Intersects(rectangles, Vector2.Zero);
 
-        public bool Intersects(IEnumerable<Rectangle> rectangles, Vector2 slideBoxSize)
+        public bool Intersects(IEnumerable<Rectangle> rectangles, Vector2 slideBoxSize) => FindIntersectionPoint(rectangles, slideBoxSize).HasValue;
+
+        public Vector2? FindIntersectionPoint(IEnumerable<Rectangle> rectangles, Vector2 slideBoxSize)
         {
             var rectanglesArr = rectangles.ToArray();
 
@@ -30,10 +32,10 @@ namespace MLG360.Strategy
 
                 foreach (var boxCheckPoint in GetCheckPoints(checkPoint, slideBoxSize))
                     if (rectanglesArr.Any(t => t.Contains(boxCheckPoint)))
-                        return true;
+                        return checkPoint;
             }
 
-            return false;
+            return null;
         }
 
         private static IEnumerable<Vector2> GetCheckPoints(Vector2 originCheckPoint, Vector2 boxSize)

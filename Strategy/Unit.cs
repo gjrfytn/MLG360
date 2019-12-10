@@ -7,6 +7,7 @@ namespace MLG360.Strategy
     internal class Unit : GameObject
     {
         private readonly IEnvironment _Environment;
+        private readonly IScoretable _Scoretable;
         private readonly Weapon _Weapon;
 
         public int PlayerId { get; }
@@ -17,7 +18,7 @@ namespace MLG360.Strategy
         private float WeaponHeight => Height / 2;
         private Vector2 WeaponPoint => Pos + WeaponHeight * Vector2.UnitY;
 
-        public Unit(int playerId, Vector2 pos, Weapon weapon, Vector2 size, VerticalDynamic verticalDynamic, float health, float maxHealth, IEnvironment environment) : base(pos, size)
+        public Unit(int playerId, Vector2 pos, Weapon weapon, Vector2 size, VerticalDynamic verticalDynamic, float health, float maxHealth, IEnvironment environment, IScoretable scoretable) : base(pos, size)
         {
             PlayerId = playerId;
             _Weapon = weapon;
@@ -25,6 +26,7 @@ namespace MLG360.Strategy
             Health = health;
             MaxHealth = maxHealth;
             _Environment = environment;
+            _Scoretable = scoretable;
         }
 
         public Action Act()
@@ -130,33 +132,35 @@ namespace MLG360.Strategy
                 return new WeaponOperation(Vector2.UnitX, WeaponOperation.ActionType.None);
 
             var aim = CalculateAim(enemy);
-            var action = HasLineOfSight(WeaponPoint, aim, Vector2.Distance(WeaponPoint, TakeCenter(enemy)), 2 * _Weapon.BulletSize) ?
-                WeaponOperation.ActionType.Shoot : WeaponOperation.ActionType.None;
 
-            #region DEBUG
+            var hasLineOfSight = HasLineOfSight(WeaponPoint, aim, Vector2.Distance(WeaponPoint, TakeCenter(enemy)), 2 * _Weapon.BulletSize);
+
+            var action = hasLineOfSight && CheckWeaponFireSafety(enemy, aim) ? WeaponOperation.ActionType.Shoot : WeaponOperation.ActionType.None;
+
 #if DEBUG
-            Model.ColorFloat lineColor;
-            switch (action)
             {
-                case WeaponOperation.ActionType.None:
-                    lineColor = new Model.ColorFloat(1, 0, 0, 0.3f);
-                    break;
-                case WeaponOperation.ActionType.Shoot:
-                    lineColor = new Model.ColorFloat(0, 1, 0, 0.3f);
-                    break;
-                case WeaponOperation.ActionType.Reload:
-                    lineColor = new Model.ColorFloat(1, 1, 0, 0.3f);
-                    break;
-                default: throw new System.ArgumentOutOfRangeException(nameof(action));
-            }
+                Model.ColorFloat lineColor;
+                switch (action)
+                {
+                    case WeaponOperation.ActionType.None:
+                        lineColor = new Model.ColorFloat(1, 0, 0, 0.3f);
+                        break;
+                    case WeaponOperation.ActionType.Shoot:
+                        lineColor = new Model.ColorFloat(0, 1, 0, 0.3f);
+                        break;
+                    case WeaponOperation.ActionType.Reload:
+                        lineColor = new Model.ColorFloat(1, 1, 0, 0.3f);
+                        break;
+                    default: throw new System.ArgumentOutOfRangeException(nameof(action));
+                }
 
-            Debug.Instance?.Draw(
-                new Model.Debugging.Line(WeaponPoint.Convert(),
-                (WeaponPoint + 30 * aim).Convert(),
-                0.1f,
-                lineColor));
+                Debug.Instance?.Draw(
+                    new Model.Debugging.Line(WeaponPoint.Convert(),
+                    (WeaponPoint + 30 * aim).Convert(),
+                    0.1f,
+                    lineColor));
+            }
 #endif
-            #endregion
 
             return new WeaponOperation(aim, action);
         }
@@ -164,6 +168,74 @@ namespace MLG360.Strategy
         private T PickClosest<T>(IEnumerable<T> objects) where T : GameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
         private bool HasLineOfSight(Vector2 from, Vector2 aim, float distance) => !new Ray(from, aim, distance).Intersects(FindWallTiles());
         private bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, float size) => !new Ray(from, aim, distance).Intersects(FindWallTiles(), new Vector2(size, size));
+
+        private bool CheckWeaponFireSafety(Unit enemy, Vector2 aim)
+        {
+            if (_Weapon.BulletExplosionSize > 0)
+            {
+                var canDamageSelf = false;
+                var damageToEnemy = 0;
+
+                var leftSpreadEdge = new Ray(WeaponPoint, Vector2.Transform(aim, Matrix3x2.CreateRotation(_Weapon.Spread)), _Weapon.BulletExplosionSize);
+                var rightSpreadEdge = new Ray(WeaponPoint, Vector2.Transform(aim, Matrix3x2.CreateRotation(-_Weapon.Spread)), _Weapon.BulletExplosionSize);
+
+#if DEBUG
+                {
+                    Debug.Instance?.Draw(
+                        new Model.Debugging.Line(WeaponPoint.Convert(),
+                        (WeaponPoint + 30 * Vector2.Transform(aim, Matrix3x2.CreateRotation(_Weapon.Spread))).Convert(),
+                        0.1f,
+                        new Model.ColorFloat(0.5f, 0.5f, 0.5f, 0.5f)));
+
+                    Debug.Instance?.Draw(
+                        new Model.Debugging.Line(WeaponPoint.Convert(),
+                        (WeaponPoint + 30 * Vector2.Transform(aim, Matrix3x2.CreateRotation(-_Weapon.Spread))).Convert(),
+                        0.1f,
+                        new Model.ColorFloat(0.5f, 0.5f, 0.5f, 0.5f)));
+                }
+#endif
+
+                var wallTiles = FindWallTiles().ToArray();
+                var impactPoints = new[]
+                {
+                    leftSpreadEdge.FindIntersectionPoint(wallTiles, new Vector2(_Weapon.BulletSize, _Weapon.BulletSize)),
+                    rightSpreadEdge.FindIntersectionPoint(wallTiles, new Vector2(_Weapon.BulletSize, _Weapon.BulletSize))
+                    // TODO Enemy impact (sector class!)
+                };
+
+                var explosions = impactPoints.Where(p => p.HasValue).Select(p => new Explosion(p.Value, _Weapon.BulletExplosionSize, _Weapon.BulletExplosionDamage));
+
+                foreach (var explosion in explosions)
+                {
+                    if (Intersects(explosion))
+                    {
+                        canDamageSelf = true;
+                        damageToEnemy = enemy.Intersects(explosion) ? explosion.Damage : 0;
+
+                        break;
+                    }
+                }
+
+                if (canDamageSelf && damageToEnemy != 0)
+                    return ShouldKamikaze(enemy, damageToEnemy);
+
+                return !canDamageSelf;
+            }
+
+            return true;
+        }
+
+        private bool ShouldKamikaze(Unit enemy, int damageToEnemy)
+        {
+            var willDie = Health <= _Weapon.BulletExplosionDamage;
+            var enemyWillDie = enemy.Health <= damageToEnemy;
+            var hasMoreOrEqualPoints = _Scoretable.GetPlayerScore(PlayerId) >= _Scoretable.GetPlayerScore(enemy.PlayerId);
+
+            if (willDie)
+                return enemyWillDie && hasMoreOrEqualPoints;
+
+            return true;
+        }
 
         private Vector2 PredictPos(Unit unit, float time)
         {
