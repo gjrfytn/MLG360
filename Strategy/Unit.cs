@@ -281,20 +281,20 @@ namespace MLG360.Strategy
             return dodgeMove ?? DodgeExplosions();
         }
 
+        private readonly Movement[] _DodgeMoves = new[]
+        {
+            new Movement(HorizontalMovement.Left, VerticalMovement.None),
+            new Movement(HorizontalMovement.Right, VerticalMovement.None),
+            new Movement(HorizontalMovement.None, VerticalMovement.Jump),
+            new Movement(HorizontalMovement.None, VerticalMovement.JumpOff),
+            new Movement(HorizontalMovement.Left, VerticalMovement.Jump),
+            new Movement(HorizontalMovement.Right, VerticalMovement.Jump),
+            new Movement(HorizontalMovement.Right, VerticalMovement.JumpOff),
+            new Movement(HorizontalMovement.Left, VerticalMovement.JumpOff)
+        };
+
         private Movement DodgeExplosions()
         {
-            var dodgeMoves = new[]
-            {
-                new Movement(HorizontalMovement.Left, VerticalMovement.None),
-                new Movement(HorizontalMovement.Right, VerticalMovement.None),
-                new Movement(HorizontalMovement.None, VerticalMovement.Jump),
-                new Movement(HorizontalMovement.None, VerticalMovement.JumpOff),
-                new Movement(HorizontalMovement.Left, VerticalMovement.Jump),
-                new Movement(HorizontalMovement.Right, VerticalMovement.Jump),
-                new Movement(HorizontalMovement.Right, VerticalMovement.JumpOff),
-                new Movement(HorizontalMovement.Left, VerticalMovement.JumpOff)
-            };
-
             var wallTiles = FindWallTiles().ToArray();
             var explosiveBullets = _Environment.Bullets.Where(b => b.ExplosionSize > 0);
 
@@ -307,41 +307,13 @@ namespace MLG360.Strategy
                 if (Intersects(explosion))
                 {
                     var minDodgeTime = float.MaxValue;
-                    foreach (var dodgeMove in dodgeMoves)
+                    foreach (var dodgeMove in _DodgeMoves)
                     {
-                        float dx; ;
-                        switch (dodgeMove.Horizontal)
-                        {
-                            case HorizontalMovement.None:
-                                dx = 0;
-                                break;
-                            case HorizontalMovement.Left:
-                                dx = -_RunSpeed;
-                                break;
-                            case HorizontalMovement.Right:
-                                dx = _RunSpeed;
-                                break;
-                            default: throw new System.ArgumentOutOfRangeException(nameof(dodgeMove.Horizontal));
-                        }
-
-                        float dy;
-                        switch (dodgeMove.Vertical)
-                        {
-                            case VerticalMovement.None:
-                                dy = 0;
-                                break;
-                            case VerticalMovement.Jump:
-                                dy = _JumpSpeed;
-                                break;
-                            case VerticalMovement.JumpOff:
-                                dy = -VerticalDynamic.FallSpeed;
-                                break;
-                            default: throw new System.ArgumentOutOfRangeException(nameof(dodgeMove.Vertical));
-                        }
+                        var velocity = Convert(dodgeMove);
 
                         for (var dt = _Environment.DTime; dt <= wallHit.DTime; dt += _Environment.DTime)
                         {
-                            var movedUnit = Clone(Pos + new Vector2(dx, dy) * dt);
+                            var movedUnit = Clone(Pos + velocity * dt);
 
                             if (wallTiles.Any(t => t.Intersects(movedUnit)))
                                 break;
@@ -358,15 +330,96 @@ namespace MLG360.Strategy
                             }
                         }
                     }
+
+                    if (result != null)
+                        break;
                 }
             }
 
             return result;
         }
 
+        //TODO duplication
         private Movement DodgeBullets()
         {
-            return null;
+            var wallTiles = FindWallTiles().ToArray();
+
+            Movement result = null;
+            foreach (var bullet in _Environment.Bullets)
+            {
+                var unitHit = bullet.FindHit(new[] { this });
+                if (unitHit != null)
+                {
+                    var wallHit = bullet.FindHit(wallTiles);
+                    if (unitHit.DTime < wallHit.DTime)
+                    {
+                        var minDodgeTime = float.MaxValue;
+                        foreach (var dodgeMove in _DodgeMoves)
+                        {
+                            var velocity = Convert(dodgeMove);
+
+                            for (var dt = _Environment.DTime; dt <= wallHit.DTime; dt += _Environment.DTime)
+                            {
+                                var movedUnit = Clone(Pos + velocity * dt);
+
+                                if (wallTiles.Any(t => t.Intersects(movedUnit)))
+                                    break;
+
+                                if (bullet.FindHit(new[] { movedUnit }) == null)
+                                {
+                                    if (dt < minDodgeTime)
+                                    {
+                                        result = dodgeMove;
+                                        minDodgeTime = dt;
+                                    }
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (result != null)
+                            break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private Vector2 Convert(Movement move)
+        {
+            float dx; ;
+            switch (move.Horizontal)
+            {
+                case HorizontalMovement.None:
+                    dx = 0;
+                    break;
+                case HorizontalMovement.Left:
+                    dx = -_RunSpeed;
+                    break;
+                case HorizontalMovement.Right:
+                    dx = _RunSpeed;
+                    break;
+                default: throw new System.ArgumentOutOfRangeException(nameof(move.Horizontal));
+            }
+
+            float dy;
+            switch (move.Vertical)
+            {
+                case VerticalMovement.None:
+                    dy = 0;
+                    break;
+                case VerticalMovement.Jump:
+                    dy = _JumpSpeed;
+                    break;
+                case VerticalMovement.JumpOff:
+                    dy = -VerticalDynamic.FallSpeed;
+                    break;
+                default: throw new System.ArgumentOutOfRangeException(nameof(move.Vertical));
+            }
+
+            return new Vector2(dx, dy);
         }
 
         private Unit Clone(Vector2 pos) => new Unit(PlayerId, pos, _Weapon, _Size, _RunSpeed, _JumpSpeed, VerticalDynamic, Health, MaxHealth, _Environment, _Scoretable);

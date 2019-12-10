@@ -18,7 +18,7 @@ namespace MLG360.Strategy
         protected override float Width => _Size;
         protected override float Height => _Size;
 
-        private Ray Path => new Ray(_Pos, Velocity, float.MaxValue);
+        private Ray Path => new Ray(_Pos, Velocity, 100); //TODO 100
 
         public Bullet(Vector2 pos, float size, Vector2 velocity, int damage, float explosionSize, int explosionDamage)
         {
