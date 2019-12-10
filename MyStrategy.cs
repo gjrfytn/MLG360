@@ -1,7 +1,5 @@
 using MLG360.Model;
-using MLG360.Model.Debugging;
 using MLG360.Strategy;
-using System.Numerics;
 
 namespace MLG360
 {
@@ -20,7 +18,7 @@ namespace MLG360
             var action = aiUnit.Act();
 
             double velocity;
-            switch (action.HorizontalMovement)
+            switch (action.Movement.Horizontal)
             {
                 case HorizontalMovement.None:
                     velocity = 0;
@@ -32,13 +30,13 @@ namespace MLG360
                     velocity = game.Properties.UnitMaxHorizontalSpeed;
                     break;
                 default:
-                    throw new System.ArgumentOutOfRangeException(nameof(action.HorizontalMovement));
+                    throw new System.ArgumentOutOfRangeException(nameof(action.Movement.Horizontal));
             }
 
             return new UnitAction(
                 velocity,
-                action.VerticalMovement == VerticalMovement.Jump,
-                action.VerticalMovement == VerticalMovement.JumpOff,
+                action.Movement.Vertical == VerticalMovement.Jump,
+                action.Movement.Vertical == VerticalMovement.JumpOff,
                 new Vec2Double(action.WeaponOperation.Aim.X, action.WeaponOperation.Aim.Y),
                 action.WeaponOperation.Action == WeaponOperation.ActionType.Shoot,
                 action.WeaponOperation.Action == WeaponOperation.ActionType.Reload,

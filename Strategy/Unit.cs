@@ -50,6 +50,16 @@ namespace MLG360.Strategy
                 }
             }
 
+            return new Action(Pathfind(targetPos), weaponOperation);
+        }
+
+        private IEnumerable<Unit> FindEnemies() => _Environment.Units.Where(u => u.PlayerId != PlayerId);
+        private Unit FindClosestEnemy() => PickClosest(FindEnemies());
+        private Gun FindClosestGun() => PickClosest(_Environment.Guns);
+        private HealthPack FindClosestHealthPack() => PickClosest(_Environment.HealthPacks);
+
+        private Movement Pathfind(Vector2 targetPos)
+        {
             var currentTile = _Environment.Tiles.Single(t => t.Contains(Pos));
             VerticalMovement verticalMovement;
             if (targetPos.X > Pos.X && _Environment.GetRightTile(currentTile).IsWall ||
@@ -58,16 +68,8 @@ namespace MLG360.Strategy
             else
                 verticalMovement = targetPos.Y > Pos.Y ? VerticalMovement.Jump : VerticalMovement.JumpOff;
 
-            return new Action(
-                targetPos.X > Pos.X ? HorizontalMovement.Right : HorizontalMovement.Left,
-                verticalMovement,
-                weaponOperation);
+            return new Movement(targetPos.X > Pos.X ? HorizontalMovement.Right : HorizontalMovement.Left, verticalMovement);
         }
-
-        private IEnumerable<Unit> FindEnemies() => _Environment.Units.Where(u => u.PlayerId != PlayerId);
-        private Unit FindClosestEnemy() => PickClosest(FindEnemies());
-        private Gun FindClosestGun() => PickClosest(_Environment.Guns);
-        private HealthPack FindClosestHealthPack() => PickClosest(_Environment.HealthPacks);
 
         private Vector2 PositionSelf(Unit closestEnemy, bool enemyInSight)
         {
