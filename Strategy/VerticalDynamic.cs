@@ -3,9 +3,10 @@
     internal class VerticalDynamic
     {
         private readonly Type _Type;
-        private readonly float _FallSpeed;
         private readonly float _ThrowSpeed;
         private readonly float _ThrowTimeRemain;
+
+        public float FallSpeed { get; }
 
         public enum Type
         {
@@ -17,7 +18,7 @@
         public VerticalDynamic(Type type, float fallSpeed, float throwSpeed, float throwTimeRemain)
         {
             _Type = type;
-            _FallSpeed = fallSpeed;
+            FallSpeed = fallSpeed;
             _ThrowSpeed = throwSpeed;
             _ThrowTimeRemain = throwTimeRemain;
         }
@@ -33,6 +34,6 @@
             }
         }
 
-        private float CalculateFallDPos(float dtime) => -_FallSpeed * dtime;
+        private float CalculateFallDPos(float dtime) => -FallSpeed * dtime;
     }
 }

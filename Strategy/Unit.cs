@@ -9,6 +9,9 @@ namespace MLG360.Strategy
         private readonly IEnvironment _Environment;
         private readonly IScoretable _Scoretable;
         private readonly Weapon _Weapon;
+        private readonly Vector2 _Size;
+        private readonly float _RunSpeed;
+        private readonly float _JumpSpeed;
 
         public int PlayerId { get; }
         public VerticalDynamic VerticalDynamic { get; }
@@ -18,10 +21,14 @@ namespace MLG360.Strategy
         private float WeaponHeight => Height / 2;
         private Vector2 WeaponPoint => Pos + WeaponHeight * Vector2.UnitY;
 
-        public Unit(int playerId, Vector2 pos, Weapon weapon, Vector2 size, VerticalDynamic verticalDynamic, float health, float maxHealth, IEnvironment environment, IScoretable scoretable) : base(pos, size)
+        public Unit(int playerId, Vector2 pos, Weapon weapon, Vector2 size, float runSpeed, float jumpSpeed, VerticalDynamic verticalDynamic, float health, float maxHealth, IEnvironment environment, IScoretable scoretable) :
+            base(pos, size)
         {
             PlayerId = playerId;
             _Weapon = weapon;
+            _Size = size;
+            _RunSpeed = runSpeed;
+            _JumpSpeed = jumpSpeed;
             VerticalDynamic = verticalDynamic;
             Health = health;
             MaxHealth = maxHealth;
@@ -50,7 +57,9 @@ namespace MLG360.Strategy
                 }
             }
 
-            return new Action(Pathfind(targetPos), weaponOperation);
+            var dodgeMove = Dodge();
+
+            return new Action(dodgeMove ?? Pathfind(targetPos), weaponOperation);
         }
 
         private IEnumerable<Unit> FindEnemies() => _Environment.Units.Where(u => u.PlayerId != PlayerId);
@@ -264,6 +273,103 @@ namespace MLG360.Strategy
         }
 
         private IEnumerable<Tile> FindWallTiles() => _Environment.Tiles.Where(t => t.IsWall);
+
+        private Movement Dodge()
+        {
+            var dodgeMove = DodgeBullets();
+
+            return dodgeMove ?? DodgeExplosions();
+        }
+
+        private Movement DodgeExplosions()
+        {
+            var dodgeMoves = new[]
+            {
+                new Movement(HorizontalMovement.Left, VerticalMovement.None),
+                new Movement(HorizontalMovement.Right, VerticalMovement.None),
+                new Movement(HorizontalMovement.None, VerticalMovement.Jump),
+                new Movement(HorizontalMovement.None, VerticalMovement.JumpOff),
+                new Movement(HorizontalMovement.Left, VerticalMovement.Jump),
+                new Movement(HorizontalMovement.Right, VerticalMovement.Jump),
+                new Movement(HorizontalMovement.Right, VerticalMovement.JumpOff),
+                new Movement(HorizontalMovement.Left, VerticalMovement.JumpOff)
+            };
+
+            var wallTiles = FindWallTiles().ToArray();
+            var explosiveBullets = _Environment.Bullets.Where(b => b.ExplosionSize > 0);
+
+            Movement result = null;
+            foreach (var bullet in explosiveBullets)
+            {
+                var wallHit = bullet.FindHit(wallTiles);
+                var explosion = new Explosion(wallHit.Pos, bullet.ExplosionSize, bullet.ExplosionDamage);
+
+                if (Intersects(explosion))
+                {
+                    var minDodgeTime = float.MaxValue;
+                    foreach (var dodgeMove in dodgeMoves)
+                    {
+                        float dx; ;
+                        switch (dodgeMove.Horizontal)
+                        {
+                            case HorizontalMovement.None:
+                                dx = 0;
+                                break;
+                            case HorizontalMovement.Left:
+                                dx = -_RunSpeed;
+                                break;
+                            case HorizontalMovement.Right:
+                                dx = _RunSpeed;
+                                break;
+                            default: throw new System.ArgumentOutOfRangeException(nameof(dodgeMove.Horizontal));
+                        }
+
+                        float dy;
+                        switch (dodgeMove.Vertical)
+                        {
+                            case VerticalMovement.None:
+                                dy = 0;
+                                break;
+                            case VerticalMovement.Jump:
+                                dy = _JumpSpeed;
+                                break;
+                            case VerticalMovement.JumpOff:
+                                dy = -VerticalDynamic.FallSpeed;
+                                break;
+                            default: throw new System.ArgumentOutOfRangeException(nameof(dodgeMove.Vertical));
+                        }
+
+                        for (var dt = _Environment.DTime; dt <= wallHit.DTime; dt += _Environment.DTime)
+                        {
+                            var movedUnit = Clone(Pos + new Vector2(dx, dy) * dt);
+
+                            if (wallTiles.Any(t => t.Intersects(movedUnit)))
+                                break;
+
+                            if (!movedUnit.Intersects(explosion))
+                            {
+                                if (dt < minDodgeTime)
+                                {
+                                    result = dodgeMove;
+                                    minDodgeTime = dt;
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private Movement DodgeBullets()
+        {
+            return null;
+        }
+
+        private Unit Clone(Vector2 pos) => new Unit(PlayerId, pos, _Weapon, _Size, _RunSpeed, _JumpSpeed, VerticalDynamic, Health, MaxHealth, _Environment, _Scoretable);
 
         private static Vector2 TakeCenter(Unit unit) => TakeCenter(unit, unit.Pos);
         private static Vector2 TakeCenter(Unit unit, Vector2 pos) => pos + unit.Height / 2 * Vector2.UnitY;

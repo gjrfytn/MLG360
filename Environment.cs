@@ -16,6 +16,7 @@ namespace MLG360
             _Game = game;
         }
 
+        public float DTime => (float)(1 / _Game.Properties.TicksPerSecond);
         public IEnumerable<Unit> Units => _Game.Units.Select(u => u.Convert(_Game));
         public IEnumerable<Gun> Guns => _Game.LootBoxes.Where(b => b.Item is Model.Items.Weapon).Select(w => new Gun(w.Position.CastToVector2(), w.Size.CastToVector2()));
         public IEnumerable<HealthPack> HealthPacks => _Game.LootBoxes.Where(b => b.Item is Model.Items.HealthPack).Select(p => new HealthPack(p.Position.CastToVector2(), p.Size.CastToVector2()));
@@ -38,6 +39,14 @@ namespace MLG360
                 return _Tiles;
             }
         }
+
+        public IEnumerable<Bullet> Bullets => _Game.Bullets.Select(b => new Bullet(
+            b.Position.CastToVector2(),
+            (float)b.Size,
+            b.Velocity.CastToVector2(),
+            b.Damage,
+            2 * (float)(b.ExplosionParameters?.Radius ?? 0),
+            b.ExplosionParameters?.Damage ?? 0));
 
         private TileType Convert(Model.Tile value)
         {

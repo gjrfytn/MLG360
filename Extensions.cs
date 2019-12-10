@@ -30,6 +30,8 @@ namespace MLG360
                 value.Position.CastToVector2(),
                 value.Weapon?.Convert(),
                 value.Size.CastToVector2(),
+                (float)game.Properties.UnitMaxHorizontalSpeed,
+                (float)game.Properties.UnitJumpSpeed,
                 //(float)_Game.Properties.UnitSize.Y, u.Stand ? HorizontalMovement.None : (u.WalkedRight ? HorizontalMovement.Right : HorizontalMovement.Left),
                 verticalDynamic,
                 value.Health,
