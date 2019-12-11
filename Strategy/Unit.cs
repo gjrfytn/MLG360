@@ -304,16 +304,32 @@ namespace MLG360.Strategy
                 var wallHit = bullet.FindHit(wallTiles);
                 var explosion = new Explosion(wallHit.Pos, bullet.ExplosionSize, bullet.ExplosionDamage);
 
-                if (Intersects(explosion))
+                var unitHit = false;
+                for (float dt = 0; dt <= wallHit.DTime; dt += _Environment.DTime)
+                {
+                    var movedUnit = Clone(PredictPos(this, dt));
+                    unitHit = movedUnit.Intersects(explosion);
+
+                    if (unitHit)
+                        break;
+                }
+
+                if (unitHit)
                 {
                     var minDodgeTime = float.MaxValue;
                     foreach (var dodgeMove in _DodgeMoves)
                     {
-                        var velocity = Convert(dodgeMove);
+                        var moveVelocity = Convert(dodgeMove);
 
                         for (var dt = _Environment.DTime; dt <= wallHit.DTime; dt += _Environment.DTime)
                         {
-                            var movedUnit = Clone(Pos + velocity * dt);
+                            Vector2 unitPos;
+                            if (dodgeMove.Vertical == VerticalMovement.None || dodgeMove.Vertical == VerticalMovement.JumpOff) //TODO platforms break None!
+                                unitPos = PredictPos(this, dt) + moveVelocity.X * Vector2.UnitX * dt;
+                            else
+                                unitPos = Pos + moveVelocity * dt;
+
+                            var movedUnit = Clone(unitPos);
 
                             if (wallTiles.Any(t => t.Intersects(movedUnit)))
                                 break;
@@ -332,7 +348,12 @@ namespace MLG360.Strategy
                     }
 
                     if (result != null)
+                    {
+                        //if (wallHit.DTime - minDodgeTime > 2 * _Environment.DTime) //TODO
+                        //    result = null;
+
                         break;
+                    }
                 }
             }
 
@@ -347,20 +368,36 @@ namespace MLG360.Strategy
             Movement result = null;
             foreach (var bullet in _Environment.Bullets)
             {
-                var unitHit = bullet.FindHit(new[] { this });
+                var wallHit = bullet.FindHit(wallTiles);
+
+                Hit unitHit = null;
+                for (float dt = 0; dt <= wallHit.DTime; dt += _Environment.DTime)
+                {
+                    var movedUnit = Clone(PredictPos(this, dt));
+                    unitHit = bullet.FindHit(new[] { movedUnit });
+
+                    if (unitHit != null)
+                        break;
+                }
+
                 if (unitHit != null)
                 {
-                    var wallHit = bullet.FindHit(wallTiles);
                     if (unitHit.DTime < wallHit.DTime)
                     {
                         var minDodgeTime = float.MaxValue;
                         foreach (var dodgeMove in _DodgeMoves)
                         {
-                            var velocity = Convert(dodgeMove);
+                            var moveVelocity = Convert(dodgeMove);
 
                             for (var dt = _Environment.DTime; dt <= wallHit.DTime; dt += _Environment.DTime)
                             {
-                                var movedUnit = Clone(Pos + velocity * dt);
+                                Vector2 unitPos;
+                                if (dodgeMove.Vertical == VerticalMovement.None || dodgeMove.Vertical == VerticalMovement.JumpOff) //TODO platforms break None! //TODO jump time (<_>)
+                                    unitPos = PredictPos(this, dt) + moveVelocity.X * Vector2.UnitX * dt;
+                                else
+                                    unitPos = Pos + moveVelocity * dt;
+
+                                var movedUnit = Clone(unitPos);
 
                                 if (wallTiles.Any(t => t.Intersects(movedUnit)))
                                     break;
@@ -379,7 +416,12 @@ namespace MLG360.Strategy
                         }
 
                         if (result != null)
+                        {
+                            if (unitHit.DTime - minDodgeTime > 2 * _Environment.DTime)
+                                result = null;
+
                             break;
+                        }
                     }
                 }
             }
@@ -389,7 +431,7 @@ namespace MLG360.Strategy
 
         private Vector2 Convert(Movement move)
         {
-            float dx; ;
+            float dx;
             switch (move.Horizontal)
             {
                 case HorizontalMovement.None:

@@ -9,7 +9,7 @@ namespace MLG360.Strategy
 
         public Vector2 Pos { get; }
         public TileType Type { get; }
-        public Vector2 Top => Pos + _HalfSize.Y * Vector2.UnitY;
+        public Vector2 Top => Pos + _HalfSize.Y * Vector2.UnitY; //TODO Epsilon?
         public Vector2 Bottom => Pos - _HalfSize.Y * Vector2.UnitY;
         public bool IsWall => Type == TileType.Wall;
 

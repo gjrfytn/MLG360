@@ -17,7 +17,7 @@ namespace MLG360
         }
 
         public float DTime => (float)(1 / _Game.Properties.TicksPerSecond);
-        public IEnumerable<Unit> Units => _Game.Units.Select(u => u.Convert(_Game));
+        public IEnumerable<Unit> Units => _Game.Units.Select(u => u.Convert(_Game, false));
         public IEnumerable<Gun> Guns => _Game.LootBoxes.Where(b => b.Item is Model.Items.Weapon).Select(w => new Gun(w.Position.CastToVector2(), w.Size.CastToVector2()));
         public IEnumerable<HealthPack> HealthPacks => _Game.LootBoxes.Where(b => b.Item is Model.Items.HealthPack).Select(p => new HealthPack(p.Position.CastToVector2(), p.Size.CastToVector2()));
 

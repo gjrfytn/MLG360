@@ -14,7 +14,7 @@ namespace MLG360
             if (debug == null)
                 throw new System.ArgumentNullException(nameof(debug));
 
-            var aiUnit = unit.Convert(game);
+            var aiUnit = unit.Convert(game, true);
             var action = aiUnit.Act();
 
             double velocity;
