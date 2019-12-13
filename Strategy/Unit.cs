@@ -293,7 +293,7 @@ namespace MLG360.Strategy
 
         private Movement Dodge(HorizontalMovement currentHorizontalMovement)
         {
-            var dodgeMove = DodgeBullets();
+            var dodgeMove = DodgeBullets(currentHorizontalMovement);
 
             return dodgeMove ?? DodgeExplosions(currentHorizontalMovement);
         }
@@ -378,7 +378,7 @@ namespace MLG360.Strategy
         }
 
         //TODO duplication
-        private Movement DodgeBullets()
+        private Movement DodgeBullets(HorizontalMovement currentHorizontalMovement)
         {
             var wallTiles = FindWallTiles().ToArray();
 
@@ -390,7 +390,7 @@ namespace MLG360.Strategy
                 Hit unitHit = null;
                 for (float dt = 0; dt <= wallHit.DTime; dt += _Environment.DTime)
                 {
-                    var movedUnit = Clone(PredictPos(this, dt, HorizontalMovement.None));
+                    var movedUnit = Clone(PredictPos(this, dt, currentHorizontalMovement));
                     unitHit = bullet.FindHit(new[] { movedUnit });
 
                     if (unitHit != null)
@@ -406,11 +406,12 @@ namespace MLG360.Strategy
                         {
                             var moveVelocity = Convert(dodgeMove);
 
+                            float? dodgeTime = null;
                             for (var dt = _Environment.DTime; dt <= wallHit.DTime; dt += _Environment.DTime)
                             {
                                 Vector2 unitPos;
                                 if (dodgeMove.Vertical == VerticalMovement.None || dodgeMove.Vertical == VerticalMovement.JumpOff) //TODO platforms break None! //TODO jump time (<_>)
-                                    unitPos = PredictPos(this, dt, HorizontalMovement.None) + moveVelocity.X * Vector2.UnitX * dt;
+                                    unitPos = PredictPos(this, dt, dodgeMove.Horizontal);
                                 else
                                     unitPos = Pos + moveVelocity * dt;
 
@@ -419,23 +420,32 @@ namespace MLG360.Strategy
                                 if (wallTiles.Any(t => t.Intersects(movedUnit)))
                                     break;
 
-                                if (bullet.FindHit(new[] { movedUnit }) == null)
+                                if (bullet.FindHit(new[] { movedUnit }) == null) //TODO Move bullet by dt too???
                                 {
-                                    if (dt < minDodgeTime)
-                                    {
-                                        result = dodgeMove;
-                                        minDodgeTime = dt;
-                                    }
+                                    if (!dodgeTime.HasValue)
+                                        dodgeTime = dt;
+                                }
+                                else if(dodgeTime.HasValue)
+                                {
+                                    dodgeTime = null;
 
                                     break;
                                 }
+                            }
+
+                            if (dodgeTime.HasValue &&
+                                dodgeTime.Value < minDodgeTime &&
+                                dodgeTime.Value < unitHit.DTime)
+                            {
+                                result = dodgeMove;
+                                minDodgeTime = dodgeTime.Value;
                             }
                         }
 
                         if (result != null)
                         {
-                            if (unitHit.DTime - minDodgeTime > 2 * _Environment.DTime)
-                                result = null;
+                            //if (unitHit.DTime - minDodgeTime > 2 * _Environment.DTime) //TODO
+                            //    result = null;
 
                             break;
                         }
