@@ -57,9 +57,11 @@ namespace MLG360.Strategy
                 }
             }
 
-            var dodgeMove = Dodge();
+            var movement = Pathfind(targetPos);
 
-            return new Action(dodgeMove ?? Pathfind(targetPos), weaponOperation);
+            var dodgeMove = Dodge(movement.Horizontal);
+
+            return new Action(dodgeMove ?? movement, weaponOperation);
         }
 
         private IEnumerable<Unit> FindEnemies() => _Environment.Units.Where(u => u.PlayerId != PlayerId);
@@ -132,7 +134,7 @@ namespace MLG360.Strategy
         {
             var distance = Vector2.Distance(Pos, TakeCenter(unit));
             var timeToHit = distance / _Weapon.BulletSpeed; //TODO wrong?
-            var aimPoint = TakeCenter(unit, PredictPos(unit, timeToHit));
+            var aimPoint = TakeCenter(unit, PredictPos(unit, timeToHit, HorizontalMovement.None));
 
             return Vector2.Normalize(aimPoint - WeaponPoint);
         }
@@ -248,14 +250,29 @@ namespace MLG360.Strategy
             return true;
         }
 
-        private Vector2 PredictPos(Unit unit, float time)
+        private Vector2 PredictPos(Unit unit, float dtime, HorizontalMovement horizontalMovement)
         {
-            var dy = unit.VerticalDynamic.CalculateDPos(time);
+            float dx;
+            switch (horizontalMovement)
+            {
+                case HorizontalMovement.None:
+                    dx = 0;
+                    break;
+                case HorizontalMovement.Left:
+                    dx = -unit._RunSpeed * dtime;
+                    break;
+                case HorizontalMovement.Right:
+                    dx = unit._RunSpeed * dtime;
+                    break;
+                default: throw new System.ArgumentOutOfRangeException(nameof(horizontalMovement));
+            }
+
+            var dy = unit.VerticalDynamic.CalculateDPos(dtime);
 
             if (dy == 0)
-                return unit.Pos;
+                return unit.Pos + dx * Vector2.UnitX;
 
-            var pos = unit.Pos + dy * Vector2.UnitY;
+            var pos = unit.Pos + new Vector2(dx, dy);
 
             var solidTilesAbovePos = _Environment.Tiles
                                                 .Where(t => t.Type != TileType.Empty &&
@@ -265,7 +282,7 @@ namespace MLG360.Strategy
                                                 .ToArray();
 
             if (solidTilesAbovePos.Any())
-                return new Vector2(unit.Pos.X, solidTilesAbovePos.OrderByDescending(t => t.Top.Y).First().Top.Y);
+                return new Vector2(unit.Pos.X + dx, solidTilesAbovePos.OrderByDescending(t => t.Top.Y).First().Top.Y);
 
             // TODO Horizontal prediction.
 
@@ -274,11 +291,11 @@ namespace MLG360.Strategy
 
         private IEnumerable<Tile> FindWallTiles() => _Environment.Tiles.Where(t => t.IsWall);
 
-        private Movement Dodge()
+        private Movement Dodge(HorizontalMovement currentHorizontalMovement)
         {
             var dodgeMove = DodgeBullets();
 
-            return dodgeMove ?? DodgeExplosions();
+            return dodgeMove ?? DodgeExplosions(currentHorizontalMovement);
         }
 
         private readonly Movement[] _DodgeMoves = new[]
@@ -293,7 +310,7 @@ namespace MLG360.Strategy
             new Movement(HorizontalMovement.Left, VerticalMovement.JumpOff)
         };
 
-        private Movement DodgeExplosions()
+        private Movement DodgeExplosions(HorizontalMovement currentHorizontalMovement)
         {
             var wallTiles = FindWallTiles().ToArray();
             var explosiveBullets = _Environment.Bullets.Where(b => b.ExplosionSize > 0);
@@ -307,7 +324,7 @@ namespace MLG360.Strategy
                 var unitHit = false;
                 for (float dt = 0; dt <= wallHit.DTime; dt += _Environment.DTime)
                 {
-                    var movedUnit = Clone(PredictPos(this, dt));
+                    var movedUnit = Clone(PredictPos(this, dt, currentHorizontalMovement));
                     unitHit = movedUnit.Intersects(explosion);
 
                     if (unitHit)
@@ -325,7 +342,7 @@ namespace MLG360.Strategy
                         {
                             Vector2 unitPos;
                             if (dodgeMove.Vertical == VerticalMovement.None || dodgeMove.Vertical == VerticalMovement.JumpOff) //TODO platforms break None!
-                                unitPos = PredictPos(this, dt) + moveVelocity.X * Vector2.UnitX * dt;
+                                unitPos = PredictPos(this, dt, dodgeMove.Horizontal);
                             else
                                 unitPos = Pos + moveVelocity * dt;
 
@@ -373,7 +390,7 @@ namespace MLG360.Strategy
                 Hit unitHit = null;
                 for (float dt = 0; dt <= wallHit.DTime; dt += _Environment.DTime)
                 {
-                    var movedUnit = Clone(PredictPos(this, dt));
+                    var movedUnit = Clone(PredictPos(this, dt, HorizontalMovement.None));
                     unitHit = bullet.FindHit(new[] { movedUnit });
 
                     if (unitHit != null)
@@ -393,7 +410,7 @@ namespace MLG360.Strategy
                             {
                                 Vector2 unitPos;
                                 if (dodgeMove.Vertical == VerticalMovement.None || dodgeMove.Vertical == VerticalMovement.JumpOff) //TODO platforms break None! //TODO jump time (<_>)
-                                    unitPos = PredictPos(this, dt) + moveVelocity.X * Vector2.UnitX * dt;
+                                    unitPos = PredictPos(this, dt, HorizontalMovement.None) + moveVelocity.X * Vector2.UnitX * dt;
                                 else
                                     unitPos = Pos + moveVelocity * dt;
 
