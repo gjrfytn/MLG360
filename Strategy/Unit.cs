@@ -89,7 +89,9 @@ namespace MLG360.Strategy
             if (closestHP != null)
             {
                 const float healthPanicThreshold = 0.5f;
-                if (closestEnemy.Health >= Health && Health / MaxHealth <= healthPanicThreshold)
+                const float greedDist = 1.5f;
+                if (closestEnemy.Health >= Health && Health / MaxHealth <= healthPanicThreshold ||
+                    Vector2.Distance(closestHP.Pos, closestEnemy.Pos) <= greedDist)
                     return closestHP.Pos;
             }
 
