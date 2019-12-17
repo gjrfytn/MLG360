@@ -44,6 +44,7 @@ namespace MLG360
         {
             return new Strategy.Weapon(
                 (float)value.Parameters.Bullet.Speed,
+                value.Parameters.Bullet.Damage,
                 (float)(2 * value.Parameters.Explosion?.Radius ?? 0),
                 value.Parameters.Explosion?.Damage ?? 0,
                 (float)value.Parameters.Bullet.Size,
