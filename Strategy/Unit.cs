@@ -72,6 +72,7 @@ namespace MLG360.Strategy
         private Movement Pathfind(Vector2 targetPos)
         {
             var currentTile = _Environment.Tiles.Single(t => t.Contains(Pos));
+
             VerticalMovement verticalMovement;
             if (targetPos.X > Pos.X && _Environment.GetRightTile(currentTile).IsWall ||
                 targetPos.X < Pos.X && _Environment.GetLeftTile(currentTile).IsWall)
@@ -79,7 +80,13 @@ namespace MLG360.Strategy
             else
                 verticalMovement = targetPos.Y > Pos.Y ? VerticalMovement.Jump : VerticalMovement.JumpOff;
 
-            return new Movement(targetPos.X > Pos.X ? HorizontalMovement.Right : HorizontalMovement.Left, verticalMovement);
+            HorizontalMovement horizontalMovement;
+            if (System.Math.Abs(targetPos.X - Pos.X) >= _RunSpeed * _Environment.DTime)
+                horizontalMovement = targetPos.X > Pos.X ? HorizontalMovement.Right : HorizontalMovement.Left;
+            else
+                horizontalMovement = HorizontalMovement.None;
+
+            return new Movement(horizontalMovement, verticalMovement);
         }
 
         private Vector2 PositionSelf(Unit closestEnemy, bool enemyInSight)
@@ -427,7 +434,7 @@ namespace MLG360.Strategy
                                     if (!dodgeTime.HasValue)
                                         dodgeTime = dt;
                                 }
-                                else if(dodgeTime.HasValue)
+                                else if (dodgeTime.HasValue)
                                 {
                                     dodgeTime = null;
 
