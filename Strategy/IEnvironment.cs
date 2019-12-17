@@ -13,5 +13,6 @@ namespace MLG360.Strategy
 
         Tile GetLeftTile(Tile tile);
         Tile GetRightTile(Tile tile);
+        Tile GetBottomTile(Tile tile);
     }
 }

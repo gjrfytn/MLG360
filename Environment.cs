@@ -63,5 +63,6 @@ namespace MLG360
 
         public Tile GetLeftTile(Tile tile) => Tiles.SingleOrDefault(t => t.Pos.X == tile.Pos.X - _TileSize && t.Pos.Y == tile.Pos.Y);
         public Tile GetRightTile(Tile tile) => Tiles.SingleOrDefault(t => t.Pos.X == tile.Pos.X + _TileSize && t.Pos.Y == tile.Pos.Y);
+        public Tile GetBottomTile(Tile tile) => Tiles.SingleOrDefault(t => t.Pos.X == tile.Pos.X && t.Pos.Y == tile.Pos.Y - _TileSize);
     }
 }

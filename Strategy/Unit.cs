@@ -72,13 +72,24 @@ namespace MLG360.Strategy
         private Movement Pathfind(Vector2 targetPos)
         {
             var currentTile = _Environment.Tiles.Single(t => t.Contains(Pos));
+            var bottomTile = _Environment.GetBottomTile(currentTile);
+
+            const float corrector = 0.000001f;
+            if (bottomTile.Type == TileType.Empty || bottomTile.Type == TileType.Ladder) // Precision error compensation.
+                currentTile = _Environment.Tiles.Single(t => t.Contains(Pos - corrector * Vector2.UnitY));
 
             VerticalMovement verticalMovement;
             if (targetPos.X > Pos.X && _Environment.GetRightTile(currentTile).IsWall ||
                 targetPos.X < Pos.X && _Environment.GetLeftTile(currentTile).IsWall)
                 verticalMovement = VerticalMovement.Jump;
             else
-                verticalMovement = targetPos.Y > Pos.Y ? VerticalMovement.Jump : VerticalMovement.JumpOff;
+            {
+                var diff = Pos.Y - targetPos.Y;
+                if (diff >= 0 && diff < VerticalDynamic.FallSpeed * _Environment.DTime)
+                    verticalMovement = VerticalMovement.None;
+                else
+                    verticalMovement = targetPos.Y > Pos.Y ? VerticalMovement.Jump : VerticalMovement.JumpOff;
+            }
 
             HorizontalMovement horizontalMovement;
             if (System.Math.Abs(targetPos.X - Pos.X) >= _RunSpeed * _Environment.DTime)
