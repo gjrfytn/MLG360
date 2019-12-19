@@ -26,6 +26,7 @@ namespace MLG360
                 (float)value.JumpState.MaxTime);
 
             return new Strategy.Unit(
+                value.Id,
                 value.PlayerId,
                 value.Position.CastToVector2(),
                 value.Weapon?.Convert(),

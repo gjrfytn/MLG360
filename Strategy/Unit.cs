@@ -8,6 +8,8 @@ namespace MLG360.Strategy
     {
         private readonly IEnvironment _Environment;
         private readonly IScoretable _Scoretable;
+
+        private readonly int _Id;
         private readonly Weapon _Weapon;
         private readonly Vector2 _Size;
         private readonly float _RunSpeed;
@@ -21,9 +23,10 @@ namespace MLG360.Strategy
         private float WeaponHeight => Height / 2;
         private Vector2 WeaponPoint => Pos + WeaponHeight * Vector2.UnitY;
 
-        public Unit(int playerId, Vector2 pos, Weapon weapon, Vector2 size, float runSpeed, float jumpSpeed, VerticalDynamic verticalDynamic, float health, float maxHealth, IEnvironment environment, IScoretable scoretable) :
+        public Unit(int id, int playerId, Vector2 pos, Weapon weapon, Vector2 size, float runSpeed, float jumpSpeed, VerticalDynamic verticalDynamic, float health, float maxHealth, IEnvironment environment, IScoretable scoretable) :
             base(pos, size)
         {
+            _Id = id;
             PlayerId = playerId;
             _Weapon = weapon;
             _Size = size;
@@ -200,7 +203,14 @@ namespace MLG360.Strategy
 
         private T PickClosest<T>(IEnumerable<T> objects) where T : GameObject => objects.OrderBy(e => Vector2.DistanceSquared(Pos, e.Pos)).FirstOrDefault();
         private bool HasLineOfSight(Vector2 from, Vector2 aim, float distance) => !new Ray(from, aim, distance).Intersects(FindWallTiles());
-        private bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, float size) => !new Ray(from, aim, distance).Intersects(FindWallTiles(), new Vector2(size, size));
+
+        private bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, float size)
+        {
+            IEnumerable<Rectangle> wallTiles = FindWallTiles();
+            IEnumerable<Rectangle> allies = _Environment.Units.Where(u => u.PlayerId == PlayerId && u._Id != _Id);
+
+           return !new Ray(from, aim, distance).Intersects(wallTiles.Concat(allies), new Vector2(size, size));
+        }
 
         private bool CheckWeaponFireSafety(Unit enemy, Vector2 aim)
         {
@@ -511,7 +521,7 @@ namespace MLG360.Strategy
             return new Vector2(dx, dy);
         }
 
-        private Unit Clone(Vector2 pos) => new Unit(PlayerId, pos, _Weapon, _Size, _RunSpeed, _JumpSpeed, VerticalDynamic, Health, MaxHealth, _Environment, _Scoretable);
+        private Unit Clone(Vector2 pos) => new Unit(_Id, PlayerId, pos, _Weapon, _Size, _RunSpeed, _JumpSpeed, VerticalDynamic, Health, MaxHealth, _Environment, _Scoretable);
 
         private static Vector2 TakeCenter(Unit unit) => TakeCenter(unit, unit.Pos);
         private static Vector2 TakeCenter(Unit unit, Vector2 pos) => pos + unit.Height / 2 * Vector2.UnitY;
