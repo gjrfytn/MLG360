@@ -209,7 +209,7 @@ namespace MLG360.Strategy
             IEnumerable<Rectangle> wallTiles = FindWallTiles();
             IEnumerable<Rectangle> allies = _Environment.Units.Where(u => u.PlayerId == PlayerId && u._Id != _Id);
 
-           return !new Ray(from, aim, distance).Intersects(wallTiles.Concat(allies), new Vector2(size, size));
+            return !new Ray(from, aim, distance).Intersects(wallTiles.Concat(allies), new Vector2(size, size));
         }
 
         private bool CheckWeaponFireSafety(Unit enemy, Vector2 aim)
@@ -368,6 +368,7 @@ namespace MLG360.Strategy
                     {
                         var moveVelocity = Convert(dodgeMove);
 
+                        float? dodgeTime = null;
                         for (var dt = _Environment.DTime; dt <= wallHit.DTime; dt += _Environment.DTime)
                         {
                             Vector2 unitPos;
@@ -383,21 +384,30 @@ namespace MLG360.Strategy
 
                             if (!movedUnit.Intersects(explosion))
                             {
-                                if (dt < minDodgeTime)
-                                {
-                                    result = dodgeMove;
-                                    minDodgeTime = dt;
-                                }
+                                if (!dodgeTime.HasValue)
+                                    dodgeTime = dt;
+                            }
+                            else if (dodgeTime.HasValue)
+                            {
+                                dodgeTime = null;
 
                                 break;
                             }
+                        }
+
+                        if (dodgeTime.HasValue &&
+                            dodgeTime.Value < minDodgeTime &&
+                            dodgeTime.Value < wallHit.DTime + _Environment.DTime)
+                        {
+                            result = dodgeMove;
+                            minDodgeTime = dodgeTime.Value;
                         }
                     }
 
                     if (result != null)
                     {
-                        //if (wallHit.DTime - minDodgeTime > 2 * _Environment.DTime) //TODO
-                        //    result = null;
+                        if (wallHit.DTime > minDodgeTime + 3 * _Environment.DTime)
+                            result = null;
 
                         break;
                     }
@@ -465,7 +475,7 @@ namespace MLG360.Strategy
 
                             if (dodgeTime.HasValue &&
                                 dodgeTime.Value < minDodgeTime &&
-                                dodgeTime.Value < unitHit.DTime)
+                                dodgeTime.Value < unitHit.DTime + _Environment.DTime)
                             {
                                 result = dodgeMove;
                                 minDodgeTime = dodgeTime.Value;
@@ -474,8 +484,8 @@ namespace MLG360.Strategy
 
                         if (result != null)
                         {
-                            //if (unitHit.DTime - minDodgeTime > 2 * _Environment.DTime) //TODO
-                            //    result = null;
+                            if (unitHit.DTime > minDodgeTime + 3 * _Environment.DTime)
+                                result = null;
 
                             break;
                         }
