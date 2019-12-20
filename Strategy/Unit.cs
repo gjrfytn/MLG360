@@ -68,7 +68,9 @@ namespace MLG360.Strategy
         }
 
         private IEnumerable<Unit> FindEnemies() => _Environment.Units.Where(u => u.PlayerId != PlayerId);
+        private IEnumerable<Unit> FindAllies() => _Environment.Units.Where(u => u.PlayerId == PlayerId && u._Id != _Id);
         private Unit FindClosestEnemy() => PickClosest(FindEnemies());
+        private Unit FindClosestAlly() => PickClosest(FindAllies());
         private Gun FindClosestGun() => PickClosest(_Environment.Guns);
         private HealthPack FindClosestHealthPack() => PickClosest(_Environment.HealthPacks);
 
@@ -81,9 +83,14 @@ namespace MLG360.Strategy
             if (bottomTile.Type == TileType.Empty || bottomTile.Type == TileType.Ladder) // Precision error compensation.
                 currentTile = _Environment.Tiles.Single(t => t.Contains(Pos - corrector * Vector2.UnitY));
 
+            var ally = FindClosestAlly();
+
+            var rightTile = _Environment.GetRightTile(currentTile);
+            var leftTile = _Environment.GetLeftTile(currentTile);
+
             VerticalMovement verticalMovement;
-            if (targetPos.X > Pos.X && _Environment.GetRightTile(currentTile).IsWall ||
-                targetPos.X < Pos.X && _Environment.GetLeftTile(currentTile).IsWall)
+            if (targetPos.X > Pos.X && (rightTile.IsWall || (ally != null ? rightTile.InXArea(ally.Pos) && ally.InYArea(Pos) : false)) ||
+                targetPos.X < Pos.X && (leftTile.IsWall || (ally != null ? leftTile.InXArea(ally.Pos) && ally.InYArea(Pos) : false)))
                 verticalMovement = VerticalMovement.Jump;
             else
             {
@@ -207,9 +214,8 @@ namespace MLG360.Strategy
         private bool HasLineOfSight(Vector2 from, Vector2 aim, float distance, float size)
         {
             IEnumerable<Rectangle> wallTiles = FindWallTiles();
-            IEnumerable<Rectangle> allies = _Environment.Units.Where(u => u.PlayerId == PlayerId && u._Id != _Id);
 
-            return !new Ray(from, aim, distance).Intersects(wallTiles.Concat(allies), new Vector2(size, size));
+            return !new Ray(from, aim, distance).Intersects(wallTiles.Concat(FindAllies()), new Vector2(size, size));
         }
 
         private bool CheckWeaponFireSafety(Unit enemy, Vector2 aim)
