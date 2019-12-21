@@ -115,10 +115,10 @@ namespace MLG360.Strategy
                 verticalMovement = VerticalMovement.None;
 
             HorizontalMovement horizontalMovement;
-            if (System.Math.Abs(targetPos.X - Pos.X) >= _RunSpeed * _Environment.DTime)
+            //if (System.Math.Abs(targetPos.X - Pos.X) >= _RunSpeed * _Environment.DTime)
                 horizontalMovement = targetPos.X > Pos.X ? HorizontalMovement.Right : HorizontalMovement.Left;
-            else
-                horizontalMovement = HorizontalMovement.None;
+            //else
+            //    horizontalMovement = HorizontalMovement.None;
 
             return new Movement(horizontalMovement, verticalMovement);
         }
