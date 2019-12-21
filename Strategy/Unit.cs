@@ -109,8 +109,8 @@ namespace MLG360.Strategy
             const float jumpRefreshHeight = 0.2f;
             var jumpPercentLeft = _JumpTimeLeft / _MaxJumpTime;
             if (jumpPercentLeft <= jumpRefreshThreshold &&
-                (bottomTile.Type == TileType.Platform || bottomTile.Type == TileType.Wall /*TODO Нужно Wall?*/) &&
-                Pos.Y - bottomTile.Top.Y > corrector && 
+                (bottomTile.Type == TileType.Platform || bottomTile.IsWall /*TODO Нужно Wall?*/) &&
+                Pos.Y - bottomTile.Top.Y > corrector &&
                 Pos.Y - bottomTile.Top.Y <= jumpRefreshHeight)
                 verticalMovement = VerticalMovement.None;
 
@@ -177,7 +177,7 @@ namespace MLG360.Strategy
         {
             var distance = Vector2.Distance(Pos, TakeCenter(unit));
             var timeToHit = distance / _Weapon.BulletSpeed; //TODO wrong?
-            var aimPoint = TakeCenter(unit, PredictPos(unit, timeToHit, HorizontalMovement.None));
+            var aimPoint = TakeCenter(unit, PredictPos(unit, timeToHit, HorizontalMovement.None, false));
 
             return Vector2.Normalize(aimPoint - WeaponPoint);
         }
@@ -299,7 +299,7 @@ namespace MLG360.Strategy
             return true;
         }
 
-        private Vector2 PredictPos(Unit unit, float dtime, HorizontalMovement horizontalMovement)
+        private Vector2 PredictPos(Unit unit, float dtime, HorizontalMovement horizontalMovement, bool willJumpOffPlatformOrLadder) //TODO workaround
         {
             float dx;
             switch (horizontalMovement)
@@ -324,7 +324,7 @@ namespace MLG360.Strategy
             var pos = unit.Pos + new Vector2(dx, dy);
 
             var solidTilesAbovePos = _Environment.Tiles
-                                                .Where(t => t.Type != TileType.Empty &&
+                                                .Where(t => (t.IsWall || t.Type == TileType.JumpPad || (t.Type == TileType.Platform || t.Type == TileType.Ladder) && !willJumpOffPlatformOrLadder) &&
                                                             t.Pos.Y < unit.Pos.Y &&
                                                             t.Top.Y >= pos.Y &&
                                                             t.InXArea(pos))
@@ -373,7 +373,7 @@ namespace MLG360.Strategy
                 var unitHit = false;
                 for (float dt = 0; dt <= wallHit.DTime; dt += _Environment.DTime)
                 {
-                    var movedUnit = Clone(PredictPos(this, dt, currentHorizontalMovement));
+                    var movedUnit = Clone(PredictPos(this, dt, currentHorizontalMovement, false));
                     unitHit = movedUnit.Intersects(explosion);
 
                     if (unitHit)
@@ -391,8 +391,10 @@ namespace MLG360.Strategy
                         for (var dt = _Environment.DTime; dt <= wallHit.DTime; dt += _Environment.DTime)
                         {
                             Vector2 unitPos;
-                            if (dodgeMove.Vertical == VerticalMovement.None || dodgeMove.Vertical == VerticalMovement.JumpOff) //TODO platforms break None!
-                                unitPos = PredictPos(this, dt, dodgeMove.Horizontal);
+                            if (dodgeMove.Vertical == VerticalMovement.None)
+                                unitPos = PredictPos(this, dt, dodgeMove.Horizontal, false);
+                            else if (dodgeMove.Vertical == VerticalMovement.JumpOff)
+                                unitPos = PredictPos(this, dt, dodgeMove.Horizontal, true);
                             else
                                 unitPos = Pos + moveVelocity * dt;
 
@@ -449,7 +451,7 @@ namespace MLG360.Strategy
                 Hit unitHit = null;
                 for (float dt = 0; dt <= wallHit.DTime; dt += _Environment.DTime)
                 {
-                    var movedUnit = Clone(PredictPos(this, dt, currentHorizontalMovement));
+                    var movedUnit = Clone(PredictPos(this, dt, currentHorizontalMovement, false));
                     unitHit = bullet.FindHit(new[] { movedUnit });
 
                     if (unitHit != null)
@@ -469,8 +471,10 @@ namespace MLG360.Strategy
                             for (var dt = _Environment.DTime; dt <= wallHit.DTime; dt += _Environment.DTime)
                             {
                                 Vector2 unitPos;
-                                if (dodgeMove.Vertical == VerticalMovement.None || dodgeMove.Vertical == VerticalMovement.JumpOff) //TODO platforms break None! //TODO jump time (<_>)
-                                    unitPos = PredictPos(this, dt, dodgeMove.Horizontal);
+                                if (dodgeMove.Vertical == VerticalMovement.None) //TODO jump time (<_>)
+                                    unitPos = PredictPos(this, dt, dodgeMove.Horizontal, false);
+                                else if (dodgeMove.Vertical == VerticalMovement.JumpOff)
+                                    unitPos = PredictPos(this, dt, dodgeMove.Horizontal, true);
                                 else
                                     unitPos = Pos + moveVelocity * dt;
 
