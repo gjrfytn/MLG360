@@ -14,6 +14,8 @@ namespace MLG360.Strategy
         private readonly Vector2 _Size;
         private readonly float _RunSpeed;
         private readonly float _JumpSpeed;
+        private readonly float _JumpTimeLeft;
+        private readonly float _MaxJumpTime;
 
         public int PlayerId { get; }
         public VerticalDynamic VerticalDynamic { get; }
@@ -23,7 +25,7 @@ namespace MLG360.Strategy
         private float WeaponHeight => Height / 2;
         private Vector2 WeaponPoint => Pos + WeaponHeight * Vector2.UnitY;
 
-        public Unit(int id, int playerId, Vector2 pos, Weapon weapon, Vector2 size, float runSpeed, float jumpSpeed, VerticalDynamic verticalDynamic, float health, float maxHealth, IEnvironment environment, IScoretable scoretable) :
+        public Unit(int id, int playerId, Vector2 pos, Weapon weapon, Vector2 size, float runSpeed, float jumpSpeed, float jumpTimeLeft, float maxJumpTime, VerticalDynamic verticalDynamic, float health, float maxHealth, IEnvironment environment, IScoretable scoretable) :
             base(pos, size)
         {
             _Id = id;
@@ -32,6 +34,8 @@ namespace MLG360.Strategy
             _Size = size;
             _RunSpeed = runSpeed;
             _JumpSpeed = jumpSpeed;
+            _JumpTimeLeft = jumpTimeLeft;
+            _MaxJumpTime = maxJumpTime;
             VerticalDynamic = verticalDynamic;
             Health = health;
             MaxHealth = maxHealth;
@@ -100,6 +104,15 @@ namespace MLG360.Strategy
                 else
                     verticalMovement = targetPos.Y > Pos.Y ? VerticalMovement.Jump : VerticalMovement.JumpOff;
             }
+
+            const float jumpRefreshThreshold = 0.5f;
+            const float jumpRefreshHeight = 0.2f;
+            var jumpPercentLeft = _JumpTimeLeft / _MaxJumpTime;
+            if (jumpPercentLeft <= jumpRefreshThreshold &&
+                (bottomTile.Type == TileType.Platform || bottomTile.Type == TileType.Wall /*TODO Нужно Wall?*/) &&
+                Pos.Y - bottomTile.Top.Y > corrector && 
+                Pos.Y - bottomTile.Top.Y <= jumpRefreshHeight)
+                verticalMovement = VerticalMovement.None;
 
             HorizontalMovement horizontalMovement;
             if (System.Math.Abs(targetPos.X - Pos.X) >= _RunSpeed * _Environment.DTime)
@@ -537,7 +550,7 @@ namespace MLG360.Strategy
             return new Vector2(dx, dy);
         }
 
-        private Unit Clone(Vector2 pos) => new Unit(_Id, PlayerId, pos, _Weapon, _Size, _RunSpeed, _JumpSpeed, VerticalDynamic, Health, MaxHealth, _Environment, _Scoretable);
+        private Unit Clone(Vector2 pos) => new Unit(_Id, PlayerId, pos, _Weapon, _Size, _RunSpeed, _JumpSpeed, _JumpTimeLeft, _MaxJumpTime, VerticalDynamic, Health, MaxHealth, _Environment, _Scoretable);
 
         private static Vector2 TakeCenter(Unit unit) => TakeCenter(unit, unit.Pos);
         private static Vector2 TakeCenter(Unit unit, Vector2 pos) => pos + unit.Height / 2 * Vector2.UnitY;

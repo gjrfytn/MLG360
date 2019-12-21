@@ -33,6 +33,8 @@ namespace MLG360
                 value.Size.CastToVector2(),
                 (float)game.Properties.UnitMaxHorizontalSpeed,
                 (float)game.Properties.UnitJumpSpeed,
+                (float)value.JumpState.MaxTime,
+                (float)game.Properties.UnitJumpTime,
                 //(float)_Game.Properties.UnitSize.Y, u.Stand ? HorizontalMovement.None : (u.WalkedRight ? HorizontalMovement.Right : HorizontalMovement.Left),
                 verticalDynamic,
                 value.Health,
