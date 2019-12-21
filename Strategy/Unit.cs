@@ -140,9 +140,14 @@ namespace MLG360.Strategy
             {
                 //TODO plant mine if hp is not too close.
 
-                closestHP = FindClosestHealthPack();
                 if (closestHP != null)
                 {
+                    var ally = FindAllies().FirstOrDefault();
+                    if (ally != null &&
+                        ally.Health < Health &&
+                        _Environment.HealthPacks.Count() > 1)
+                        closestHP = PickClosest(_Environment.HealthPacks.Where(hp => hp.Pos != closestHP.Pos));
+
                     var tileWithHP = _Environment.Tiles.Single(t => t.Contains(closestHP.Pos));
                     var leftTile = _Environment.GetLeftTile(tileWithHP);
                     var rightTile = _Environment.GetRightTile(tileWithHP);
