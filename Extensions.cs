@@ -35,10 +35,10 @@ namespace MLG360
                 (float)game.Properties.UnitJumpSpeed,
                 (float)value.JumpState.MaxTime,
                 (float)game.Properties.UnitJumpTime,
-                //(float)_Game.Properties.UnitSize.Y, u.Stand ? HorizontalMovement.None : (u.WalkedRight ? HorizontalMovement.Right : HorizontalMovement.Left),
                 verticalDynamic,
                 value.Health,
                 game.Properties.UnitMaxHealth,
+                value.Stand ? Strategy.HorizontalMovement.None : (value.WalkedRight ? Strategy.HorizontalMovement.Right : Strategy.HorizontalMovement.Left),
                 new Environment(game),
                 new Scoretable(game));
         }

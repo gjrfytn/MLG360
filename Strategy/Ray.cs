@@ -30,7 +30,7 @@ namespace MLG360.Strategy
             {
                 var checkPoint = _Origin + checkDist * _Direction;
 
-                foreach (var boxCheckPoint in GetCheckPoints(checkPoint, slideBoxSize))
+                foreach (var boxCheckPoint in GetCheckPoints(checkPoint, slideBoxSize)) // TODO Rectangle.Intersects?
                     if (rectanglesArr.Any(t => t.Contains(boxCheckPoint)))
                         return checkPoint;
             }

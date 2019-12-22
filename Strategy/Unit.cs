@@ -16,6 +16,7 @@ namespace MLG360.Strategy
         private readonly float _JumpSpeed;
         private readonly float _JumpTimeLeft;
         private readonly float _MaxJumpTime;
+        private readonly HorizontalMovement _CurrentHorizontalMovement;
 
         public int PlayerId { get; }
         public VerticalDynamic VerticalDynamic { get; }
@@ -25,7 +26,7 @@ namespace MLG360.Strategy
         private float WeaponHeight => Height / 2;
         private Vector2 WeaponPoint => Pos + WeaponHeight * Vector2.UnitY;
 
-        public Unit(int id, int playerId, Vector2 pos, Weapon weapon, Vector2 size, float runSpeed, float jumpSpeed, float jumpTimeLeft, float maxJumpTime, VerticalDynamic verticalDynamic, float health, float maxHealth, IEnvironment environment, IScoretable scoretable) :
+        public Unit(int id, int playerId, Vector2 pos, Weapon weapon, Vector2 size, float runSpeed, float jumpSpeed, float jumpTimeLeft, float maxJumpTime, VerticalDynamic verticalDynamic, float health, float maxHealth, HorizontalMovement currentHorizontalMovement, IEnvironment environment, IScoretable scoretable) :
             base(pos, size)
         {
             _Id = id;
@@ -39,6 +40,7 @@ namespace MLG360.Strategy
             VerticalDynamic = verticalDynamic;
             Health = health;
             MaxHealth = maxHealth;
+            _CurrentHorizontalMovement = currentHorizontalMovement;
             _Environment = environment;
             _Scoretable = scoretable;
         }
@@ -80,6 +82,10 @@ namespace MLG360.Strategy
 
         private Movement Pathfind(Vector2 targetPos)
         {
+            var horizontalMovement = targetPos.X > Pos.X ? HorizontalMovement.Right : HorizontalMovement.Left;
+            if (System.Math.Abs(targetPos.X - Pos.X) < _RunSpeed * _Environment.DTime && horizontalMovement != _CurrentHorizontalMovement)
+                horizontalMovement = HorizontalMovement.None;
+
             var currentTile = _Environment.Tiles.Single(t => t.Contains(Pos));
             var bottomTile = _Environment.GetBottomTile(currentTile);
 
@@ -93,8 +99,8 @@ namespace MLG360.Strategy
             var leftTile = _Environment.GetLeftTile(currentTile);
 
             VerticalMovement verticalMovement;
-            if (targetPos.X > Pos.X && (rightTile.IsWall || (ally != null ? rightTile.InXArea(ally.Pos) && ally.InYArea(Pos) : false)) ||
-                targetPos.X < Pos.X && (leftTile.IsWall || (ally != null ? leftTile.InXArea(ally.Pos) && ally.InYArea(Pos) : false)))
+            if (horizontalMovement == HorizontalMovement.Right && targetPos.X > Pos.X && (rightTile.IsWall || (ally != null ? rightTile.InXArea(ally.Pos) && ally.InYArea(Pos) : false)) ||
+                horizontalMovement == HorizontalMovement.Left && targetPos.X < Pos.X && (leftTile.IsWall || (ally != null ? leftTile.InXArea(ally.Pos) && ally.InYArea(Pos) : false)))
                 verticalMovement = VerticalMovement.Jump;
             else
             {
@@ -113,12 +119,6 @@ namespace MLG360.Strategy
                 Pos.Y - bottomTile.Top.Y > corrector &&
                 Pos.Y - bottomTile.Top.Y <= jumpRefreshHeight)
                 verticalMovement = VerticalMovement.None;
-
-            HorizontalMovement horizontalMovement;
-            //if (System.Math.Abs(targetPos.X - Pos.X) >= _RunSpeed * _Environment.DTime)
-                horizontalMovement = targetPos.X > Pos.X ? HorizontalMovement.Right : HorizontalMovement.Left;
-            //else
-            //    horizontalMovement = HorizontalMovement.None;
 
             return new Movement(horizontalMovement, verticalMovement);
         }
@@ -559,7 +559,7 @@ namespace MLG360.Strategy
             return new Vector2(dx, dy);
         }
 
-        private Unit Clone(Vector2 pos) => new Unit(_Id, PlayerId, pos, _Weapon, _Size, _RunSpeed, _JumpSpeed, _JumpTimeLeft, _MaxJumpTime, VerticalDynamic, Health, MaxHealth, _Environment, _Scoretable);
+        private Unit Clone(Vector2 pos) => new Unit(_Id, PlayerId, pos, _Weapon, _Size, _RunSpeed, _JumpSpeed, _JumpTimeLeft, _MaxJumpTime, VerticalDynamic, Health, MaxHealth, _CurrentHorizontalMovement, _Environment, _Scoretable);
 
         private static Vector2 TakeCenter(Unit unit) => TakeCenter(unit, unit.Pos);
         private static Vector2 TakeCenter(Unit unit, Vector2 pos) => pos + unit.Height / 2 * Vector2.UnitY;
